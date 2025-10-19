@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body class="min-h-screen w-screen bg-white">
+
+    <div th:replace="fragment/navbar :: navbar"></div>
+
+    <div class="pt-16 pb-20">
+        <div class="bg-white border-b border-neutral-200">
+            <div class="max-w-lg mx-auto px-4 py-4 flex items-center gap-3">
+                <button onclick="history.back()" class="btn btn-ghost btn-sm btn-circle text-neutral">
+                    <i class="fa-solid fa-arrow-left text-lg"></i>
+                </button>
+                <h1 class="text-xl font-bold text-neutral">Update Profil</h1>
+            </div>
+        </div>
+
+        <main class="max-w-lg mx-auto px-4 py-6">
+            <form th:object="${formRequest}" th:action="@{/user/update-my-profile}" method="post"
+                enctype="multipart/form-data" id="updateForm">
+
+                <!-- Profile Picture Card -->
+                <div class="bg-white rounded-3xl shadow-lg p-6 mb-4 border border-neutral-100">
+                    <div class="flex flex-col items-center">
+                        <div class="relative group">
+                            <!-- Avatar with ring animation on hover -->
+                            <div
+                                class="w-32 h-32 rounded-full border-4 border-neutral-200 shadow-xl overflow-hidden transition-all duration-300 group-hover:border-neutral-400 group-hover:shadow-2xl">
+                                <img id="previewImg"
+                                    th:src="@{${#strings.isEmpty(formRequest.profilePicture) ? '/img/default.jpg' : '/uploads/' + formRequest.profilePicture}}"
+                                    alt="Foto Profil"
+                                    class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
+                            </div>
+
+                            <!-- Camera icon overlay -->
+                            <label
+                                class="absolute bottom-0 right-0 btn btn-circle btn-sm btn-neutral border-4 border-white shadow-lg cursor-pointer transition-transform duration-200 hover:scale-110">
+                                <i class="fa-solid fa-camera text-sm"></i>
+                                <input type="file" th:field="*{profilePicture}" id="profilePictureInput"
+                                    accept="image/*" class="hidden" />
+                            </label>
+                        </div>
+
+                        <p class="text-sm text-neutral-500 mt-4 text-center">
+                            <i class="fa-solid fa-circle-info mr-1"></i>
+                            Klik ikon kamera untuk mengubah foto
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Form Fields Card -->
+                <div class="bg-white rounded-3xl shadow-lg p-6 space-y-5 border border-neutral-100">
+
+                    <!-- Username -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-neutral flex items-center gap-2">
+                                <i class="fa-solid fa-user text-neutral-400"></i>
+                                Username
+                            </span>
+                        </label>
+                        <input type="text" th:field="*{username}" placeholder="Masukkan username"
+                            class="input input-bordered w-full bg-neutral-50 border-neutral-200 text-neutral placeholder:text-neutral-400 focus:bg-white focus:border-neutral-400 focus:outline-none transition-all duration-200" />
+                        <p th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'username')}"
+                            th:text="${validationErrors.username}"
+                            class="label-text-alt text-error mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </p>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-neutral flex items-center gap-2">
+                                <i class="fa-solid fa-envelope text-neutral-400"></i>
+                                Email
+                            </span>
+                        </label>
+                        <input type="email" th:field="*{email}" placeholder="Masukkan email"
+                            class="input input-bordered w-full bg-neutral-50 border-neutral-200 text-neutral placeholder:text-neutral-400 focus:bg-white focus:border-neutral-400 focus:outline-none transition-all duration-200" />
+                        <p th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'email')}"
+                            th:text="${validationErrors.email}"
+                            class="label-text-alt text-error mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </p>
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-neutral flex items-center gap-2">
+                                <i class="fa-solid fa-id-card text-neutral-400"></i>
+                                Nama Lengkap
+                            </span>
+                        </label>
+                        <input type="text" th:field="*{fullName}" placeholder="Masukkan nama lengkap"
+                            class="input input-bordered w-full bg-neutral-50 border-neutral-200 text-neutral placeholder:text-neutral-400 focus:bg-white focus:border-neutral-400 focus:outline-none transition-all duration-200" />
+                        <p th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'fullName')}"
+                            th:text="${validationErrors.fullName}"
+                            class="label-text-alt text-error mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </p>
+                    </div>
+
+                    <!-- Phone Number -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-neutral flex items-center gap-2">
+                                <i class="fa-solid fa-phone text-neutral-400"></i>
+                                Nomor Telepon
+                            </span>
+                        </label>
+                        <input type="text" th:field="*{phoneNumber}" placeholder="Contoh: 081234567890"
+                            class="input input-bordered w-full bg-neutral-50 border-neutral-200 text-neutral placeholder:text-neutral-400 focus:bg-white focus:border-neutral-400 focus:outline-none transition-all duration-200" />
+                        <label class="label">
+                            <span class="label-text-alt text-neutral-400">
+                                <i class="fa-solid fa-circle-info text-xs mr-1"></i>
+                                Opsional
+                            </span>
+                        </label>
+                    </div>
+
+                    <!-- gender -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium mb-1">Jenis Kelamin</label>
+                        <select th:field="*{gender}" class="border rounded-lg p-2 w-full">
+                            <option value="" disabled selected>Pilih gender</option>
+                            <option th:each="g : ${genders}" th:value="${g}" th:text="${g}">
+                            </option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <!-- Submit Button -->
+                <div class="mt-6 pb-6">
+                    <button type="submit"
+                        class="btn btn-neutral w-full shadow-xl hover:shadow-2xl transition-all duration-200 h-14 text-base font-semibold">
+                        <i class="fa-solid fa-floppy-disk text-lg"></i>
+                        Simpan Perubahan
+                    </button>
+                </div>
+
+            </form>
+        </main>
+
+    </div>
+    <!-- Header dengan back button -->
+
+    <div th:replace="fragment/navbar:: bottombar"></div>
+
+    <script>
+        // Preview image saat pilih file dengan animasi
+        const profileInput = document.getElementById('profilePictureInput');
+        const previewImg = document.getElementById('previewImg');
+
+        profileInput.addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validasi tipe file
+            if (!file.type.startsWith('image/')) {
+                alert('File harus berupa gambar!');
+                return;
+            }
+
+            // Validasi ukuran file (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Ukuran file maksimal 5MB!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // Fade effect saat ganti gambar
+                previewImg.style.opacity = '0';
+                setTimeout(() => {
+                    previewImg.src = e.target.result;
+                    previewImg.style.opacity = '1';
+                }, 150);
+            };
+            reader.readAsDataURL(file);
+        });
+
+        // Smooth transition untuk opacity
+        previewImg.style.transition = 'opacity 0.3s ease';
+    </script>
+</body>
+
+</html>

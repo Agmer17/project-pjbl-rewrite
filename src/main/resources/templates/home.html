@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage</title>
+  <link rel="stylesheet" th:href="@{/css/output.css}">
+</head>
+
+<body class="text-neutral bg-neutral w-screen min-h-screen font-sans">
+
+  <div th:replace="fragment/navbar :: navbar"></div>
+
+  <!-- Konten untuk ngetes scroll -->
+  <main class="pt-15">
+
+    <section class="relative text-white">
+      <!-- Gambar -->
+      <img th:src="@{/img/home_image_1.png}" alt="Background" class="w-full h-auto">
+
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-black/15"></div>
+
+      <!-- Konten di atas gambar -->
+      <div class="absolute inset-0 flex flex-col w-[90%] items-start justify-center text-white text-center px-4">
+        <h1 class="text-3xl font-bold text-left">KAMI TEMAN EVENT TERBAIKMU</h1>
+        <p class="text-sm text-left font-semibold">Boysan Multimedia hadir sebagai partner andal untuk setiap acara Anda</p> 
+        <p class="text-sm font-semibold">Kami melayani Event Organizer.</p>
+      </div>
+    </section>
+
+  </main>
+
+
+</body>
+
+</html>

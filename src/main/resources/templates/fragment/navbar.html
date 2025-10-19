@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<body>
+    <div class="navbar bg-white w-full fixed top-0 left-0 z-50 px-4" th:fragment="navbar">
+        <div class="flex-1">
+            <img th:src="@{/img/boysanLogo.png}" class="w-28 h-auto">
+        </div>
+
+        <div class="flex gap-4">
+            <div class="flex-none">
+                <svg class="border-primary" width="25" height="25" viewBox="0 0 27 27" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M25 25L19.4507 19.4507M19.4507 19.4507C20.3999 18.5014 21.1529 17.3745 21.6666 16.1343C22.1803 14.8941 22.4447 13.5648 22.4447 12.2224C22.4447 10.8799 22.1803 9.55067 21.6666 8.31044C21.1529 7.0702 20.3999 5.9433 19.4507 4.99406C18.5014 4.04483 17.3745 3.29185 16.1343 2.77813C14.8941 2.26441 13.5648 2 12.2224 2C10.8799 2 9.55067 2.26441 8.31044 2.77813C7.0702 3.29185 5.9433 4.04483 4.99406 4.99406C3.077 6.91113 2 9.51123 2 12.2224C2 14.9335 3.077 17.5336 4.99406 19.4507C6.91113 21.3677 9.51123 22.4447 12.2224 22.4447C14.9335 22.4447 17.5336 21.3677 19.4507 19.4507Z"
+                        stroke="#061650" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+            <div class="flex-none">
+                <svg class="border-primary" width="25" height="25" viewBox="0 0 25 25" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd"
+                        d="M0.881424 12.5C0.881424 5.59659 6.2807 0 12.9407 0C19.6007 0 25 5.59659 25 12.5C25 19.4034 19.6007 25 12.9407 25H0L3.14199 19.7886C1.6682 17.6657 0.87723 15.1154 0.881424 12.5ZM12.8727 7.38636C12.2912 7.38636 11.7335 7.62581 11.3223 8.05203C10.9111 8.47825 10.6801 9.05633 10.6801 9.65909V10.2909H8.48755V9.65909C8.48755 8.45356 8.94956 7.29741 9.77194 6.44497C10.5943 5.59253 11.7097 5.11364 12.8727 5.11364C14.0358 5.11364 15.1512 5.59253 15.9735 6.44497C16.7959 7.29741 17.2579 8.45356 17.2579 9.65909V10.8011L16.8896 11.1398L13.969 13.8307V15.3409H11.7764V12.8102L12.1437 12.4716L15.0653 9.77954V9.65909C15.0653 9.05633 14.8343 8.47825 14.4231 8.05203C14.0119 7.62581 13.4543 7.38636 12.8727 7.38636ZM11.7764 19.3182V17.0455H13.969V19.3182H11.7764Z"
+                        fill="#061650" />
+                </svg>
+            </div>
+        </div>
+
+    </div>
+
+    <div th:fragment="bottombar" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50
+         w-[90%] max-w-sm bg-white/80 backdrop-blur-md
+         shadow-lg rounded-2xl border border-gray-200/40
+         flex justify-around items-center py-3 px-4">
+
+        <!-- Home -->
+        <button class="flex flex-col items-center text-blue-600 hover:text-blue-800 transition">
+            <i class="fa-solid fa-house text-xl"></i>
+        </button>
+
+        <!-- Search -->
+        <button class="flex flex-col items-center text-gray-500 hover:text-blue-800 transition">
+            <i class="fa-solid fa-magnifying-glass text-xl"></i>
+        </button>
+
+        <!-- Post -->
+        <button
+            class="flex flex-col items-center text-white bg-blue-600 rounded-full p-3 shadow-md hover:bg-blue-700 transition">
+            <i class="fa-solid fa-feather"></i>
+        </button>
+
+        <!-- Notification -->
+        <button class="flex flex-col items-center text-gray-500 hover:text-blue-800 transition">
+            <i class="fa-regular fa-bell text-xl"></i>
+        </button>
+
+        <!-- Profile -->
+        <button class="flex flex-col items-center text-gray-500 hover:text-blue-800 transition">
+            <i class="fa-regular fa-user text-xl"></i>
+        </button>
+
+    </div>
+</body>
+
+</html>

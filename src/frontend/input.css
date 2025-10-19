@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+@import "tailwindcss";
+@plugin "daisyui";
+
+
+@plugin "daisyui/theme" {
+  name: "light";
+  default: false;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(98% 0 0);
+  --color-base-200: oklch(97% 0 0);
+  --color-base-300: oklch(92% 0 0);
+  --color-base-content: oklch(20% 0 0);
+  --color-primary: #1A43BF;
+  --color-primary-content: #fff;
+  --color-secondary: #0A2471;
+  --color-secondary-content: #fff;
+  --color-accent: #1E6FF1;
+  --color-accent-content: #fff;
+  --color-neutral: #061650;
+  --color-neutral-content: oklch(98% 0 0);
+  --color-info: oklch(71% 0.143 215.221);
+  --color-info-content: oklch(98% 0.019 200.873);
+  --color-success: #16A34A;
+  --color-success-content: oklch(98% 0.014 180.72);
+  --color-warning: #EAB308;
+  --color-warning-content: oklch(98% 0.016 73.684);
+  --color-error: #DC2626;
+  --color-error-content: oklch(97% 0.014 343.198);
+  --radius-selector: 2rem;
+  --radius-field: 1rem;
+  --radius-box: 0.25rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+
+}
+
+@theme mytheme {
+  --font-sans: "Jost", system-ui, sans-serif;
+}
+
+
+@source "./../main/resources/templates/**";

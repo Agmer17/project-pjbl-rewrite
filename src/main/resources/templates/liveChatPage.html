@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="'Chat dengan ' + ${data.receiver.fullName}">Live Chat</title>
+
+    <link rel="stylesheet" th:href="@{/css/output.css}" />
+
+    <!-- WebSocket Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+</head>
+
+<body class="bg-gray-100 text-gray-900 flex flex-col h-screen">
+
+    <!-- Header -->
+    <header class="bg-white shadow-md p-4 flex items-center gap-3 border-b border-gray-200">
+        <img th:src="@{'/uploads/' + ${data.receiver.profilePicture}}" alt="Foto Profil"
+            class="w-10 h-10 rounded-full object-cover border border-gray-300" />
+
+        <div class="flex flex-col">
+            <h1 class="text-base font-semibold" th:text="${data.receiver.fullName}">Nama Lengkap</h1>
+            <p class="text-xs text-gray-500" th:text="'@' + ${data.receiver.username}">@username</p>
+        </div>
+    </header>
+
+    <!-- Chat Container -->
+    <main id="chat-messages" class="flex-1 overflow-y-auto bg-gray-50 p-4 flex flex-col space-y-2">
+        <!-- Render chat history -->
+        <div th:each="chat : ${data.chatHistory}" th:classappend="${chat.ownMessage} ? 'self-end' : 'self-start'">
+            <div class="rounded-2xl px-4 py-2 max-w-xs break-words"
+                th:classappend="${chat.ownMessage} ? ' bg-blue-600 text-white' : ' bg-gray-200 text-gray-900'"
+                th:text="${chat.text}">
+            </div>
+        </div>
+    </main>
+
+    <!-- Input -->
+    <footer class="bg-white border-t border-gray-200 p-4">
+        <form id="chat-form" class="flex gap-2 items-center">
+            <input type="text" id="chat-input" placeholder="Ketik pesan..."
+                class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300"
+                autocomplete="off" />
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </footer>
+
+    <!-- Hidden Fields -->
+    <input type="hidden" id="userId" th:value="${data.currentUser.id}" />
+    <input type="hidden" id="receiverId" th:value="${data.receiver.id}" />
+
+    <!-- FontAwesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+
+    <!-- WebSocket Script -->
+    <script th:inline="javascript">
+        const userId = /*[[${data.currentUser.id}]]*/ null;
+        const receiverId = /*[[${data.receiver.id}]]*/ null;
+
+        const socket = new SockJS('/ws');
+        const stompClient = Stomp.over(socket);
+
+        stompClient.connect({}, () => {
+            console.log("✅ Terhubung ke WebSocket");
+
+            // Subscribe ke channel user sendiri
+            stompClient.subscribe(`/user/${userId}/queue/messages`, (msg) => {
+                const data = JSON.parse(msg.body);
+                appendMessage(data.text, data.ownMessage);
+            });
+        });
+
+        const form = document.getElementById("chat-form");
+        const input = document.getElementById("chat-input");
+        const messages = document.getElementById("chat-messages");
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            const text = input.value.trim();
+            if (!text) return;
+
+            const payload = {
+                receiverId: receiverId,
+                text: text
+            };
+
+            stompClient.send("/app/chat", {}, JSON.stringify(payload));
+            input.value = "";
+        });
+
+        function appendMessage(text, isSender) {
+            const bubble = document.createElement("div");
+            bubble.className = `rounded-2xl px-4 py-2 max-w-xs mb-2 break-words ${isSender ? "self-end bg-blue-600 text-white" : "self-start bg-gray-200 text-gray-900"}`;
+            bubble.textContent = text;
+            messages.appendChild(bubble);
+            messages.scrollTop = messages.scrollHeight;
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+
+<body class="bg-gray-100 min-h-screen font-sans">
+    <div th:replace="fragment/navbar :: navbar"></div>
+
+    <main class="pt-20 px-4 max-w-4xl mx-auto pb-20">
+
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-3xl font-extrabold text-neutral">PROFIL SAYA</h1>
+            <a th:href="@{/user/update-my-profile}"
+                class="btn btn-ghost btn-circle hover:bg-primary/20 transition duration-300" title="Edit Profil">
+                <svg width="24" height="24" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M15.1667 5H5.83335C5.12611 5 4.44783 5.28095 3.94774 5.78105C3.44764 6.28115 3.16669 6.95942 3.16669 7.66667V26.3333C3.16669 27.0406 3.44764 27.7189 3.94774 28.219C4.44783 28.719 5.12611 29 5.83335 29H24.5C25.2073 29 25.8855 28.719 26.3856 28.219C26.8857 27.7189 27.1667 27.0406 27.1667 26.3333V17"
+                        stroke="#061650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path
+                        d="M25.1667 4.35354C25.6971 3.82311 26.4165 3.52512 27.1667 3.52512C27.9168 3.52512 28.6363 3.82311 29.1667 4.35354C29.6971 4.88398 29.9951 5.6034 29.9951 6.35354C29.9951 7.10369 29.6971 7.82311 29.1667 8.35354L16.5 21.0202L11.1667 22.3535L12.5 17.0202L25.1667 4.35354Z"
+                        stroke="#061650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </a>
+        </div>
+
+        <div class="card w-full bg-white shadow-xl p-8 transition duration-300 hover:shadow-2xl">
+
+            <figure class="mx-auto mb-6">
+                <img th:src="@{${#strings.isEmpty(user.profilePicture) ? '/img/default.jpg' : '/uploads/' + user.profilePicture}}"
+                    alt="Profile Picture"
+                    class="rounded-full h-36 w-36 object-cover border-4 border-primary shadow-lg ring ring-primary ring-offset-base-100 ring-offset-2" />
+            </figure>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div
+                    class="bg-base-200 p-4 rounded-lg flex items-center gap-4 hover:bg-primary/10 transition duration-300 cursor-default">
+                    <h1 class="text-3xl text-primary font-bold">ID</h1>
+                    <div class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-500">USER ID</p>
+                        <p class="text-lg font-semibold text-neutral" th:text="${user.id}"></p>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-base-200 p-4 rounded-lg flex items-center gap-4 hover:bg-primary/10 transition duration-300 cursor-default fill-neutral">
+                    <svg height="28" viewBox="0 0 512 512" width="28" xmlns="http://www.w3.org/2000/svg"
+                        class="text-primary fill-primary">
+                        <path
+                            d="M332.64,64.58C313.18,43.57,286,32,256,32c-30.16,0-57.43,11.5-76.8,32.38-19.58,21.11-29.12,49.8-26.88,80.78C156.76,206.28,203.27,256,256,256s99.16-49.71,103.67-110.82C361.94,114.48,352.34,85.85,332.64,64.58Z" />
+                        <path
+                            d="M432,480H80A31,31,0,0,1,55.8,468.87c-6.5-7.77-9.12-18.38-7.18-29.11C57.06,392.94,83.4,353.61,124.8,326c36.78-24.51,83.37-38,131.2-38s94.42,13.5,131.2,38c41.4,27.6,67.74,66.93,76.18,113.75,1.94,10.73-.68,21.34-7.18,29.11A31,31,0,0,1,432,480Z" />
+                    </svg>
+                    <div class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-500">NAMA LENGKAP</p>
+                        <p class="text-lg font-semibold text-neutral" th:text="${user.fullName}"></p>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-base-200 p-4 rounded-lg flex items-center gap-4 hover:bg-primary/10 transition duration-300 cursor-default fill-neutral">
+                    <svg width="28" height="28" viewBox="0 0 32 33" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="text-primary fill-primary">
+                        <path fill-rule="evenodd" clip-rule="evenodd"
+                            d="M16 3.7C8.93075 3.7 3.2 9.43075 3.2 16.5C3.2 23.5693 8.93075 29.3 16 29.3C17.9237 29.3 19.744 28.8766 21.3768 28.1197C22.1786 27.748 23.1298 28.0966 23.5014 28.8984C23.8731 29.7 23.5245 30.6512 22.7227 31.0229C20.6768 31.9714 18.3979 32.5 16 32.5C7.16344 32.5 0 25.3365 0 16.5C0 7.66344 7.16344 0.5 16 0.5C24.8365 0.5 32 7.66344 32 16.5L31.9997 16.5304C31.933 20.0342 30.8171 22.3942 29.172 23.8589C27.5658 25.2891 25.6634 25.6789 24.3368 25.6789C22.4288 25.6789 20.7538 24.6882 19.796 23.1931C16.4734 26.1291 11.6841 26.7744 8.72669 23.4883C5.64534 20.0646 6.50435 14.3482 9.79192 10.6953C12.9726 7.16112 18.7563 5.79653 22.077 9.88518C22.3624 9.10542 23.2061 8.66688 24.0174 8.89811C24.8674 9.1403 25.3598 10.0255 25.1178 10.8754C24.1702 14.1976 23.052 17.4886 22.2165 20.8392C22.4598 21.7821 23.3182 22.4789 24.3368 22.4789C25.1032 22.4789 26.1722 22.2453 27.0442 21.469C27.8758 20.7285 28.7434 19.3027 28.8 16.4848C28.7918 9.42256 23.0642 3.7 16 3.7ZM19.765 17.9624C19.8763 17.5782 20.1699 16.5522 20.5114 15.3574C20.8854 14.047 20.4013 12.7883 19.379 11.6524C17.9083 10.0183 14.7523 9.9673 12.1704 12.836C9.57491 15.72 9.48008 19.5419 11.1052 21.3477C12.576 22.9818 15.732 23.0326 18.3138 20.164C18.9106 19.5008 19.4726 18.8134 19.765 17.9624Z"
+                            fill="#061650" />
+                    </svg>
+                    <div class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-500">USERNAME</p>
+                        <p class="text-lg font-semibold text-neutral" th:text="${user.username}"></p>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-base-200 p-4 rounded-lg flex items-center gap-4 hover:bg-primary/10 transition duration-300 cursor-default">
+                    <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+                        class="text-primary fill-primary">
+                        <path
+                            d="M256 352c-16.53 0-33.06-5.422-47.16-16.41L0 173.2V400C0 426.5 21.49 448 48 448h416c26.51 0 48-21.49 48-48V173.2l-208.8 162.5C289.1 346.6 272.5 352 256 352zM16.29 145.3l212.2 165.1c16.19 12.6 38.87 12.6 55.06 0l212.2-165.1C505.1 137.3 512 125 512 112C512 85.49 490.5 64 464 64h-416C21.49 64 0 85.49 0 112C0 125 6.01 137.3 16.29 145.3z" />
+                    </svg>
+                    <div class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-500">EMAIL</p>
+                        <p class="text-lg font-semibold text-neutral" th:text="${user.email}"></p>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-base-200 p-4 rounded-lg flex items-center gap-4 hover:bg-primary/10 transition duration-300 cursor-default">
+                    <svg height="28" viewBox="0 0 48 48" width="28" xmlns="http://www.w3.org/2000/svg"
+                        class="text-primary fill-primary">
+                        <path d="M0 0h48v48h-48z" fill="none" />
+                        <path
+                            d="M13.25 21.59c2.88 5.66 7.51 10.29 13.18 13.17l4.4-4.41c.55-.55 1.34-.71 2.03-.49 2.24.74 4.65 1.14 7.14 1.14 1.11 0 2 .89 2 2v7c0 1.11-.89 2-2 2-18.78 0-34-15.22-34-34 0-1.11.9-2 2-2h7c1.11 0 2 .89 2 2 0 2.49.4 4.9 1.14 7.14.22.69.06 1.48-.49 2.03l-4.4 4.42z" />
+                    </svg>
+                    <div class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-500">NOMOR TELEPON</p>
+                        <p class="text-lg font-semibold text-neutral" th:text="${user.phoneNumber}"></p>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-base-200 p-4 rounded-lg flex items-center gap-4 hover:bg-primary/10 transition duration-300 cursor-default">
+                    <svg width="28" height="28" viewBox="0 0 34 35" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="text-primary fill-primary">
+                        <path
+                            d="M8.85477 25.4463V28.9634H6.57093C6.26807 28.9634 5.97762 29.0837 5.76347 29.2979C5.54932 29.5120 5.42901 29.8025 5.42901 30.1053C5.42901 30.4082 5.54932 30.6987 5.76347 30.9128C5.97762 31.1270 6.26807 31.2473 6.57093 31.2473H8.85477V33.5311C8.85477 33.8340 8.97508 34.1244 9.18923 34.3386C9.40338 34.5527 9.69384 34.6730 9.99669 34.6730C10.2995 34.6730 10.59 34.5527 10.8042 34.3386C11.0183 34.1244 11.1386 33.8340 11.1386 33.5311V31.2473H13.4225C13.7253 31.2473 14.0158 31.1270 14.2299 30.9128C14.4441 30.6987 14.5644 30.4082 14.5644 30.1053C14.5644 29.8025 14.4441 29.5120 14.2299 29.2979C14.0158 29.0837 13.7253 28.9634 13.4225 28.9634H11.1386V25.4463C12.3698 25.2698 13.5428 24.8084 14.5644 24.0988C16.1218 25.1683 18.0077 25.6515 19.8875 25.4628C21.7673 25.2742 23.5195 24.4258 24.8333 23.0682C26.1471 21.7106 26.9376 19.9315 27.0646 18.0465C27.1915 16.1615 26.6467 14.2925 25.5268 12.771L31.6932 6.59317V10.6927C31.6932 10.9955 31.8135 11.2860 32.0277 11.5001C32.2418 11.7143 32.5323 11.8346 32.8351 11.8346C33.1380 11.8346 33.4284 11.7143 33.6426 11.5001C33.8567 11.2860 33.9771 10.9955 33.9771 10.6927V3.84114C33.9771 3.53828 33.8567 3.24783 33.6426 3.03368C33.4284 2.81953 33.1380 2.69922 32.8351 2.69922H25.9836C25.6807 2.69922 25.3903 2.81953 25.1761 3.03368C24.9620 3.24783 24.8417 3.53828 24.8417 3.84114C24.8417 4.14400 24.9620 4.43445 25.1761 4.64860C25.3903 4.86275 25.6807 4.98306 25.9836 4.98306H30.0831L23.9167 11.1494C22.5721 10.1440 20.9451 9.58743 19.2664 9.55874C17.5877 9.53004 15.9426 10.0307 14.5644 10.9896C13.5752 10.2949 12.4413 9.83360 11.2481 9.64041C10.0549 9.44721 8.83339 9.52714 7.67552 9.87418C6.51766 10.2212 5.45358 10.8263 4.56334 11.6440C3.67310 12.4617 2.97990 13.4706 2.53588 14.5948C2.09186 15.7191 1.90860 16.9294 1.99987 18.1347C2.09115 19.3400 2.45459 20.5089 3.06285 21.5535C3.67110 22.5980 4.50834 23.4911 5.51156 24.1653C6.51477 24.8396 7.65785 25.2776 8.85477 25.4463ZM14.5644 14.1184C15.3218 15.0998 15.7327 16.3045 15.7327 17.5442C15.7327 18.7839 15.3218 19.9886 14.5644 20.97C13.8069 19.9886 13.3961 18.7839 13.3961 17.5442C13.3961 16.3045 13.8069 15.0998 14.5644 14.1184ZM23.1631 13.4675C24.0955 14.4531 24.6464 15.7385 24.7173 17.0934C24.7881 18.4482 24.3742 19.7841 23.5496 20.8615C22.7251 21.9389 21.5438 22.6875 20.2175 22.9731C18.8912 23.2587 17.5065 23.0627 16.3115 22.4202C17.4098 21.0147 18.0064 19.2822 18.0064 17.4985C18.0064 15.7148 17.4098 13.9824 16.3115 12.5768C17.3889 11.9414 18.6473 11.6829 19.8880 11.8421C21.1287 12.0013 22.2810 12.5692 23.1631 13.4561V13.4675ZM9.99669 11.8346C10.9976 11.8403 11.9790 12.1123 12.8401 12.6225C11.7418 14.0280 11.1452 15.7605 11.1452 17.5442C11.1452 19.3279 11.7418 21.0604 12.8401 22.4659C11.9790 22.9761 10.9976 23.2481 9.99669 23.2538C8.48241 23.2538 7.03015 22.6523 5.95939 21.5815C4.88863 20.5107 4.28708 19.0585 4.28708 17.5442C4.28708 16.0299 4.88863 14.5777 5.95939 13.5069C7.03015 12.4361 8.48241 11.8346 9.99669 11.8346Z"
+                            fill="#061650" />
+                    </svg>
+                    <div class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-500">GENDER</p>
+                        <p class="text-lg font-semibold text-neutral" th:text="${user.gender}"></p>
+                    </div>
+                </div>
+
+                <div
+                    class="col-span-1 md:col-span-2 bg-base-200 p-4 rounded-lg flex items-center gap-4 hover:bg-primary/10 transition duration-300 cursor-default">
+                    <svg width="28" height="28" viewBox="0 0 32 33" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="text-primary fill-primary">
+                        <g clip-path="url(#clip0_9_185)">
+                            <path
+                                d="M28 0.548828H24V2.54883H8V0.548828H4V2.54883H0V8.54883V10.5488V30.5488V32.5488H2H32V30.5488V10.5488V8.54883V2.54883H28V0.548828ZM30 10.5488V30.5488H2V10.5488H30Z"
+                                fill="#061650" />
+                            <path d="M28 12.5488H22V18.5488H28V12.5488Z" fill="#061650" />
+                            <path d="M28 20.5488H22V26.5488H28V20.5488Z" fill="#061650" />
+                            <path d="M20 20.5488H14V26.5488H20V20.5488Z" fill="#061650" />
+                            <path d="M12 20.5488H6V26.5488H12V20.5488Z" fill="#061650" />
+                            <path d="M20 12.5488H14V18.5488H20V12.5488Z" fill="#061650" />
+                            <path d="M12 12.5488H6V18.5488H12V12.5488Z" fill="#061650" />
+                        </g>
+                        <defs>
+                            <clipPath id="clip0_9_185">
+                                <rect width="32" height="32" fill="white" transform="translate(0 0.548828)" />
+                            </clipPath>
+                        </defs>
+                    </svg>
+                    <div class="flex flex-col">
+                        <p class="text-sm font-medium text-gray-500">BERGABUNG SEJAK</p>
+                        <p class="text-lg font-semibold text-neutral"
+                            th:text="${#temporals.format(user.createdAt, 'dd MMMM yyyy, HH:mm')}"></p>
+                    </div>
+                </div>
+
+            </div>
+
+            
+            <button class="btn btn-error btn-lg w-full mt-8 shadow-lg hover:shadow-xl transition duration-300">
+                <a th:href="@{/api/auth/logout}">
+                <i class="fas fa-sign-out-alt mr-2"></i> LOGOUT
+                </a>
+            </button>
+
+        </div>
+    </main>
+
+    <div th:replace="fragment/navbar :: bottombar"></div>
+</body>
+
+</html>
