@@ -40,3 +40,5 @@ src/frontend/node_modules
 src/frontend/package-lock.json
 
 src/main/resources/static/css/**
+
+uploads/** 
