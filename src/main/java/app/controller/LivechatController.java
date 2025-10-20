@@ -1,5 +1,6 @@
 package app.controller;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,9 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
+import app.model.custom.UserRole;
 import app.model.dto.ChatHistoryDto;
+import app.model.dto.ChatListDto;
 import app.model.dto.ChatMessage;
 import app.model.dto.LiveChatResponseDto;
 import app.service.LiveChatService;
@@ -19,6 +22,7 @@ import io.jsonwebtoken.Claims;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttribute;
+
 
 @Controller
 public class LivechatController {
@@ -56,7 +60,22 @@ public class LivechatController {
 
                 model.addAttribute("data", data);
                 
-                return "liveChatPage";
+                return "privateChatPage";
         }
+
+        @GetMapping("/live-chat")
+        public String getLiveChatPage(@SessionAttribute Claims creds, Model model) {
+                UUID userId = UUID.fromString(creds.get("id", String.class));
+                UserRole role = UserRole.valueOf(creds.get("role", String.class));
+
+                List<ChatListDto> chList = service.getChatList(userId, role);
+
+                model.addAttribute("chatList", chList);
+                model.addAttribute("userId", userId);
+
+                return "liveChatPage";
+                
+        }
+        
 
 }

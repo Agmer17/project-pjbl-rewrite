@@ -7,6 +7,7 @@ import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import app.model.custom.UserRole;
 import app.model.entity.Users;
 import app.model.projection.UserProfileProjection;
 
@@ -19,4 +20,5 @@ public interface UserRepository extends JpaRepository<Users, UUID> {
     List<Users> findAllByUsernameOrEmail(String username, String email);
     Optional<Users> findByUsernameOrEmail(String username, String email);
     Optional<UserProfileProjection> findProfileById(UUID id);
+    List<Users> findAllByRole(UserRole role);
 }

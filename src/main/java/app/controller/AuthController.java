@@ -14,9 +14,12 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 @RequestMapping("/api/auth")
@@ -57,6 +60,23 @@ public class AuthController {
 
         redAttrs.addFlashAttribute("successMsg", "berhasil logout");
         return "redirect:/login";
+    }
+
+    @GetMapping("/forgot-password")
+    public String getForgotPasswordPage() {
+        return "forgotPassword";
+    }
+
+    @PostMapping("/forgot-password")
+    public String postForgotPassword(HttpServletRequest request, @RequestParam String username) {
+        String baseUrl = ServletUriComponentsBuilder.fromRequest(request)
+                .replacePath(null)
+                .build()
+                .toString();
+
+        
+
+        return baseUrl;
     }
 
 }

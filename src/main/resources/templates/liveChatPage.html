@@ -1,106 +1,104 @@
 <!DOCTYPE html>
-<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<html lang="id" xmlns:th="http://www.thymeleaf.org" data-theme="light">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title th:text="'Chat dengan ' + ${data.receiver.fullName}">Live Chat</title>
-
-    <link rel="stylesheet" th:href="@{/css/output.css}" />
-
-    <!-- WebSocket Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Chat</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+    </style>
 </head>
 
-<body class="bg-gray-100 text-gray-900 flex flex-col h-screen">
+<body class="bg-white text-neutral min-h-screen h-full flex flex-col items-center sm:py-10 font-sans">
 
-    <!-- Header -->
-    <header class="bg-white shadow-md p-4 flex items-center gap-3 border-b border-gray-200">
-        <img th:src="@{'/uploads/' + ${data.receiver.profilePicture}}" alt="Foto Profil"
-            class="w-10 h-10 rounded-full object-cover border border-gray-300" />
+    <div th:replace="fragment/navbar :: navbar" class="hidden sm:block"></div>
 
-        <div class="flex flex-col">
-            <h1 class="text-base font-semibold" th:text="${data.receiver.fullName}">Nama Lengkap</h1>
-            <p class="text-xs text-gray-500" th:text="'@' + ${data.receiver.username}">@username</p>
+
+    <main
+        class="w-full sm:w-11/12 max-w-2xl bg-white border-none sm:border border-neutral-200 sm:rounded-2xl shadow-none sm:shadow-xl overflow-hidden mt-0 sm:mt-10 mb-0 sm:mb-22 flex flex-col flex-grow">
+        <div class="px-4 sm:px-6 py-4 border-b border-neutral-200 flex justify-between items-center flex-shrink-0">
+            <h1 class="text-xl sm:text-2xl font-bold">Livechat History</h1>
         </div>
-    </header>
 
-    <!-- Chat Container -->
-    <main id="chat-messages" class="flex-1 overflow-y-auto bg-gray-50 p-4 flex flex-col space-y-2">
-        <!-- Render chat history -->
-        <div th:each="chat : ${data.chatHistory}" th:classappend="${chat.ownMessage} ? 'self-end' : 'self-start'">
-            <div class="rounded-2xl px-4 py-2 max-w-xs break-words"
-                th:classappend="${chat.ownMessage} ? ' bg-blue-600 text-white' : ' bg-gray-200 text-gray-900'"
-                th:text="${chat.text}">
+        <div id="chatListContainer" class="flex flex-col divide-y divide-neutral-200 overflow-y-auto flex-grow"
+            th:if="${!#lists.isEmpty(chatList)}">
+
+            <div th:each="chat : ${chatList}"
+                class="chat-item p-4 hover:bg-neutral-50 transition cursor-pointer flex items-center gap-3"
+                th:attr="data-id=${chat.userId},onclick=|window.location.href='@{/live-chat/with/{id}(id=${chat.userId})}'|">
+
+                <img th:src="@{${#strings.isEmpty(chat.profilePicture) ? '/img/default.jpg' : '/uploads/' + chat.profilePicture}}"
+                    alt="Profile Picture"
+                    class="w-12 h-12 rounded-full object-cover border border-neutral-300 shadow-sm flex-shrink-0" />
+
+                <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-center mb-0.5">
+                        <div class="w-full flex gap-4">
+                            <h2 class="font-semibold truncate" th:text="${chat.fullName}">Nama</h2>
+                            <div class="badge badge-warning font-bold flex-shrink-0"
+                                th:text="${#strings.toLowerCase(chat.role)}"></div>
+                        </div>
+                        <p class="text-sm text-neutral-500 chat-time flex-shrink-0"
+                            th:if="${chat.lastMessageTime != null}"
+                            th:text="${#temporals.format(chat.lastMessageTime, 'HH:mm')}">12:00</p>
+                    </div>
+
+                    <p class="text-sm text-neutral-600 truncate chat-preview"
+                        th:text="${chat.lastMessage != null ? chat.lastMessage : 'Belum ada percakapan'}"
+                        th:classappend="${chat.lastMessage == null} ? 'italic text-neutral-400' : ''">
+                        Pesan terakhir...
+                    </p>
+                </div>
             </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(chatList)}" class="text-center py-12 text-neutral-500 flex-grow">
+            Belum ada admin tersedia 😅
         </div>
     </main>
 
-    <!-- Input -->
-    <footer class="bg-white border-t border-gray-200 p-4">
-        <form id="chat-form" class="flex gap-2 items-center">
-            <input type="text" id="chat-input" placeholder="Ketik pesan..."
-                class="flex-1 border border-gray-300 rounded-full px-4 py-2 focus:outline-none focus:ring focus:ring-blue-300"
-                autocomplete="off" />
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition">
-                <i class="fa-solid fa-paper-plane"></i>
-            </button>
-        </form>
-    </footer>
+    <div th:replace="fragment/navbar :: bottombar('chat')"></div>
 
-    <!-- Hidden Fields -->
-    <input type="hidden" id="userId" th:value="${data.currentUser.id}" />
-    <input type="hidden" id="receiverId" th:value="${data.receiver.id}" />
-
-    <!-- FontAwesome -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/js/all.min.js" crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
-
-    <!-- WebSocket Script -->
     <script th:inline="javascript">
-        const userId = /*[[${data.currentUser.id}]]*/ null;
-        const receiverId = /*[[${data.receiver.id}]]*/ null;
+        const currentUserId = /*[[${userId}]]*/ null;
 
         const socket = new SockJS('/ws');
         const stompClient = Stomp.over(socket);
+        const chatListContainer = document.getElementById('chatListContainer');
 
         stompClient.connect({}, () => {
-            console.log("✅ Terhubung ke WebSocket");
+            console.log('✅ Connected to WebSocket');
 
-            // Subscribe ke channel user sendiri
-            stompClient.subscribe(`/user/${userId}/queue/messages`, (msg) => {
-                const data = JSON.parse(msg.body);
-                appendMessage(data.text, data.ownMessage);
+            stompClient.subscribe(`/user/${currentUserId}/queue/messages`, (payload) => {
+                const message = JSON.parse(payload.body);
+                console.log('📩 Pesan baru:', message);
+                updateChatList(message);
             });
         });
 
-        const form = document.getElementById("chat-form");
-        const input = document.getElementById("chat-input");
-        const messages = document.getElementById("chat-messages");
+        function updateChatList(message) {
+            const { sender, text } = message;
 
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const text = input.value.trim();
-            if (!text) return;
+            const chatItem = document.querySelector(`.chat-item[data-id="${sender}"]`);
+            if (chatItem) {
+                const preview = chatItem.querySelector('.chat-preview');
+                const time = chatItem.querySelector('.chat-time');
 
-            const payload = {
-                receiverId: receiverId,
-                text: text
-            };
+                preview.textContent = text;
+                time.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            stompClient.send("/app/chat", {}, JSON.stringify(payload));
-            input.value = "";
-        });
-
-        function appendMessage(text, isSender) {
-            const bubble = document.createElement("div");
-            bubble.className = `rounded-2xl px-4 py-2 max-w-xs mb-2 break-words ${isSender ? "self-end bg-blue-600 text-white" : "self-start bg-gray-200 text-gray-900"}`;
-            bubble.textContent = text;
-            messages.appendChild(bubble);
-            messages.scrollTop = messages.scrollHeight;
+                // pindahkan ke atas
+                chatListContainer.prepend(chatItem);
+            } else {
+                console.log("🔄 Chat baru belum ada di list — mungkin admin baru, reload halaman nanti.");
+            }
         }
     </script>
 </body>
