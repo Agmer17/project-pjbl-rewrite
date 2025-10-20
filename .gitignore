@@ -43,4 +43,4 @@ src/main/resources/static/css/**
 
 uploads/** 
 
-*.properties
+src/main/resources/application.properties
