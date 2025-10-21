@@ -12,22 +12,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
-@RequestMapping("/api/auth")
 public class AuthController {
     @Autowired
     private AuthService service;
 
-    @PostMapping(value = "/login")
+    @PostMapping(value = "/api/auth/login")
     public String postLogin(@Valid @ModelAttribute("formRequest") LoginRequest loginRequest,
             BindingResult bindingResult,
             HttpServletResponse response,
@@ -42,7 +39,7 @@ public class AuthController {
         return "redirect:/home";
     }
 
-    @PostMapping(value = "/sign-up")
+    @PostMapping(value = "/api/auth/sign-up")
     public String signUp(@Valid @ModelAttribute("formRequest") SignUpRequest entity, BindingResult bindingResult,
             RedirectAttributes redAttrs) {
         if (bindingResult.hasErrors()) {
@@ -54,7 +51,7 @@ public class AuthController {
         return "redirect:/login";
     }
 
-    @GetMapping("/logout")
+    @GetMapping("/api/auth/logout")
     public String logoutRequest(HttpServletRequest request, HttpServletResponse response, RedirectAttributes redAttrs) {
         service.logoutService(request, response);
 
@@ -67,16 +64,22 @@ public class AuthController {
         return "forgotPassword";
     }
 
-    @PostMapping("/forgot-password")
-    public String postForgotPassword(HttpServletRequest request, @RequestParam String username) {
+    @PostMapping("/api/auth/get-reset-password-code")
+    public String postForgotPassword(HttpServletRequest request, @RequestParam String usernameOrEmail,
+            RedirectAttributes redAttrs) {
+
         String baseUrl = ServletUriComponentsBuilder.fromRequest(request)
                 .replacePath(null)
+                .replaceQuery(null)
                 .build()
                 .toString();
 
-        
+        service.updatePassword(baseUrl, usernameOrEmail);
 
-        return baseUrl;
+        redAttrs.addFlashAttribute("successMsg", "silahkan cek email anda untuk melanjutkan proses reset password");
+        return "redirect:/forgot-password";
     }
+
+    
 
 }

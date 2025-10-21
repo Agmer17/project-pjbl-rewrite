@@ -27,6 +27,17 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @DynamicInsert
+/**
+ * Class: LiveChat
+ * ---------------------------------
+ * Hubungan dengan Users:
+ *
+ * - Komposisi (Composition) + Asosiasi Many-to-One:
+ *   - Field 'sender' dan 'receiver' menunjuk ke Users.
+ *   - Banyak LiveChat dapat dikaitkan dengan satu Users (Many-to-One).
+ *   - Cascade delete diatur → jika Users dihapus, LiveChat terkait ikut terhapus.
+ *     Artinya LiveChat tidak bisa eksis tanpa Users, sehingga ini komposisi.
+ */
 public class LiveChat {
 
     @Id
@@ -34,17 +45,15 @@ public class LiveChat {
     @Column(name = "id", updatable = false)
     private UUID id;
 
-    // ✅ HAPUS @Column, tipe data jadi User (bukan UUID)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sender_id", nullable = false, 
                 foreignKey = @ForeignKey(name = "live_chat_sender_id_fkey"))
-    private Users sender;  // ✅ User, bukan UUID
+    private Users sender;  
 
-    // ✅ HAPUS @Column, tipe data jadi User (bukan UUID)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "receiver_id", nullable = false, 
                 foreignKey = @ForeignKey(name = "live_chat_receiver_id_fkey"))
-    private Users receiver;  // ✅ User, bukan UUID
+    private Users receiver;  
    
     @Column(columnDefinition = "TEXT", name = "message")
     private String text;

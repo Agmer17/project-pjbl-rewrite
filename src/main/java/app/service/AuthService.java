@@ -1,6 +1,7 @@
 package app.service;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.mindrot.jbcrypt.BCrypt;
@@ -14,12 +15,17 @@ import app.model.custom.Gender;
 import app.model.custom.UserRole;
 import app.model.dto.LoginRequest;
 import app.model.dto.SignUpRequest;
+import app.model.entity.PasswordResetToken;
 import app.model.entity.Users;
+import app.repository.PasswordResetTokenRepo;
 import app.repository.UserRepository;
 import app.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+
+import java.util.Base64;
+import java.security.SecureRandom;
 
 @Service
 public class AuthService {
@@ -29,6 +35,14 @@ public class AuthService {
 
     @Autowired
     JwtUtils jwtUtil;
+
+    private SecureRandom secureRandom = new SecureRandom();
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private PasswordResetTokenRepo pwResetRepo;
 
     public void loginService(LoginRequest loginRequest, HttpServletResponse response, HttpServletRequest request) {
         String username = loginRequest.getUsername();
@@ -104,4 +118,27 @@ public class AuthService {
         }
     }
 
+    public void updatePassword(String urlBase, String usernameOrEmail) {
+        Users user = repo.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
+                .orElseThrow(
+                        () -> new AuthValidationException("Username atau email tidak ditemukan", "/sign-up", null));
+
+        byte[] randomBytes = new byte[48];
+        secureRandom.nextBytes(randomBytes);
+
+        String token = Base64.getUrlEncoder().withoutPadding().encodeToString(randomBytes);
+
+        PasswordResetToken resetToken = PasswordResetToken.builder()
+                .user(user)
+                .token(token)
+                .expiresAt(LocalDateTime.now().plusMinutes(10)).build();
+        
+        pwResetRepo.save(resetToken);
+
+        String resetLink = urlBase + "/reset-password?token=" + token;
+
+        emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
+        
+
+    }
 }

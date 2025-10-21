@@ -23,8 +23,31 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
-
 @Controller
+/**
+ * Class: LivechatController
+ * ---------------------------------
+ * Hubungan dan konsep OOP yang digunakan:
+ *
+ * 1. Asosiasi :
+ * - LivechatController berasosiasi dengan LiveChatService melalui @Autowired.
+ * Controller menggunakan service untuk menyimpan dan mengambil data chat.
+ * - Juga berasosiasi dengan SimpMessagingTemplate untuk mengirim pesan
+ * real-time.
+ *
+ * 2. Relasi dengan LiveChat & Users:
+ * - Melalui LiveChatService, controller berinteraksi dengan LiveChat dan Users.
+ * - LiveChatService sudah menangani komposisi LiveChat → Users (cascade delete,
+ * Many-to-One).
+ * - Controller tidak mengubah hubungan database secara langsung, hanya
+ * memanggil service.
+ *
+ * 3. Pola desain:
+ * - Controller bertanggung jawab untuk request mapping dan response (MVC
+ * pattern).
+ * - Hubungan ke service menunjukkan dependency injection → asosiasi lemah.
+ * - Tidak ada inheritance yang digunakan di class ini.
+ */
 public class LivechatController {
 
         @Autowired
@@ -59,7 +82,7 @@ public class LivechatController {
                 ChatHistoryDto data = service.getHistoryBeetween(userId, receiverId);
 
                 model.addAttribute("data", data);
-                
+
                 return "privateChatPage";
         }
 
@@ -74,8 +97,7 @@ public class LivechatController {
                 model.addAttribute("userId", userId);
 
                 return "liveChatPage";
-                
+
         }
-        
 
 }

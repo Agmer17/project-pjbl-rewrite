@@ -12,6 +12,32 @@ import app.model.dto.ChatListDto;
 import app.model.entity.LiveChat;
 
 @Repository
+/**
+ * Interface: LiveChatRepository
+ * ---------------------------------
+ * Hubungan dan konsep OOP yang digunakan:
+ *
+ * 1. Inheritance:
+ * - LiveChatRepository extends JpaRepository<LiveChat, UUID>
+ * - Ini contoh inheritance di Java: repository mewarisi semua method CRUD dari
+ * JpaRepository.
+ *
+ * 2. Asosiasi / Komposisi:
+ * - Repository ini berasosiasi dengan class LiveChat.
+ * - LiveChat sendiri memiliki reference ke Users (sender & receiver), yang
+ * merupakan komposisi Many-to-One.
+ *
+ * 3. Relasi dengan Users:
+ * - Custom query (findChatBetweenUsers, findChatListByUser,
+ * findChatListWithAdmin)
+ * memanfaatkan relasi LiveChat → Users.
+ *
+ * 4. Pola desain:
+ * - Repository bertindak sebagai abstraksi database.
+ * - Service menggunakan repository untuk implementasi logika bisnis.
+ * - Hubungan ini menunjukkan dependency / asosiasi lemah, bukan komposisi
+ * langsung.
+ */
 public interface LiveChatRepository extends JpaRepository<LiveChat, UUID> {
 
     @Query("""
