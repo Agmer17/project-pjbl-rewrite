@@ -15,6 +15,7 @@ import app.model.custom.Gender;
 import app.model.custom.UserRole;
 import app.model.dto.LoginRequest;
 import app.model.dto.SignUpRequest;
+import app.model.dto.UpdatePasswordRequest;
 import app.model.entity.PasswordResetToken;
 import app.model.entity.Users;
 import app.repository.PasswordResetTokenRepo;
@@ -23,6 +24,7 @@ import app.utils.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 
 import java.util.Base64;
 import java.security.SecureRandom;
@@ -118,7 +120,7 @@ public class AuthService {
         }
     }
 
-    public void updatePassword(String urlBase, String usernameOrEmail) {
+    public void sendRequetsCode(String urlBase, String usernameOrEmail) {
         Users user = repo.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(
                         () -> new AuthValidationException("Username atau email tidak ditemukan", "/sign-up", null));
@@ -132,13 +134,33 @@ public class AuthService {
                 .user(user)
                 .token(token)
                 .expiresAt(LocalDateTime.now().plusMinutes(10)).build();
-        
+
         pwResetRepo.save(resetToken);
 
         String resetLink = urlBase + "/reset-password?token=" + token;
 
         emailService.sendPasswordResetEmail(user.getEmail(), resetLink);
-        
 
+    }
+
+    @Transactional
+    public void updateUserPassword(UpdatePasswordRequest request) {
+        String newPassword = request.getNewPassword();
+        String token = request.getToken();
+        LocalDateTime now = LocalDateTime.now();
+
+        PasswordResetToken tokenMetadata = pwResetRepo.findByTokenAndExpiresAtAfterAndUsedFalse(token, now)
+                .orElseThrow(() -> new AuthValidationException(
+                        "Token tidak ditemukan atau sudah kadaluarsa",
+                        "/reset-password", request));
+        
+        Users user = tokenMetadata.getUser();
+
+        user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt(12)));
+        tokenMetadata.setUsed(true);
+
+
+        repo.save(user);
+        pwResetRepo.save(tokenMetadata);
     }
 }

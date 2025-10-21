@@ -1,5 +1,6 @@
 package app.repository;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,6 +11,6 @@ import app.model.entity.PasswordResetToken;
 public interface PasswordResetTokenRepo extends JpaRepository<PasswordResetToken, UUID> {
 
     
-    Optional<PasswordResetToken> findByToken(String token);
+    Optional<PasswordResetToken> findByTokenAndExpiresAtAfterAndUsedFalse(String token, LocalDateTime now);
     
 }
