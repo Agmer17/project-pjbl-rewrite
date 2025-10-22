@@ -9,6 +9,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import app.interceptor.AdminInterceptor;
 import app.interceptor.JwtAuthenticationInterceptor;
 import app.utils.ImageUtils;
 
@@ -18,9 +19,15 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Autowired
     private JwtAuthenticationInterceptor authenticationInterceptor;
 
+    @Autowired
+    private AdminInterceptor adminInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authenticationInterceptor).addPathPatterns("/user/**", "/live-chat/**", "/live-chat");
+        registry.addInterceptor(authenticationInterceptor).addPathPatterns("/user/**", "/live-chat/**", "/live-chat",
+                "/admin", "/admin/**");
+
+        registry.addInterceptor(adminInterceptor).addPathPatterns("/admin", "/admin/**");
     }
 
     @Override
@@ -28,7 +35,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
         Path uploadPath = Paths.get(ImageUtils.getUploadDir()).toAbsolutePath().normalize();
         String uploadDir = uploadPath.toString();
         registry.addResourceHandler("/uploads/**")
-        .addResourceLocations("file:" + uploadDir + "/");
+                .addResourceLocations("file:" + uploadDir + "/");
 
     }
 

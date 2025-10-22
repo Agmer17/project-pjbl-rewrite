@@ -60,7 +60,7 @@
         </a>
 
         <!-- Gallery -->
-        <a th:href="@{/gallery}">
+        <a th:href="@{/gallery}" th:if="${#ctx.session.creds == null or #ctx.session.creds.get('role') != 'ADMIN'}">
             <button class="btn btn-circle p-2 border-none text-neutral"
                 th:classappend="${activePage == 'gallery'} ? 'bg-neutral text-white' : ''">
                 <svg width="29" height="29" viewBox="0 0 32 30" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -85,6 +85,16 @@
             </button>
         </a>
 
+        <a th:href="@{/admin/}" th:if="${#ctx.session.creds?.get('role') == 'ADMIN'}">
+            <button class="btn btn-circle p-2 border-none text-neutral"
+                th:classappend="${activePage == 'admin'} ? 'bg-neutral text-white' : ''">
+                <svg height="29" viewBox="0 0 48 48" width="29" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                    <path d="M0 0h48v48H0z" fill="none" />
+                    <path d="M6 26h16V6H6v20zm0 16h16V30H6v12zm20 0h16V22H26v20zm0-36v12h16V6H26z" />
+                </svg>
+            </button>
+        </a>
+
         <!-- Profile -->
         <a th:href="@{/user/my-profile}">
             <button class="btn btn-circle p-2 border-none text-neutral"
@@ -100,6 +110,83 @@
         </a>
 
     </div>
+
+    <aside th:fragment="sidebar(activePage)" class="w-full lg:w-64 bg-neutral border-b lg:border-r border-neutral-700 p-2 shadow-xl 
+           lg:sticky lg:top-16 lg:h-[calc(100vh-4rem)] overflow-y-auto">
+        <ul class="menu p-4 space-y-1 w-full text-neutral-content">
+            <li class="mb-6 border-b border-neutral-700 pb-4">
+                <a class="btn btn-ghost text-xl font-extrabold tracking-tight justify-start p-2 hover:bg-transparent">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-primary" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+                    </svg>
+                    <span class="text-lg sm:text-xl text-neutral-content">Admin Panel</span>
+                </a>
+            </li>
+
+            <li>
+                <a th:href="@{/admin/}"
+                    th:classappend="${activePage == 'dashboard'} ? 'font-extrabold bg-primary text-primary-content' : 'hover:bg-neutral-focus hover:text-neutral-content'"
+                    class="rounded-lg transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                    </svg>
+                    Dashboard
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/users/}"
+                    th:classappend="${activePage == 'users'} ? 'font-extrabold bg-primary text-primary-content' : 'hover:bg-neutral-focus hover:text-neutral-content'"
+                    class="rounded-lg transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    Kelola User
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/products}"
+                    th:classappend="${activePage == 'products'} ? 'font-extrabold bg-primary text-primary-content' : 'hover:bg-neutral-focus hover:text-neutral-content'"
+                    class="rounded-lg transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Kelola Event/Paket
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/reviews}"
+                    th:classappend="${activePage == 'reviews'} ? 'font-extrabold bg-primary text-primary-content' : 'hover:bg-neutral-focus hover:text-neutral-content'"
+                    class="rounded-lg transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                    Kelola Review
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/admin/gallery}"
+                    th:classappend="${activePage == 'gallery'} ? 'font-extrabold bg-primary text-primary-content' : 'hover:bg-neutral-focus hover:text-neutral-content'"
+                    class="rounded-lg transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Kelola Gallery
+                </a>
+            </li>
+        </ul>
+    </aside>
 </body>
 
 </html>

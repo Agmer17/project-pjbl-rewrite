@@ -1,18 +1,26 @@
 package app.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.commons.imaging.ImageFormat;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import app.exception.AuthValidationException;
+import app.model.custom.Gender;
+import app.model.dto.AdminAddUserDto;
 import app.model.dto.UpdateProfileRequest;
 import app.model.entity.Users;
 import app.model.projection.UserProfileProjection;
 import app.repository.UserRepository;
 import app.utils.ImageUtils;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -85,6 +93,48 @@ public class UserService {
         }
 
         userRepo.save(user);
+    }
+
+    public void saveNewUser(AdminAddUserDto request) {
+
+        Optional<Users> existingUser = userRepo.findByUsernameOrEmail(request.getUsername(), request.getEmail());
+
+        existingUser.ifPresent(_ -> {
+            if (existingUser.get().getUsername().equals(request.getUsername())) {
+                throw new AuthValidationException("Username sudah digunakan", "/admin/users/add", request);
+            }
+            if (existingUser.get().getEmail().equals(request.getEmail())) {
+                throw new AuthValidationException("Email sudah digunakan", "/admin/users/add", request);
+            }
+        });
+
+         Users newUser = Users.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .fullName(request.getFullName())
+                .role(request.getUserRole())
+                .gender(Gender.LAINNYA)
+                .password(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt(12)))
+                .build();
+
+        userRepo.save(newUser);
+
+    }
+
+    public Page<UserProfileProjection> findAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        return userRepo.findAllProjectedBy(pageable);
+
+
+    }
+
+    public void deleteUsers(UUID id) {
+        if (!userRepo.existsById(id)) {
+            throw new EntityNotFoundException("User dengan ID " + id + " tidak ditemukan");
+        } 
+
+        userRepo.deleteById(id);
     }
 
 }

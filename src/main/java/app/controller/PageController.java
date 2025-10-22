@@ -9,6 +9,7 @@ import app.model.dto.LoginRequest;
 import app.model.dto.SignUpRequest;
 
 
+
 @Controller
 public class PageController {
 
@@ -41,8 +42,6 @@ public class PageController {
         }
         return "signup";
     }
-    
-    
     
     
 }

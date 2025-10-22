@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Daftar Pengguna</title>
+    <!-- Asumsi Anda memiliki Tailwind CSS yang sudah dikompilasi di /css/output.css -->
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+</head>
+
+<body class="font-sans bg-base-100 min-h-screen">
+
+    <!-- 1. Navbar Fragment (Top Bar) -->
+    <div th:replace="fragment/navbar :: navbar"></div>
+
+    <!-- Kontainer Utama: Sidebar dan Konten -->
+    <div class="flex flex-col lg:flex-row mt-16 min-h-[calc(100vh-4rem)]">
+
+        <!-- 2. Sidebar Fragment (Menandai 'users' sebagai halaman aktif) -->
+        <div th:replace="fragment/navbar :: sidebar('users')"></div>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 bg-base-50 mb-20">
+
+            <div
+                class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 border-b border-neutral-300 dark:border-neutral-700 pb-4">
+                <h1 class="text-3xl font-bold text-base-content mb-4 sm:mb-0">Daftar Pengguna</h1>
+                <!-- Tombol Tambah Pengguna Baru -->
+                <a th:href="@{/admin/users/add}" class="btn btn-md btn-primary w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Tambah Pengguna
+                </a>
+            </div>
+
+            <!-- CARD CONTAINER (Mengandung dua mode: Tabel dan Kartu) -->
+            <div class="bg-base-200 p-2 sm:p-4 rounded-xl shadow-2xl border border-neutral-300 dark:border-neutral-700">
+
+                <!-- 1. Tampilan Tabel (Desktop/Tablet) -->
+                <!-- Blok ini HANYA muncul di layar SM ke atas. -->
+                <div class="overflow-x-auto hidden sm:block">
+                    <table class="table table-lg table-zebra w-full text-base-content">
+                        <!-- Table Head -->
+                        <thead class="bg-base-300">
+                            <tr>
+                                <th>No</th>
+                                <th>Pengguna (Username & Nama)</th>
+                                <th class="hidden md:table-cell">Email</th>
+                                <th class="hidden lg:table-cell">No. Telepon</th>
+                                <th class="hidden xl:table-cell">Dibuat Pada</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <!-- Table Body -->
+                        <tbody>
+                            <tr th:each="user, iteration : ${users}">
+                                <!-- No -->
+                                <th th:text="${iteration.index + 1}">1</th>
+
+                                <!-- Pengguna (Avatar, Username, FullName) -->
+                                <td>
+                                    <div class="flex items-center gap-3">
+                                        <div class="avatar">
+                                            <div class="mask mask-squircle w-12 h-12">
+                                                <img th:src="${user.profilePicture != null and user.profilePicture != ''} 
+                                                             ? @{/uploads/} + ${user.profilePicture} 
+                                                             : @{/img/default.jpg}" alt="Foto Profil"
+                                                    class="object-cover w-full h-full" />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="font-bold text-base" th:text="${user.username}">user_alpha</div>
+                                            <!-- Gender hanya muncul di desktop/tablet -->
+                                            <div class="text-xs opacity-70" th:text="${user.gender}">MALE</div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <!-- Email (Hanya muncul di layar >=md) -->
+                                <td class="hidden md:table-cell">
+                                    <span th:text="${user.email}">user.alpha@mail.com</span>
+                                </td>
+
+                                <!-- Phone Number (Hanya muncul di layar >=lg) -->
+                                <td class="hidden lg:table-cell">
+                                    <span th:text="${user.phoneNumber ?: '-'}">081234567890</span>
+                                </td>
+
+                                <!-- Created At (Hanya muncul di layar >=xl) -->
+                                <td class="hidden xl:table-cell">
+                                    <span th:text="${#temporals.format(user.createdAt, 'dd-MM-yyyy HH:mm')}">20-10-2023
+                                        10:00</span>
+                                </td>
+
+                                <!-- Aksi Buttons -->
+                                <td>
+                                    <div class="flex gap-1 justify-center">
+                                        <!-- Detail -->
+                                        <a th:href="@{/admin/users/detail/{id}(id=${user.id})}"
+                                            class="btn btn-ghost btn-xs btn-info tooltip" data-tip="Lihat Detail">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </a>
+
+                                        <!-- Edit -->
+                                        <a th:href="@{/admin/users/edit/{id}(id=${user.id})}"
+                                            class="btn btn-ghost btn-xs btn-warning tooltip" data-tip="Edit Pengguna">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-9-4l5-5m0 0l-5 5m5-5h-5M9 15v-1" />
+                                            </svg>
+                                        </a>
+
+                                        <!-- Delete -->
+                                        <button type="button" class="btn btn-ghost btn-xs btn-error tooltip"
+                                            data-tip="Hapus" th:attr="data-user-id=${user.id}"
+                                            onclick="openDeleteModal(this)">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+
+                                        <!-- Delete Confirmation Modal (Diulang) -->
+                                        <dialog th:id="'delete_modal_' + ${user.id}" class="modal">
+                                            <div class="modal-box">
+                                                <h3 class="font-bold text-lg">Konfirmasi Hapus</h3>
+                                                <p class="py-4">
+                                                    Apakah Anda yakin ingin menghapus pengguna
+                                                    <span class="font-semibold" th:text="${user.username}"></span> ini?
+                                                </p>
+                                                <div class="modal-action">
+                                                    <form method="dialog">
+                                                        <button class="btn btn-sm btn-ghost">Batal</button>
+                                                    </form>
+                                                    <a th:href="@{/admin/users/delete/{id}(id=${user.id})}"
+                                                        class="btn btn-sm btn-error">
+                                                        Hapus Permanen
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </dialog>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <!-- Contoh baris jika list kosong -->
+                            <tr th:if="${#lists.isEmpty(users)}">
+                                <td colspan="6" class="text-center py-8 text-neutral-content">Tidak ada data pengguna
+                                    yang ditemukan.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 2. Tampilan Kartu (Mobile) -->
+                <!-- Blok ini HANYA muncul di layar di bawah SM. -->
+                <div class="block sm:hidden space-y-3">
+                    <div th:each="user, iteration : ${users}"
+                        class="card bg-base-100 shadow-md p-4 border border-base-300">
+                        <!-- Baris Atas: Avatar, Username, Email, dan Aksi -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center gap-3 w-3/4">
+                                <div class="avatar">
+                                    <div class="mask mask-squircle w-10 h-10">
+                                        <img th:src="${user.profilePicture != null and user.profilePicture != ''} 
+                                                     ? @{/uploads/} + ${user.profilePicture} 
+                                                     : @{/img/default.jpg}" alt="Foto Profil"
+                                            class="object-cover w-full h-full" />
+                                    </div>
+                                </div>
+                                <div class="truncate">
+                                    <div class="font-bold text-sm" th:text="${user.username}">user_alpha</div>
+                                    <div class="text-xs opacity-70 truncate" th:text="${user.email}">user.alpha@mail.com
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Aksi Buttons (Diposisikan di kanan) -->
+                            <div class="flex gap-1 justify-end flex-shrink-0">
+                                <!-- Detail -->
+                                <a th:href="@{/admin/users/detail/{id}(id=${user.id})}"
+                                    class="btn btn-ghost btn-xs btn-info tooltip" data-tip="Lihat">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </a>
+
+                                <!-- Edit -->
+                                <a th:href="@{/admin/users/edit/{id}(id=${user.id})}"
+                                    class="btn btn-ghost btn-xs btn-warning tooltip" data-tip="Edit">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-9-4l5-5m0 0l-5 5m5-5h-5M9 15v-1" />
+                                    </svg>
+                                </a>
+
+                                <button type="button" class="btn btn-ghost btn-xs btn-error tooltip" data-tip="Hapus"
+                                    th:attr="data-user-id=${user.id}, data-username=${user.username}"
+                                    onclick="openDeleteModal(this)">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+
+                                <dialog id="delete_user_modal" class="modal">
+                                    <div class="modal-box">
+                                        <h3 class="font-bold text-lg">Konfirmasi Hapus Pengguna</h3>
+                                        <p class="py-4">
+                                            Apakah Anda yakin ingin menghapus pengguna
+                                            <span id="modal-username" class="font-bold"></span> ini secara permanen?
+                                            Tindakan ini tidak dapat dibatalkan.
+                                        </p>
+                                        <div class="modal-action">
+                                            <form method="dialog">
+                                                <button class="btn btn-sm btn-ghost">Batal</button>
+                                            </form>
+                                            <a id="delete-link" href="#" class="btn btn-sm btn-error">
+                                                Hapus Permanen
+                                            </a>
+                                        </div>
+                                    </div>
+                                </dialog>
+                            </div>
+                        </div>
+
+                        <!-- Baris Bawah: Info Tambahan (Phone & Created At) -->
+                        <div class="grid grid-cols-2 gap-2 text-xs opacity-80 mt-3 pt-3 border-t border-base-300">
+                            <div><span class="font-semibold">Telp:</span> <span
+                                    th:text="${user.phoneNumber ?: '-'}">08123...</span></div>
+                            <div class="text-right"><span class="font-semibold">Dibuat:</span> <span
+                                    th:text="${#temporals.format(user.createdAt, 'dd-MM-yy')}">20-10-23</span></div>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(users)}" class="text-center py-8 text-neutral-content">
+                        Tidak ada data pengguna yang ditemukan.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Paginasi Placeholder -->
+            <div class="flex justify-center mt-8" th:if="${totalPages > 1}">
+                <div class="join">
+
+                    <!-- Tombol Previous -->
+                    <a th:if="${hasPrevious}" th:href="@{/(page=${currentPage - 1}, size=${20})}"
+                        class="join-item btn btn-sm">«</a>
+                    <button th:unless="${hasPrevious}" class="join-item btn btn-sm btn-disabled">«</button>
+
+                    <!-- Nomor Halaman -->
+                    <button class="join-item btn btn-sm btn-active"
+                        th:text="'Halaman ' + (${currentPage + 1}) + ' / ' + ${totalPages}">
+                    </button>
+
+                    <!-- Tombol Next -->
+                    <a th:if="${hasNext}" th:href="@{/(page=${currentPage + 1}, size=${20})}"
+                        class="join-item btn btn-sm">»</a>
+                    <button th:unless="${hasNext}" class="join-item btn btn-sm btn-disabled">»</button>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- 3. Bottom Bar Fragment -->
+    <div th:replace="fragment/navbar :: bottombar('admin')"></div>
+
+    <!-- SCRIPT UNTUK MENAMPILKAN MODAL -->
+    <script>
+        /**
+         * Fungsi untuk membuka modal konfirmasi hapus, mengisi data, dan mengatur link hapus.
+         * @param {HTMLElement} button - Elemen tombol "Hapus" yang diklik.
+         */
+        function openDeleteModal(button) {
+            // 1. Ambil ID dan Username dari atribut data pada tombol
+            const userId = button.getAttribute('data-user-id');
+            const username = button.getAttribute('data-username'); // Digunakan untuk display
+
+            // 2. Tentukan URL Hapus
+            const deleteUrl = '/admin/users/delete/' + userId;
+
+            // 3. Ambil elemen modal generik
+            const modal = document.getElementById('delete_user_modal');
+
+            if (modal) {
+                // 4. Isi data ke dalam elemen modal (Hanya mengisi username)
+                document.getElementById('modal-username').textContent = username;
+
+                // **HAPUS baris ini: document.getElementById('modal-user-id').textContent = '(ID: ' + userId + ')';**
+
+                // 5. Atur href tombol "Hapus Permanen"
+                document.getElementById('delete-link').href = deleteUrl;
+
+                // 6. Tampilkan Modal
+                modal.showModal();
+            } else {
+                console.error('Modal generik dengan ID: delete_user_modal tidak ditemukan.');
+            }
+        }
+    </script>
+
+</body>
+
+</html>
