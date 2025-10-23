@@ -10,7 +10,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import app.exception.FieldValidationException;
+import app.model.custom.Gender;
+import app.model.custom.UserRole;
 import app.model.dto.AdminAddUserDto;
+import app.model.dto.AdminUpdateUserDto;
 import app.model.projection.UserProfileProjection;
 import app.service.UserService;
 import jakarta.validation.Valid;
@@ -20,6 +23,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 @Controller
 @RequestMapping("/admin/users")
@@ -29,7 +34,7 @@ public class AdminUsersController {
     private UserService service;
 
     @PostMapping("/add")
-    public String addNewUser(@Valid @ModelAttribute("formRequest") AdminAddUserDto request, BindingResult result) {
+    public String addNewUser(@Valid @ModelAttribute("formRequest") AdminAddUserDto request, BindingResult result, RedirectAttributes attributes) {
 
         if (result.hasErrors()) {
             throw new FieldValidationException("Masukan data user baru dengan benar!",
@@ -38,6 +43,7 @@ public class AdminUsersController {
         }
 
         service.saveNewUser(request);
+        attributes.addFlashAttribute("successMsg", "berhasil menambahkan akun");
 
         return "redirect:/admin/users/add";
     }
@@ -76,11 +82,36 @@ public class AdminUsersController {
     @GetMapping("/detail/{id}")
     public String getUserDetail(@PathVariable("id") UUID id, Model model) {
 
-        UserProfileProjection users = service.getUserProfileById(id);
+        UserProfileProjection users = service.getUserProfileById(id, "/", "errorMessage");
 
         model.addAttribute("user", users);
 
         return "profileDetails";
     }
+
+    @GetMapping("/update/{id}")
+    public String getMethodName(@PathVariable("id") UUID id, Model model) {
+
+        UserProfileProjection projection = service.getUserProfileById(id, "/", "errorMessage");
+
+
+        model.addAttribute("formRequest", projection);
+        model.addAttribute("genders", Gender.values());
+        model.addAttribute("roles", UserRole.values());
+
+        return "updateUsers";
+    }
+
+    @PostMapping("/update/{id}")
+    public String postMethodName(@Valid @ModelAttribute("formRequest") AdminUpdateUserDto updateUser, UUID id) {
+
+        service.updateUserProfile(id, updateUser);
+
+        return "redirect:/admin/users/update/"+id;
+        
+        
+    }
+    
+    
 
 }

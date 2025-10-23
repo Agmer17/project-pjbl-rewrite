@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import app.exception.AccountNotFoundEx;
 import app.exception.AuthValidationException;
 import app.exception.FieldValidationException;
 import app.exception.ImageNotValidException;
@@ -45,6 +46,15 @@ public class ErrorController {
     public String imageFormatNotValid(ImageNotValidException ex, RedirectAttributes redAttrs) {
 
         redAttrs.addFlashAttribute("errorMessage", ex.getMessage());
+
+        return "redirect:"+ex.getRedirectTo();
+    }
+
+    @ExceptionHandler(AccountNotFoundEx.class)
+    public String AccountNotFound(AccountNotFoundEx ex, RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute(ex.getErrorKey(), ex.getMessage());
+
 
         return "redirect:"+ex.getRedirectTo();
     }

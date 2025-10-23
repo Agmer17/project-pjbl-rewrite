@@ -12,9 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import app.exception.AccountNotFoundEx;
 import app.exception.AuthValidationException;
 import app.model.custom.Gender;
 import app.model.dto.AdminAddUserDto;
+import app.model.dto.AdminUpdateUserDto;
 import app.model.dto.UpdateProfileRequest;
 import app.model.entity.Users;
 import app.model.projection.UserProfileProjection;
@@ -28,8 +30,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepo;
 
-    public UserProfileProjection getUserProfileById(UUID id) {
-        return userRepo.findProfileById(id).get();
+    public UserProfileProjection getUserProfileById(UUID id, String redTo, String errKey) {
+        return userRepo.findProfileById(id).orElseThrow(() -> new AccountNotFoundEx(
+                "akun tidak ditemukan, akun mungkin telah terhapus",
+                redTo, errKey));
     }
 
     @Transactional
@@ -71,12 +75,11 @@ public class UserService {
         if (updateProfileRequest.getProfilePicture() != null &&
                 !updateProfileRequest.getProfilePicture().isEmpty()) {
 
-                    System.out.println("\n\n\n\n\n ini save gambar \n\n\n\n\n");
-            
+            System.out.println("\n\n\n\n\n ini save gambar \n\n\n\n\n");
 
             ImageFormat imageFormat = ImageUtils.isValidImage(updateProfileRequest.getProfilePicture(),
                     "/user/my-profile");
-            
+
             String fileExt = imageFormat.getDefaultExtension();
 
             String fileNameUrl = ImageUtils.saveImage(updateProfileRequest.getProfilePicture(), fileExt);
@@ -87,8 +90,7 @@ public class UserService {
 
             user.setProfilePicture(fileNameUrl);
 
-           System.out.println("\n\n\n\n\n gambarnya udah di save ke db \n\n\n\n\n");
-            
+            System.out.println("\n\n\n\n\n gambarnya udah di save ke db \n\n\n\n\n");
 
         }
 
@@ -108,7 +110,7 @@ public class UserService {
             }
         });
 
-         Users newUser = Users.builder()
+        Users newUser = Users.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
                 .fullName(request.getFullName())
@@ -126,15 +128,84 @@ public class UserService {
 
         return userRepo.findAllProjectedBy(pageable);
 
-
     }
 
     public void deleteUsers(UUID id) {
         if (!userRepo.existsById(id)) {
             throw new EntityNotFoundException("User dengan ID " + id + " tidak ditemukan");
-        } 
+        }
 
         userRepo.deleteById(id);
+    }
+
+    @Transactional
+    public void updateUserProfile(UUID userId, AdminUpdateUserDto request) {
+
+        Users user = userRepo.findById(userId).orElseThrow(() -> new AuthValidationException(
+                "user tidak ditemukan",
+                "/admin/users/update/" + userId));
+
+        boolean usernameChanged = !user.getUsername().equals(request.getUsername());
+        boolean emailChanged = !user.getEmail().equals(request.getEmail());
+
+        if (usernameChanged || emailChanged) {
+            List<Users> existingUsers = userRepo.findAllByUsernameOrEmail(
+                    request.getUsername(),
+                    request.getEmail());
+
+            boolean hasDuplicate = existingUsers.stream()
+                    .anyMatch(existingUser -> !existingUser.getId().equals(userId));
+
+            if (hasDuplicate) {
+                if (usernameChanged && existingUsers.stream()
+                        .anyMatch(u -> !u.getId().equals(userId) &&
+                                u.getUsername().equals(request.getUsername()))) {
+                    throw new AuthValidationException("Username sudah terdaftar", "/admin/users/update/" + userId);
+                }
+                if (emailChanged && existingUsers.stream()
+                        .anyMatch(u -> !u.getId().equals(userId) &&
+                                u.getEmail().equals(request.getEmail()))) {
+                    throw new AuthValidationException("Email sudah terdaftar", "/admin/users/update/" + userId);
+                }
+            }
+        }
+
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setFullName(request.getFullName());
+        user.setPhoneNumber(request.getPhoneNumber());
+        user.setGender(request.getGender());
+        user.setRole(request.getRole());
+        if (!(request.getPassword() != null && request.getPassword().isBlank())) {
+            String newPw = BCrypt.hashpw(request.getPassword(), BCrypt.gensalt(12));
+            user.setPassword(newPw);
+
+        }
+
+        if (request.getProfilePicture() != null &&
+                !request.getProfilePicture().isEmpty()) {
+
+            ImageFormat imageFormat = ImageUtils.isValidImage(request.getProfilePicture(),
+                    "/user/my-profile");
+
+            String fileExt = imageFormat.getDefaultExtension();
+
+            String fileNameUrl = ImageUtils.saveImage(request.getProfilePicture(), fileExt);
+
+            if (user.getProfilePicture() != null) {
+                ImageUtils.deleteFile(user.getProfilePicture());
+            }
+
+            user.setProfilePicture(fileNameUrl);
+
+            System.out.println("\n\n\n\n\n gambarnya udah di save ke db \n\n\n\n\n");
+
+        }
+
+        System.out.println("\n\n\n\n\n\n\n" + user + "\n\n\n\n\n\n\n\n");
+
+        userRepo.save(user);
+
     }
 
 }

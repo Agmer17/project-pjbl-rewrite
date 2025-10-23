@@ -32,7 +32,7 @@ public class UserController {
     public String getMyProfile(@SessionAttribute("creds") Claims creds, Model model) {
         UUID userId = UUID.fromString(creds.get("id", String.class));
 
-        UserProfileProjection userProfile = userService.getUserProfileById(userId);
+        UserProfileProjection userProfile = userService.getUserProfileById(userId, "/login", "errorMessage");
 
         model.addAttribute("user", userProfile);
         model.addAttribute("formRequest", new UpdateProfileRequest(userProfile.getUsername(),
@@ -48,7 +48,7 @@ public class UserController {
 
         UUID userId = UUID.fromString(creds.get("id", String.class));
 
-        UserProfileProjection profileProjection = userService.getUserProfileById(userId);
+        UserProfileProjection profileProjection = userService.getUserProfileById(userId, "/login", "errorMessaage");
 
         model.addAttribute("formRequest", profileProjection);
         model.addAttribute("genders", Gender.values());

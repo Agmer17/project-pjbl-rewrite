@@ -43,7 +43,7 @@
                         Kembali
                     </a>
 
-                    <a th:if="${user}" th:href="@{/admin/users/edit/{id}(id=${user.id})}"
+                    <a th:if="${user}" th:href="@{/admin/users/update/{id}(id=${user.id})}"
                         class="btn btn-sm sm:btn-md btn-warning flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none"
                             viewBox="0 0 24 24" stroke="currentColor">
@@ -131,7 +131,7 @@
                             Data pengguna yang Anda cari mungkin telah dihapus atau ID tidak valid.
                         </p>
                     </div>
-                    <a th:href="@{/admin/users}" class="btn btn-sm btn-outline btn-error w-full sm:w-auto">
+                    <a th:href="@{/admin/users/}" class="btn btn-sm btn-outline btn-error w-full sm:w-auto">
                         Kembali ke Daftar
                     </a>
                 </div>
