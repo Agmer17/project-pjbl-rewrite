@@ -5,91 +5,112 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 import org.apache.commons.imaging.ImageFormat;
 import org.apache.commons.imaging.ImageFormats;
 import org.apache.commons.imaging.Imaging;
-import org.apache.commons.imaging.ImagingException;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import app.exception.ImageNotValidException;
+import lombok.Getter;
 
+@Component
+@Getter
 public class ImageUtils {
 
-    private static final long MAXIMUM_IMAGE_SIZE = 2 * 1024 * 1024; // 2 MB aja yak, bira ga pernu servernya
+    private static final long MAXIMUM_IMAGE_SIZE = 2 * 1024 * 1024; // 2 MB
+    private static final String IMAGE_UPLOAD_DIR = "uploads";
 
-    private static final String imageUploadDir = "uploads";
-
-    public static ImageFormat isValidImage(MultipartFile imageFile, String fallback) {
-
+    public ImageFormat isValidImage(MultipartFile imageFile, String fallback) {
         if (imageFile.isEmpty()) {
-            throw new ImageNotValidException("file gambar tidak boleh kosong", fallback);
+            throw new ImageNotValidException("File gambar tidak boleh kosong", fallback);
         }
 
         if (imageFile.getSize() > MAXIMUM_IMAGE_SIZE) {
-            throw new ImageNotValidException("file terlalu besar, maksimal 2MB", fallback);
+            throw new ImageNotValidException("File terlalu besar, maksimal 2MB", fallback);
         }
 
         try {
             byte[] bytes = imageFile.getBytes();
             ImageFormat format = Imaging.guessFormat(bytes);
-
             if (format == ImageFormats.UNKNOWN) {
-                System.out.println("\n\n\n\n\n\n" + "error image kepanggil");
                 throw new ImageNotValidException("File bukan gambar yang valid", fallback);
             }
             return format;
-
-        } catch (ImagingException e) {
-            System.out.println("\n\n\n\n\n\n" + "error image kepanggil");
-            throw new ImageNotValidException("File bukan gambar yang valid", fallback);
         } catch (IOException e) {
-            System.out.println("\n\n\n\n\n\n" + "error image kepanggil");
             throw new ImageNotValidException("Gagal membaca file", fallback);
         }
-
     }
 
-    public static String saveImage(MultipartFile file, String ext) {
-        Path uploadPath = Paths.get(imageUploadDir).toAbsolutePath().normalize();
+    public String saveImage(MultipartFile file, String ext) {
+        Path uploadPath = Paths.get(IMAGE_UPLOAD_DIR).toAbsolutePath().normalize();
 
-        // Buat folder kalau belum ada
-        if (!Files.exists(uploadPath)) {
-            try {
+        try {
+            if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        }
 
-        // Generate nama baru pakai UUID
-        String fileName = UUID.randomUUID().toString() + "." + ext;
-
-        // Path tujuan akhir
-        Path targetLocation = uploadPath.resolve(fileName);
-
-        try {
+            String fileName = UUID.randomUUID() + "." + ext;
+            Path targetLocation = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            return fileName;
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Gagal menyimpan file: " + e.getMessage(), e);
         }
-
-        return fileName;
-
     }
 
-    public static void deleteFile(String fileName) {
+    @Async
+    public CompletableFuture<String> saveImageAsync(MultipartFile file, String ext) {
+        return CompletableFuture.completedFuture(saveImage(file, ext));
+    }
+
+    public List<String> saveImageBatch(List<MultipartFile> files, List<String> allFileExt) {
+        if (files.size() != allFileExt.size()) {
+            throw new IllegalArgumentException("Jumlah file dan ekstensi tidak sama!");
+        }
+
+        List<CompletableFuture<String>> futures = new ArrayList<>();
+
+        for (int i = 0; i < files.size(); i++) {
+            futures.add(saveImageAsync(files.get(i), allFileExt.get(i)));
+        }
+
+        // Tunggu semua selesai, meski salah satu error
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
+
+        // Ambil hasil file name yang sukses
+        return futures.stream()
+                .map(f -> {
+                    try {
+                        return f.join();
+                    } catch (Exception e) {
+                        return null; // abaikan yang gagal
+                    }
+                })
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+    }
+
+    @Async
+    public void deleteFile(String fileName) {
         try {
-            Path filePath = Paths.get(imageUploadDir, fileName);
+            Path filePath = Paths.get(IMAGE_UPLOAD_DIR, fileName);
             Files.deleteIfExists(filePath);
         } catch (IOException e) {
             throw new RuntimeException("Gagal menghapus file", e);
         }
     }
 
-    public static String getUploadDir() {
-        return imageUploadDir;
+    public String getUploadDir() {
+        return IMAGE_UPLOAD_DIR;
     }
-
 }

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin - Tambah Pengguna Baru</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}" />
+</head>
+
+<body class="font-sans bg-white min-h-screen text-neutral">
+
+
+    <!-- Navbar -->
+    <div th:replace="fragment/navbar :: navbar"></div>
+
+    <!-- Layout utama -->
+    <div class="flex flex-col lg:flex-row mt-16 min-h-screen mb-20 bg-base-100">
+        <!-- Sidebar -->
+        <div th:replace="fragment/navbar :: sidebar('products')"></div>
+
+
+
+        <main class="bg-white h-full flex flex-col gap-4 p-4 w-full">
+
+            <!-- header judul page dan icon -->
+            <div class="flex w-full justify-center gap-4 font-bold">
+                <div class="btn btn-circle p-2 btn-neutral text-white">
+                    <svg height="30" viewBox="0 0 24 24" width="30" xmlns="http://www.w3.org/2000/svg"
+                        fill="currentColor">
+                        <path
+                            d="M20 3H4a2 2 0 0 0-2 2v2a2 2 0 0 0 1 1.72V19a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.72A2 2 0 0 0 22 7V5a2 2 0 0 0-2-2zM4 5h16v2H4zm1 14V9h14v10z" />
+                        <path d="M8 11h8v2H8z" />
+                    </svg>
+                </div>
+                <h1 class="text-3xl">
+                    tambah layanan baru
+                </h1>
+            </div>
+            <!--  -->
+
+            <div class="w-full" th:if="${successMsg}">
+                <div role="alert" class="alert alert-success text-white font-bold">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                    </svg>
+                    <span th:text="${successMsg}"></span>
+                </div>
+            </div>
+
+            <div th:if="${errorMessage != null}" class="w-full">
+                <div role="alert" class="alert alert-error w-full text-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span th:text="${errorMessage}"></span>
+                </div>
+            </div>
+
+            <form class="w-full h-full flex flex-col gap-4" th:action="@{/admin/products/add}" method="post"
+                enctype="multipart/form-data">
+
+                <div class="md:flex">
+                    <div class="w-full card bg-base-100 p-4 space-y-6 md:flex-2">
+                        <h1 class="text-xl font-bold">Gambar Produk</h1>
+
+                        <!-- Gambar utama -->
+                        <div>
+                            <label class="relative block cursor-pointer group">
+                                <img id="mainPreview" src="https://via.placeholder.com/400x300?text=Gambar+Utama"
+                                    class="rounded-xl w-full h-64 object-cover border border-neutral/30" />
+                                <div
+                                    class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 7h2l2-3h10l2 3h2a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1zm9 3a4 4 0 100 8 4 4 0 000-8z" />
+                                    </svg>
+                                </div>
+                                <input type="file" accept="image/*" id="mainImageInput" name="allProductImage"
+                                    class="hidden" />
+                            </label>
+                        </div>
+
+                        <div class="divider">Gambar Lainnya (maks. 4)</div>
+
+                        <!-- Gambar tambahan -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <!-- Template gambar tambahan -->
+                            <label class="relative block cursor-pointer group" for="extraImage1">
+                                <img id="extraPreview1" src="https://via.placeholder.com/150?text=Tambahan+1"
+                                    class="rounded-xl w-full h-32 object-cover border border-neutral/30" />
+                                <div
+                                    class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 7h2l2-3h10l2 3h2a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1zm9 3a4 4 0 100 8 4 4 0 000-8z" />
+                                    </svg>
+                                </div>
+                                <input type="file" accept="image/*" id="extraImage1" class="hidden"
+                                    name="allProductImage" />
+                            </label>
+
+                            <label class="relative block cursor-pointer group" for="extraImage2">
+                                <img id="extraPreview2" src="https://via.placeholder.com/150?text=Tambahan+2"
+                                    class="rounded-xl w-full h-32 object-cover border border-neutral/30" />
+                                <div
+                                    class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 7h2l2-3h10l2 3h2a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1zm9 3a4 4 0 100 8 4 4 0 000-8z" />
+                                    </svg>
+                                </div>
+                                <input type="file" accept="image/*" id="extraImage2" class="hidden"
+                                    name="allProductImage" />
+                            </label>
+
+                            <label class="relative block cursor-pointer group" for="extraImage3">
+                                <img id="extraPreview3" src="https://via.placeholder.com/150?text=Tambahan+3"
+                                    class="rounded-xl w-full h-32 object-cover border border-neutral/30" />
+                                <div
+                                    class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 7h2l2-3h10l2 3h2a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1zm9 3a4 4 0 100 8 4 4 0 000-8z" />
+                                    </svg>
+                                </div>
+                                <input type="file" accept="image/*" id="extraImage3" class="hidden"
+                                    name="allProductImage" />
+                            </label>
+
+                            <label class="relative block cursor-pointer group" for="extraImage4">
+                                <img id="extraPreview4" src="https://via.placeholder.com/150?text=Tambahan+4"
+                                    class="rounded-xl w-full h-32 object-cover border border-neutral/30" />
+                                <div
+                                    class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M3 7h2l2-3h10l2 3h2a1 1 0 011 1v12a1 1 0 01-1 1H3a1 1 0 01-1-1V8a1 1 0 011-1zm9 3a4 4 0 100 8 4 4 0 000-8z" />
+                                    </svg>
+                                </div>
+                                <input type="file" accept="image/*" id="extraImage4" class="hidden"
+                                    name="allProductImage" />
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- metadata -->
+                    <div class="card bg-base-100 p-4 md:flex-1">
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend text-lg">Nama layanan</legend>
+                            <input type="text" class="input input-neutral" placeholder="maksimal 255 karakter"
+                                name="name" />
+                        </fieldset>
+                        <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'name')}"
+                            th:text="${validationErrors.name}" class="text-error text-[14px]">
+                        </span>
+
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend text-lg">Deskripsi layanan</legend>
+                            <textarea name="desc" class="textarea textarea-neutral"
+                                placeholder="Tulis deskripsi produk di sini..." rows="4"></textarea>
+                        </fieldset>
+                        <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'desc')}"
+                            th:text="${validationErrors.desc}" class="text-error text-[14px]">
+                        </span>
+
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend text-lg">Harga layanan</legend>
+                            <input type="text" id="priceInput" name="price" class="input input-neutral"
+                                placeholder="contoh: 10,000" />
+                        </fieldset>
+                        <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'price')}"
+                            th:text="${validationErrors.price}" class="text-error text-[14px]">
+                        </span>
+
+                        <div class="form-control">
+                            <label class="label">Kategori Produk</label>
+                            <select id="categorySelect" name="categoryId" class="select select-bordered w-full"
+                                onchange="handleCategorySelect(this)">
+                                <option disabled selected>Pilih kategori</option>
+                                <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}">
+                                </option>
+                                <option value="new" class="text-primary">+ Tambah Kategori Baru</option>
+                            </select>
+                        </div>
+                        <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'categoryId')}"
+                            th:text="${validationErrors.categoryId}" class="text-error text-[14px]">
+                        </span>
+
+                    </div>
+                </div>
+                <!-- gambar -->
+                <!--  -->
+
+                <div class="w-full flex p-4 gap-4">
+                    <button type="submit" class="btn btn-success flex-1">
+                        upload produk
+                    </button>
+                    <a th:href="@{/admin/}" class="flex-1 btn btn-outline btn-primary">
+                        batal
+                    </a>
+                </div>
+
+            </form>
+
+        </main>
+
+    </div>
+
+    <!-- Bottom Bar -->
+    <div th:replace="fragment/navbar :: bottombar('admin')"></div>
+
+    <dialog id="categoryDialog" class="modal">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg mb-4">Tambah Kategori</h3>
+            <form id="addCategoryForm" onsubmit="submitCategory(event)">
+                <div class="form-control mb-3">
+                    <label class="label">Nama Kategori</label>
+                    <input id="categoryName" name="name" type="text" class="input input-bordered w-full" required>
+                </div>
+
+                <div class="form-control mb-3">
+                    <label class="label">Deskripsi (opsional)</label>
+                    <textarea id="categoryDesc" name="description" class="textarea textarea-bordered w-full"></textarea>
+                </div>
+
+                <div class="modal-action">
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn" onclick="closeCategoryDialog()">Batal</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+
+    <script th:src="@{/js/adminAddProduct.js}"></script>
+</body>
+
+</html>

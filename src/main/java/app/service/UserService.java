@@ -30,6 +30,9 @@ public class UserService {
     @Autowired
     private UserRepository userRepo;
 
+    @Autowired
+    private ImageUtils imageUtils;
+
     public UserProfileProjection getUserProfileById(UUID id, String redTo, String errKey) {
         return userRepo.findProfileById(id).orElseThrow(() -> new AccountNotFoundEx(
                 "akun tidak ditemukan, akun mungkin telah terhapus",
@@ -77,15 +80,15 @@ public class UserService {
 
             System.out.println("\n\n\n\n\n ini save gambar \n\n\n\n\n");
 
-            ImageFormat imageFormat = ImageUtils.isValidImage(updateProfileRequest.getProfilePicture(),
+            ImageFormat imageFormat = imageUtils.isValidImage(updateProfileRequest.getProfilePicture(),
                     "/user/my-profile");
 
             String fileExt = imageFormat.getDefaultExtension();
 
-            String fileNameUrl = ImageUtils.saveImage(updateProfileRequest.getProfilePicture(), fileExt);
+            String fileNameUrl = imageUtils.saveImage(updateProfileRequest.getProfilePicture(), fileExt);
 
             if (user.getProfilePicture() != null) {
-                ImageUtils.deleteFile(user.getProfilePicture());
+                imageUtils.deleteFile(user.getProfilePicture());
             }
 
             user.setProfilePicture(fileNameUrl);
@@ -185,15 +188,15 @@ public class UserService {
         if (request.getProfilePicture() != null &&
                 !request.getProfilePicture().isEmpty()) {
 
-            ImageFormat imageFormat = ImageUtils.isValidImage(request.getProfilePicture(),
+            ImageFormat imageFormat = imageUtils.isValidImage(request.getProfilePicture(),
                     "/user/my-profile");
 
             String fileExt = imageFormat.getDefaultExtension();
 
-            String fileNameUrl = ImageUtils.saveImage(request.getProfilePicture(), fileExt);
+            String fileNameUrl = imageUtils.saveImage(request.getProfilePicture(), fileExt);
 
             if (user.getProfilePicture() != null) {
-                ImageUtils.deleteFile(user.getProfilePicture());
+                imageUtils.deleteFile(user.getProfilePicture());
             }
 
             user.setProfilePicture(fileNameUrl);

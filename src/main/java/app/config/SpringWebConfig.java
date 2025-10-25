@@ -22,6 +22,9 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Autowired
     private AdminInterceptor adminInterceptor;
 
+    @Autowired
+    private ImageUtils imageUtils;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor).addPathPatterns("/user/**", "/live-chat/**", "/live-chat",
@@ -32,7 +35,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        Path uploadPath = Paths.get(ImageUtils.getUploadDir()).toAbsolutePath().normalize();
+        Path uploadPath = Paths.get(imageUtils.getUploadDir()).toAbsolutePath().normalize();
         String uploadDir = uploadPath.toString();
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations("file:" + uploadDir + "/");

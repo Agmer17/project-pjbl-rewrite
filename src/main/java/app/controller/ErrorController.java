@@ -30,15 +30,21 @@ public class ErrorController {
     @ExceptionHandler(FieldValidationException.class)
     public String fieldValidationHandler(FieldValidationException ex, RedirectAttributes redAttrs) {
 
-       Map<String, String> errors = ex.getBindResult().getFieldErrors().stream()
-                    .collect(Collectors.toMap(
-                            FieldError::getField,
-                            FieldError::getDefaultMessage,
-                            (msg1, _) -> msg1));
-            redAttrs.addFlashAttribute("validationErrors", errors);
-            redAttrs.addFlashAttribute("errorMessage", ex.getMessage());
-            redAttrs.addFlashAttribute("formRequest", ex.getBindResult().getTarget());
+        Map<String, String> errors = null;
+
+        if (ex.getBindResult() != null) {
+            errors = ex.getBindResult().getFieldErrors().stream()
+                        .collect(Collectors.toMap(
+                                FieldError::getField,
+                                FieldError::getDefaultMessage,
+                                (msg1, _) -> msg1));
+                redAttrs.addFlashAttribute("validationErrors", errors);
+                redAttrs.addFlashAttribute("errorMessage", ex.getMessage());
+                redAttrs.addFlashAttribute("formRequest", ex.getBindResult().getTarget());
+                
+            }
             return "redirect:"+ex.getRedirectTo();
+        
 
     }
 
