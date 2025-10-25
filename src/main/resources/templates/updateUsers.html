@@ -208,7 +208,7 @@
                                 <input type="text" name="password" id="password" placeholder="password"
                                     class="input input-bordered input-neutral w-full" />
                                 <label class="label"
-                                    th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'fullName')}">
+                                    th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'password')}">
                                     <span class="label-text-alt text-error" th:text="${validationErrors.password}">Error
                                         message</span>
                                 </label>

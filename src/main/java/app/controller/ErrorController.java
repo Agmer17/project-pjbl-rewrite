@@ -3,12 +3,14 @@ package app.controller;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import app.exception.AccountNotFoundEx;
+import app.exception.DataNotFoundEx;
 import app.exception.AuthValidationException;
 import app.exception.FieldValidationException;
 import app.exception.ImageNotValidException;
@@ -56,10 +58,10 @@ public class ErrorController {
         return "redirect:"+ex.getRedirectTo();
     }
 
-    @ExceptionHandler(AccountNotFoundEx.class)
-    public String AccountNotFound(AccountNotFoundEx ex, RedirectAttributes redirectAttributes) {
+    @ExceptionHandler(DataNotFoundEx.class)
+    public String AccountNotFound(DataNotFoundEx ex, RedirectAttributes redirectAttributes) {
 
-        redirectAttributes.addFlashAttribute(ex.getErrorKey(), ex.getMessage());
+        redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
 
 
         return "redirect:"+ex.getRedirectTo();

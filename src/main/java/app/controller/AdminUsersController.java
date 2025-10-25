@@ -82,7 +82,7 @@ public class AdminUsersController {
     @GetMapping("/detail/{id}")
     public String getUserDetail(@PathVariable("id") UUID id, Model model) {
 
-        UserProfileProjection users = service.getUserProfileById(id, "/", "errorMessage");
+        UserProfileProjection users = service.getUserProfileById(id, "/admin/users/");
 
         model.addAttribute("user", users);
 
@@ -92,7 +92,7 @@ public class AdminUsersController {
     @GetMapping("/update/{id}")
     public String getMethodName(@PathVariable("id") UUID id, Model model) {
 
-        UserProfileProjection projection = service.getUserProfileById(id, "/", "errorMessage");
+        UserProfileProjection projection = service.getUserProfileById(id, "/admin/users/");
 
 
         model.addAttribute("formRequest", projection);
@@ -103,7 +103,14 @@ public class AdminUsersController {
     }
 
     @PostMapping("/update/{id}")
-    public String postMethodName(@Valid @ModelAttribute("formRequest") AdminUpdateUserDto updateUser, UUID id) {
+    public String postMethodName(@Valid @ModelAttribute("formRequest") AdminUpdateUserDto updateUser,
+    BindingResult bindingResult,
+    UUID id) {
+
+        if (bindingResult.hasErrors()) {
+            throw new FieldValidationException("Harap Isi data yang baru dengan benar", bindingResult, "/admin/users/update/" + id);
+            
+        }
 
         service.updateUserProfile(id, updateUser);
 

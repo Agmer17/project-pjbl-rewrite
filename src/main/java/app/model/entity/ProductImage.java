@@ -45,9 +45,7 @@ public class ProductImage {
     nullable = false,
     foreignKey = @ForeignKey(name = "product_image_product_id_fkey")
     )
-    private Product productId;
-
-
+    private Product product;
 
     @Column(name = "created_at")
     @CreationTimestamp

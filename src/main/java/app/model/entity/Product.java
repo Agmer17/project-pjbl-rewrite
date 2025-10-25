@@ -54,7 +54,10 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "product_category_id_fkey"))
     private ProductCategory category;
-    
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductImage> images = new ArrayList<>();
+
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;

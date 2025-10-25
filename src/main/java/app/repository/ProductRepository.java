@@ -10,35 +10,34 @@ import org.springframework.stereotype.Repository;
 
 import app.model.entity.Product;
 import app.model.entity.ProductProjection;
+import app.model.projection.DashboardStatsProjection;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
     @Query("""
-                SELECT
-                    p.id as id,
-                    p.name as name,
-                    p.desc as desc,
-                    p.price as price,
-                    c.name as categoryName,
-                    p.createdAt as createdAt,
-                    MIN(CASE WHEN pi.galleryImage = false THEN pi.imageFileName END) as thumbnailUrl,
-                    COUNT(pi.id) as imageCount
-                FROM Product p
-                LEFT JOIN p.category c
-                LEFT JOIN ProductImage pi ON pi.productId = p
-                GROUP BY p.id, p.name, p.desc, p.price, c.name, p.createdAt
-                ORDER BY p.createdAt DESC
+            SELECT
+                p.id AS id,
+                p.name AS name,
+                p.desc AS desc,
+                p.price AS price,
+                c.name AS categoryName,
+                p.createdAt AS createdAt,
+                MIN(CASE WHEN pi.galleryImage = false THEN pi.imageFileName END) AS thumbnailUrl,
+                COUNT(pi.id) AS imageCount
+            FROM Product p
+            LEFT JOIN p.category c
+            LEFT JOIN p.images pi
+            GROUP BY p.id, p.name, p.desc, p.price, c.name, p.createdAt
+            ORDER BY p.createdAt DESC
             """)
     Page<ProductProjection> findAllProductsForDashboard(Pageable pageable);
 
-    // Untuk stats
-    @Query("SELECT COUNT(p) FROM Product p")
-    Long countTotalProducts();
-
-    @Query("SELECT COUNT(DISTINCT c) FROM ProductCategory c")
-    Long countTotalCategories();
-
-    @Query("SELECT COUNT(pi) FROM ProductImage pi")
-    Long countTotalImages();
+    @Query(value = """
+            SELECT
+                (SELECT COUNT(*) FROM product) AS totalProducts,
+                (SELECT COUNT(*) FROM product_category) AS totalCategories,
+                (SELECT COUNT(*) FROM product_image) AS totalImages
+            """, nativeQuery = true)
+    DashboardStatsProjection getDashboardStats();
 
 }

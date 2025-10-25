@@ -25,7 +25,7 @@ public class AdminController {
 
         UUID adminId = UUID.fromString(creds.get("id", String.class));
 
-        UserProfileProjection currentAdminData = service.getUserProfileById(adminId, "/login", "errorMessage");
+        UserProfileProjection currentAdminData = service.getUserProfileById(adminId, "/login");
 
         model.addAttribute("currentAdmin", currentAdminData);
 

@@ -13,6 +13,7 @@ import app.model.dto.ProductPostDto;
 import app.model.entity.Product;
 import app.model.entity.ProductCategory;
 import app.model.entity.ProductProjection;
+import app.model.projection.DashboardStatsProjection;
 import app.repository.ProductRepository;
 
 @Service
@@ -26,6 +27,7 @@ public class ProductService {
 
     @Autowired
     private ProductRepository productRepository;
+
 
     public List<ProductCategory> getAllCategory() {
         return categoryService.getAllCategory();
@@ -60,6 +62,14 @@ public class ProductService {
         Pageable pageable = PageRequest.of(page, 10);
 
         return productRepository.findAllProductsForDashboard(pageable);
+    }
+
+    public DashboardStatsProjection getProductStatsData() {
+        return productRepository.getDashboardStats();
+    }
+
+    public List<ProductCategory> getAllCategories() {
+        return categoryService.getAllCategory();
     }
 
 }

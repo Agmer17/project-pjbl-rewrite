@@ -12,8 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import app.exception.AccountNotFoundEx;
 import app.exception.AuthValidationException;
+import app.exception.DataNotFoundEx;
 import app.model.custom.Gender;
 import app.model.dto.AdminAddUserDto;
 import app.model.dto.AdminUpdateUserDto;
@@ -22,7 +22,6 @@ import app.model.entity.Users;
 import app.model.projection.UserProfileProjection;
 import app.repository.UserRepository;
 import app.utils.ImageUtils;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -33,10 +32,11 @@ public class UserService {
     @Autowired
     private ImageUtils imageUtils;
 
-    public UserProfileProjection getUserProfileById(UUID id, String redTo, String errKey) {
-        return userRepo.findProfileById(id).orElseThrow(() -> new AccountNotFoundEx(
+    public UserProfileProjection getUserProfileById(UUID id, String redTo) {
+        System.out.println(redTo);
+        return userRepo.findProfileById(id).orElseThrow(() -> new DataNotFoundEx(
                 "akun tidak ditemukan, akun mungkin telah terhapus",
-                redTo, errKey));
+                redTo));
     }
 
     @Transactional
@@ -135,7 +135,7 @@ public class UserService {
 
     public void deleteUsers(UUID id) {
         if (!userRepo.existsById(id)) {
-            throw new EntityNotFoundException("User dengan ID " + id + " tidak ditemukan");
+            throw new DataNotFoundEx("gagal menghapus user, user mungkin telah dihapus sebelumnya", "/admin/users/");
         }
 
         userRepo.deleteById(id);

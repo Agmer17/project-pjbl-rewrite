@@ -17,12 +17,11 @@ import app.exception.FieldValidationException;
 import app.model.dto.ProductPostDto;
 import app.model.entity.ProductCategory;
 import app.model.entity.ProductProjection;
+import app.model.projection.DashboardStatsProjection;
 import app.service.ProductService;
 import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
-
-
 
 @Controller
 @RequestMapping("/admin/products")
@@ -31,11 +30,20 @@ public class AdminProductController {
     @Autowired
     private ProductService productService;
 
-    @GetMapping({"/", ""})
+    @GetMapping({ "/", "" })
     public String getProductDashboard(Model model, @RequestParam(defaultValue = "0") int page) {
         Page<ProductProjection> pageable = productService.getAllProducts(page);
+        DashboardStatsProjection stats = productService.getProductStatsData();
 
+        model.addAttribute("totalProducts", stats.getTotalProducts());
+        model.addAttribute("totalCategories", stats.getTotalCategories());
+        model.addAttribute("totalImages", stats.getTotalImages());
         model.addAttribute("products", pageable.getContent());
+        model.addAttribute("currentPage", pageable.getNumber());
+        model.addAttribute("totalPages", pageable.getTotalPages());
+        model.addAttribute("hasNext", pageable.hasNext());
+        model.addAttribute("hasPrevious", pageable.hasPrevious());
+        model.addAttribute("categories", productService.getAllCategory());
         return "adminProductDashboard";
     }
 
@@ -48,22 +56,18 @@ public class AdminProductController {
     }
 
     @PostMapping("/add")
-    public String postProductData(@Valid @ModelAttribute ProductPostDto productPost, 
-    BindingResult bindingResult,
-    RedirectAttributes model) {
-        
+    public String postProductData(@Valid @ModelAttribute ProductPostDto productPost,
+            BindingResult bindingResult,
+            RedirectAttributes model) {
+
         if (bindingResult.hasErrors()) {
             throw new FieldValidationException("Harap isi data dengan benar", bindingResult, "/admin/products/add");
         }
-        
-        productService.saveProduct(productPost);
 
+        productService.saveProduct(productPost);
 
         model.addFlashAttribute("successMsg", "berhasil menambah produk");
         return "redirect:/admin/products/add";
     }
 
-    
-    
-    
 }

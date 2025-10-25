@@ -1,17 +1,15 @@
 package app.exception;
 
+import app.exception.common.BaseException;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ImageNotValidException extends RuntimeException{
+public class ImageNotValidException extends BaseException{
 
-    private String redirectTo;
-
-    public ImageNotValidException(String msg, String redirect) {
-        super(msg);
-        this.redirectTo = redirect;
+    public ImageNotValidException(String redirectTo, String message) {
+        super(message, redirectTo);
     }
     
 }

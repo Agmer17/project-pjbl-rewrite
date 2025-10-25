@@ -43,7 +43,7 @@ public class ProductImageService {
                 List<ProductImage> productImages = savedFileNames.stream()
                                 .map(fileName -> ProductImage.builder()
                                                 .imageFileName(fileName)
-                                                .productId(product)
+                                                .product(product)
                                                 .galleryImage(false)
                                                 .build())
                                 .toList();
