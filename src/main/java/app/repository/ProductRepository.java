@@ -1,5 +1,6 @@
 package app.repository;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -23,7 +24,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                 p.price AS price,
                 c.name AS categoryName,
                 p.createdAt AS createdAt,
-                MIN(CASE WHEN pi.galleryImage = false THEN pi.imageFileName END) AS thumbnailUrl,
+                MIN(CASE WHEN pi.imageOrder = 1 THEN pi.imageFileName END) AS thumbnailUrl,
                 COUNT(pi.id) AS imageCount
             FROM Product p
             LEFT JOIN p.category c
@@ -42,7 +43,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                     c.id AS categoryId,
                     c.name AS categoryName,
                     p.createdAt AS createdAt,
-                    MIN(CASE WHEN pi.galleryImage = false THEN pi.imageFileName END) AS thumbnailUrl,
+                    MIN(CASE WHEN pi.imageOrder = 1 THEN pi.imageFileName END) AS thumbnailUrl,
                     COUNT(pi.id) AS imageCount
                 FROM Product p
                 LEFT JOIN p.category c
@@ -60,5 +61,13 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                 (SELECT COUNT(*) FROM product_image) AS totalImages
             """, nativeQuery = true)
     DashboardStatsProjection getDashboardStats();
+
+    @Query("""
+                SELECT p FROM Product p
+                LEFT JOIN FETCH p.images
+                JOIN FETCH p.category
+                WHERE p.id = :id
+            """)
+    Optional<Product> findDetailById(@Param("id") UUID id);
 
 }

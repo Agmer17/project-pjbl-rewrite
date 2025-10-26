@@ -53,5 +53,7 @@ public class ProductImage {
 
     @Column(name = "gallery_image")
     private Boolean galleryImage;
-    
+
+    @Column(name = "image_order")
+    private Integer imageOrder;
 }

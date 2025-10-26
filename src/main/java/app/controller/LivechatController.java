@@ -1,6 +1,7 @@
 package app.controller;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 
+import app.event.OnlineUsersListener;
 import app.model.custom.UserRole;
 import app.model.dto.ChatHistoryDto;
 import app.model.dto.ChatListDto;
@@ -21,8 +23,8 @@ import io.jsonwebtoken.Claims;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
-
 @Controller
 /**
  * Class: LivechatController
@@ -55,6 +57,9 @@ public class LivechatController {
 
         @Autowired
         private LiveChatService service;
+
+        @Autowired
+        private OnlineUsersListener onlineUsersListener;
 
         @MessageMapping("/chat")
         public void processMessage(@Payload ChatMessage messagePayload,
@@ -98,6 +103,12 @@ public class LivechatController {
 
                 return "liveChatPage";
 
+        }
+
+        @GetMapping("/live-chat/online-users")
+        @ResponseBody
+        public Set<UUID> getOnlineUsers() {
+                return onlineUsersListener.getOnlineUserIds();
         }
 
 }

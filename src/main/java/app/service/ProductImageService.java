@@ -1,5 +1,6 @@
 package app.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.imaging.ImageFormat;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,15 +41,25 @@ public class ProductImageService {
 
                 List<String> savedFileNames = imageUtils.saveImageBatch(allImages, exts);
 
-                System.out.println("\n\n\n\n\n\n\n"+savedFileNames+"\n\n\n\n\n\n");
+                List<ProductImage> productImages = new ArrayList<>();
 
-                List<ProductImage> productImages = savedFileNames.stream()
-                                .map(fileName -> ProductImage.builder()
-                                                .imageFileName(fileName)
-                                                .product(product)
-                                                .galleryImage(false)
-                                                .build())
-                                .toList();
+                // List<ProductImage> productImages = savedFileNames.stream()
+                //                 .map(fileName -> ProductImage.builder()
+                //                                 .imageFileName(fileName)
+                //                                 .product(product)
+                //                                 .galleryImage(false)
+                //                                 .build())
+                //                 .toList();
+
+                for (int i = 0; i < savedFileNames.size(); i++) {
+                        productImages.add(
+                                ProductImage.builder()
+                                .imageFileName(savedFileNames.get(i))
+                                .product(product)
+                                .imageOrder(i+1)
+                                .build()
+                        );
+                }
 
                 repo.saveAll(productImages);
 

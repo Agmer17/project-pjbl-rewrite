@@ -7,36 +7,33 @@
     <title th:text="'Chat dengan ' + ${data.receiver.fullName}">Live Chat</title>
 
     <link rel="stylesheet" th:href="@{/css/output.css}" />
-
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-        crossorigin="anonymous" referrerpolicy="no-referrer" /> -->
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js" crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js" crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
-
 </head>
 
 <body class="bg-base-100 text-base-content flex flex-col min-h-screen font-sans w-screen">
     <div th:replace="fragment/navbar :: navbar"></div>
 
-
+    <!-- 🧠 Header -->
     <header class="navbar bg-base-100 shadow-md border-b border-base-200 sticky top-16 z-40">
         <div class="flex items-center gap-3 px-4 py-2 w-full">
             <button class="btn btn-ghost btn-circle hover:bg-base-300">
                 <a th:href="@{/live-chat}">
-                    <svg height="28" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1"
-                        viewBox="0 0 512 512" width="28" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
-                        xmlns:xlink="http://www.w3.org/1999/xlink">
+                    <svg height="28" viewBox="0 0 512 512" width="28">
                         <polygon points="352,128.4 319.7,96 160,256 319.7,416 352,383.6 224.7,256" />
                     </svg>
                 </a>
             </button>
 
-            <div class="avatar">
+            <!-- avatar punya receiver -->
+
+             
+            <div id="receiverAvatar" class="avatar relative">
                 <div class="w-10 md:w-12 rounded-full ring ring-neutral ring-offset-base-100 ring-offset-2">
-                    <img th:src="@{'/uploads/' + ${data.receiver.profilePicture}}" alt="Foto Profil" />
+                    <img th:src="@{${#strings.isEmpty(data.receiver.profilePicture) ? '/img/default.jpg' : '/uploads/' + data.receiver.profilePicture}}"
+                            alt="Profile Picture" />
                 </div>
             </div>
 
@@ -47,10 +44,9 @@
         </div>
     </header>
 
-
+    <!-- 🗨️ Chat messages -->
     <main id="chat-messages"
         class="flex-1 overflow-y-auto bg-base-100 p-4 md:p-6 flex flex-col gap-3 scroll-smooth mt-18">
-
         <div th:each="chat : ${data.chatHistory}">
             <div class="chat" th:classappend="${chat.ownMessage} ? ' chat-end' : ' chat-start'">
                 <div class="chat-bubble shadow-lg max-w-xs md:max-w-md"
@@ -58,26 +54,22 @@
                     th:text="${chat.text}">
                 </div>
                 <div class="chat-footer mt-1 text-xs opacity-70"
-                    th:text="${#temporals.format(chat.timeStamp, 'HH:mm')}">
-                    12:30
-                </div>
+                    th:text="${#temporals.format(chat.timeStamp, 'HH:mm')}">12:30</div>
             </div>
         </div>
     </main>
 
+    <!-- 📝 Input -->
     <footer class="bg-base-100 border-t border-base-200 p-3 md:p-4 sticky bottom-0 z-10">
         <form id="chat-form" class="flex gap-2 items-center">
             <input type="text" id="chat-input" placeholder="Ketik pesan..."
                 class="input input-bordered input-md w-full rounded-full focus:outline-none focus:ring-2 focus:ring-neutral"
                 autocomplete="off" />
-
             <button type="submit"
                 class="btn btn-neutral btn-circle text-neutral-content hover:bg-primary fill-neutral transition hover:cursor-pointer p-2">
-                <svg class="hover:fill-neutral" enable-background="new 0 0 512 512" height="28" id="Layer_1"
-                    version="1.1" viewBox="0 0 512 512" width="28" xml:space="preserve"
-                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                <svg enable-background="new 0 0 512 512" height="28" viewBox="0 0 512 512" width="28">
                     <path
-                        d="M189.547,324.346l87.616,176.304l223.917-490L11.137,245.793L189.547,324.346z M194.754,305.243  l-136.77-60.216L433.599,64.761L194.754,305.243z M276.436,455.383l-67.787-136.416L449.62,76.36L276.436,455.383z"
+                        d="M189.547,324.346l87.616,176.304l223.917-490L11.137,245.793L189.547,324.346z M194.754,305.243l-136.77-60.216L433.599,64.761L194.754,305.243z M276.436,455.383l-67.787-136.416L449.62,76.36L276.436,455.383z"
                         fill="#ffffff" />
                 </svg>
             </button>
@@ -87,7 +79,6 @@
     <input type="hidden" id="userId" th:value="${data.currentUser.id}" />
     <input type="hidden" id="receiverId" th:value="${data.receiver.id}" />
 
-
     <script th:inline="javascript">
         const userId = /*[[${data.currentUser.id}]]*/ null;
         const receiverId = /*[[${data.receiver.id}]]*/ null;
@@ -95,21 +86,55 @@
         const socket = new SockJS('/ws');
         const stompClient = Stomp.over(socket);
 
-        stompClient.connect({}, () => {
-            console.log("✅ Terhubung ke WebSocket");
+        const receiverAvatar = document.getElementById('receiverAvatar');
 
-            // Subscribe ke channel user sendiri
+        // === ✅ Fetch & Tandai status online ===
+        async function checkReceiverOnline() {
+            try {
+                const res = await fetch('/live-chat/online-users');
+                if (!res.ok) throw new Error('Fetch failed');
+                const onlineUserIds = await res.json();
+                const isOnline = onlineUserIds.map(String).includes(String(receiverId));
+                updateAvatarStatus(isOnline);
+            } catch (err) {
+                console.error('❌ Gagal ambil online users:', err);
+            }
+        }
+
+        // === 🟢 Update avatar class ===
+        function updateAvatarStatus(isOnline) {
+            receiverAvatar.classList.remove('avatar-online', 'avatar-offline');
+            receiverAvatar.classList.add(isOnline ? 'avatar-online' : 'avatar-offline');
+        }
+
+        // === 💬 WebSocket ===
+        stompClient.connect({}, () => {
+            console.log('✅ WebSocket Connected');
+
             stompClient.subscribe(`/user/${userId}/queue/messages`, (msg) => {
                 const data = JSON.parse(msg.body);
                 appendMessage(data.text, data.ownMessage);
             });
+
+            // dengarkan event presence
+            stompClient.subscribe('/topic/presence', (payload) => {
+                const event = JSON.parse(payload.body);
+                if (event.userId === receiverId) {
+                    updateAvatarStatus(event.type === 'USER_ONLINE');
+                    console.log(event.type === 'USER_ONLINE'
+                        ? `🟢 ${receiverId} online`
+                        : `🔴 ${receiverId} offline`);
+                }
+            });
+
+            checkReceiverOnline(); // pertama kali load
         });
 
+        // === ✉️ Kirim pesan ===
         const form = document.getElementById("chat-form");
         const input = document.getElementById("chat-input");
         const messages = document.getElementById("chat-messages");
 
-        // Auto-scroll ke bawah saat halaman dimuat
         messages.scrollTop = messages.scrollHeight;
 
         form.addEventListener("submit", (e) => {
@@ -117,15 +142,12 @@
             const text = input.value.trim();
             if (!text) return;
 
-            const payload = {
-                receiverId: receiverId,
-                text: text
-            };
-
+            const payload = { receiverId, text };
             stompClient.send("/app/chat", {}, JSON.stringify(payload));
             input.value = "";
         });
 
+        // === 💬 Tambah pesan ke UI ===
         function appendMessage(text, isSender, timeStamp = new Date()) {
             const wrapper = document.createElement("div");
             wrapper.className = `chat ${isSender ? "chat-end" : "chat-start"}`;
@@ -146,6 +168,10 @@
             messages.appendChild(wrapper);
             messages.scrollTop = messages.scrollHeight;
         }
+
+        window.addEventListener('beforeunload', () => {
+            if (stompClient.connected) stompClient.disconnect();
+        });
     </script>
 </body>
 

@@ -8,49 +8,59 @@
     <link rel="stylesheet" th:href="@{/css/output.css}">
     <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
-    <style>
-        html,
-        body {
-            height: 100%;
-        }
-    </style>
 </head>
 
-<body class="bg-white text-neutral min-h-screen h-full flex flex-col items-center sm:py-10 font-sans">
+<body class="bg-base-100 text-neutral min-h-screen flex flex-col items-center sm:py-10 font-sans">
 
     <div th:replace="fragment/navbar :: navbar" class="hidden sm:block"></div>
 
-
     <main
-        class="w-full sm:w-11/12 max-w-2xl bg-white border-none sm:border border-neutral-200 sm:rounded-2xl shadow-none sm:shadow-xl overflow-hidden mt-0 sm:mt-10 mb-0 sm:mb-22 flex flex-col flex-grow">
-        <div class="px-4 sm:px-6 py-4 border-b border-neutral-200 flex justify-between items-center flex-shrink-0">
-            <h1 class="text-xl sm:text-2xl font-bold">Livechat History</h1>
+        class="w-full sm:w-11/12 max-w-2xl bg-base-100 border-none sm:border border-base-300 sm:rounded-2xl shadow-none sm:shadow-xl overflow-hidden mt-0 sm:mt-10 mb-0 sm:mb-22 flex flex-col flex-grow transition-all duration-300">
+
+        <!-- Header -->
+        <div
+            class="px-5 sm:px-8 py-4 border-b border-base-300 flex justify-between items-center bg-base-100 sticky top-0 z-10">
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-neutral flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-neutral" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M8 10h.01M12 10h.01M16 10h.01M21 16v1a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2v11z" />
+                </svg>
+                Live Chat
+            </h1>
         </div>
 
-        <div id="chatListContainer" class="flex flex-col divide-y divide-neutral-200 overflow-y-auto flex-grow"
+        <!-- Chat List -->
+        <div id="chatListContainer"
+            class="flex flex-col divide-y divide-base-200 overflow-y-auto flex-grow scroll-smooth"
             th:if="${!#lists.isEmpty(chatList)}">
 
             <div th:each="chat : ${chatList}"
-                class="chat-item p-4 hover:bg-neutral-50 transition cursor-pointer flex items-center gap-3"
+                class="chat-item p-4 hover:bg-base-200 transition-colors duration-200 cursor-pointer flex items-center gap-4 relative group"
                 th:attr="data-id=${chat.userId},onclick=|window.location.href='@{/live-chat/with/{id}(id=${chat.userId})}'|">
 
-                <img th:src="@{${#strings.isEmpty(chat.profilePicture) ? '/img/default.jpg' : '/uploads/' + chat.profilePicture}}"
-                    alt="Profile Picture"
-                    class="w-12 h-12 rounded-full object-cover border border-neutral-300 shadow-sm flex-shrink-0" />
+                <div class="avatar avatar-offline transition-all duration-300 group-hover:scale-105">
+                    <div class="w-14 h-14 rounded-full border-2 border-base-300">
+                        <img th:src="@{${#strings.isEmpty(chat.profilePicture) ? '/img/default.jpg' : '/uploads/' + chat.profilePicture}}"
+                            alt="Profile Picture" />
+                    </div>
+                </div>
 
                 <div class="flex-1 min-w-0">
-                    <div class="flex justify-between items-center mb-0.5">
-                        <div class="w-full flex gap-4">
-                            <h2 class="font-semibold truncate" th:text="${chat.fullName}">Nama</h2>
-                            <div class="badge badge-warning font-bold flex-shrink-0"
+                    <div class="flex justify-between items-center mb-1">
+                        <div class="flex items-center gap-2 truncate">
+                            <h2
+                                class="font-semibold truncate text-base sm:text-lg text-neutral group-hover:text-neutral transition">
+                                <span th:text="${chat.fullName}">Nama</span>
+                            </h2>
+                            <div class="badge badge-outline badge-neutext-neutral text-xs uppercase tracking-wide"
                                 th:text="${#strings.toLowerCase(chat.role)}"></div>
                         </div>
-                        <p class="text-sm text-neutral-500 chat-time flex-shrink-0"
-                            th:if="${chat.lastMessageTime != null}"
+                        <p class="text-xs sm:text-sm text-neutral-500 chat-time" th:if="${chat.lastMessageTime != null}"
                             th:text="${#temporals.format(chat.lastMessageTime, 'HH:mm')}">12:00</p>
                     </div>
 
-                    <p class="text-sm text-neutral-600 truncate chat-preview"
+                    <p class="text-sm text-neutral-600 truncate chat-preview leading-snug"
                         th:text="${chat.lastMessage != null ? chat.lastMessage : 'Belum ada percakapan'}"
                         th:classappend="${chat.lastMessage == null} ? 'italic text-neutral-400' : ''">
                         Pesan terakhir...
@@ -59,48 +69,118 @@
             </div>
         </div>
 
-        <div th:if="${#lists.isEmpty(chatList)}" class="text-center py-12 text-neutral-500 flex-grow">
-            Belum ada admin tersedia 😅
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(chatList)}"
+            class="flex flex-col items-center justify-center py-20 text-neutral-500 gap-4 flex-grow">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-14 h-14 text-base-content/40" fill="none"
+                viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M7 8h10M7 12h4m1 8a9 9 0 100-18 9 9 0 000 18z" />
+            </svg>
+            <p class="text-lg font-medium">Belum ada admin tersedia 😅</p>
         </div>
+
     </main>
 
     <div th:replace="fragment/navbar :: bottombar('chat')"></div>
 
+    <!-- Scripts (tidak diubah) -->
     <script th:inline="javascript">
         const currentUserId = /*[[${userId}]]*/ null;
-
         const socket = new SockJS('/ws');
         const stompClient = Stomp.over(socket);
         const chatListContainer = document.getElementById('chatListContainer');
 
+        let onlineUsersSet = new Set();
+
+        async function fetchOnlineUsers() {
+            try {
+                const res = await fetch('/live-chat/online-users');
+                if (!res.ok) throw new Error('Failed to fetch online users');
+                const onlineUserIds = await res.json();
+                console.log("🟢 Online users:", onlineUserIds);
+                onlineUsersSet = new Set(onlineUserIds.map(id => String(id)));
+                updateAllAvatars();
+            } catch (err) {
+                console.error("❌ Gagal fetch online users:", err);
+            }
+        }
+
+        function updateAllAvatars() {
+            document.querySelectorAll('.chat-item').forEach(item => {
+                const userId = item.dataset.id;
+                const avatar = item.querySelector('.avatar > div');
+
+                if (onlineUsersSet.has(userId)) {
+                    avatar.classList.remove('border-base-300');
+                    avatar.classList.add('border-success');
+                    avatar.parentElement.classList.add('avatar-online');
+                    avatar.parentElement.classList.remove('avatar-offline');
+                } else {
+                    avatar.classList.remove('border-success');
+                    avatar.classList.add('border-base-300');
+                    avatar.parentElement.classList.add('avatar-offline');
+                    avatar.parentElement.classList.remove('avatar-online');
+                }
+            });
+        }
+
         stompClient.connect({}, () => {
             console.log('✅ Connected to WebSocket');
-
             stompClient.subscribe(`/user/${currentUserId}/queue/messages`, (payload) => {
                 const message = JSON.parse(payload.body);
-                console.log('📩 Pesan baru:', message);
                 updateChatList(message);
             });
+            stompClient.subscribe('/topic/presence', (payload) => {
+                const event = JSON.parse(payload.body);
+                handlePresenceEvent(event);
+            });
+            stompClient.subscribe('/topic/online-users', (payload) => {
+                const onlineUserIds = JSON.parse(payload.body);
+                console.log("🔄 Online users updated:", onlineUserIds);
+                onlineUsersSet = new Set(onlineUserIds.map(id => String(id)));
+                updateAllAvatars();
+            });
+            fetchOnlineUsers();
+        }, (error) => {
+            console.error('❌ WebSocket connection error:', error);
         });
 
-        function updateChatList(message) {
-            const { sender, text } = message;
+        function handlePresenceEvent(event) {
+            const { userId, type } = event;
+            if (type === 'USER_ONLINE') {
+                onlineUsersSet.add(String(userId));
+            } else if (type === 'USER_OFFLINE') {
+                onlineUsersSet.delete(String(userId));
+            }
+            updateAllAvatars();
+        }
 
+        function updateChatList(message) {
+            const { sender, text, timestamp } = message;
             const chatItem = document.querySelector(`.chat-item[data-id="${sender}"]`);
             if (chatItem) {
                 const preview = chatItem.querySelector('.chat-preview');
-                const time = chatItem.querySelector('.chat-time');
-
+                const timeElement = chatItem.querySelector('.chat-time');
                 preview.textContent = text;
-                time.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-                // pindahkan ke atas
+                preview.classList.remove('italic', 'text-neutral-400');
+                const msgTime = timestamp ? new Date(timestamp) : new Date();
+                timeElement.textContent = msgTime.toLocaleTimeString('id-ID', {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
                 chatListContainer.prepend(chatItem);
-            } else {
-                console.log("🔄 Chat baru belum ada di list — mungkin admin baru, reload halaman nanti.");
+                console.log(`💬 New message from ${sender}: ${text}`);
             }
         }
+
+        window.addEventListener('beforeunload', () => {
+            if (stompClient.connected) {
+                stompClient.disconnect();
+            }
+        });
     </script>
+
 </body>
 
 </html>

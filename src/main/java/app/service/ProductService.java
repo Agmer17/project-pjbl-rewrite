@@ -91,4 +91,9 @@ public class ProductService {
 
     }
 
+    public Product getProductDetails(UUID id) {
+
+        return productRepository.findDetailById(id).orElseThrow(() -> new DataNotFoundEx("barang mungkin telah terhapus", "/admin/products/"));
+    }
+
 }

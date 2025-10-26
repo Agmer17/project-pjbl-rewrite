@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import app.exception.FieldValidationException;
 import app.model.dto.ProductPostDto;
+import app.model.entity.Product;
 import app.model.entity.ProductCategory;
 import app.model.entity.ProductProjection;
 import app.model.projection.DashboardStatsProjection;
@@ -96,7 +97,17 @@ public class AdminProductController {
 
         return "redirect:/admin/products/";
     }
-    
+
+    @GetMapping("/detail/{id}")
+    public String getMethodName(@PathVariable UUID id, Model model) {
+
+        Product productDetails = productService.getProductDetails(id);
+
+        model.addAttribute("product", productDetails);
+
+        return "AdminProductDetail";
+        
+    }
     
 
 }
