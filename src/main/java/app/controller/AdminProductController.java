@@ -1,6 +1,7 @@
 package app.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -23,6 +25,7 @@ import jakarta.validation.Valid;
 
 import org.springframework.web.bind.annotation.PostMapping;
 
+
 @Controller
 @RequestMapping("/admin/products")
 public class AdminProductController {
@@ -31,10 +34,14 @@ public class AdminProductController {
     private ProductService productService;
 
     @GetMapping({ "/", "" })
-    public String getProductDashboard(Model model, @RequestParam(defaultValue = "0") int page) {
-        Page<ProductProjection> pageable = productService.getAllProducts(page);
+    public String getProductDashboard(Model model, 
+    @RequestParam(defaultValue = "0") int page, 
+    @RequestParam(name = "cat", required = false) UUID categoryId,
+    @RequestParam(name = "ord", required = false, defaultValue = "desc") String orderBy) {
+        Page<ProductProjection> pageable = productService.getAllProducts(page, categoryId, orderBy);
         DashboardStatsProjection stats = productService.getProductStatsData();
 
+        model.addAttribute("selectedCategoryId", categoryId);
         model.addAttribute("totalProducts", stats.getTotalProducts());
         model.addAttribute("totalCategories", stats.getTotalCategories());
         model.addAttribute("totalImages", stats.getTotalImages());
@@ -61,6 +68,7 @@ public class AdminProductController {
             RedirectAttributes model) {
 
         if (bindingResult.hasErrors()) {
+            System.out.println(bindingResult.getFieldErrors());
             throw new FieldValidationException("Harap isi data dengan benar", bindingResult, "/admin/products/add");
         }
 
@@ -69,5 +77,26 @@ public class AdminProductController {
         model.addFlashAttribute("successMsg", "berhasil menambah produk");
         return "redirect:/admin/products/add";
     }
+
+    @GetMapping("/edit/{id}")
+    public String getEditPage(@PathVariable UUID productId) {
+    
+        return null;
+    }
+    
+
+    @PostMapping("/edit/{id}")
+    public String postEditProduct() {        
+        return null;
+    }
+
+    @GetMapping("/delete/{id}")
+    public String deleteProduct(@PathVariable UUID id) {
+        productService.deleteProduct(id);
+
+        return "redirect:/admin/products/";
+    }
+    
+    
 
 }

@@ -1,7 +1,6 @@
 package app.service;
 
 import java.util.List;
-
 import org.apache.commons.imaging.ImageFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +11,7 @@ import app.model.entity.Product;
 import app.model.entity.ProductImage;
 import app.repository.ProductImageRepository;
 import app.utils.ImageUtils;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ProductImageService {
@@ -22,6 +22,8 @@ public class ProductImageService {
         @Autowired
         private ProductImageRepository repo;
 
+
+        @Transactional
         public void saveAllImages(List<MultipartFile> allImages, String fallback, Product product) {
 
                 List<ImageFormat> formats = allImages.stream()
@@ -50,6 +52,18 @@ public class ProductImageService {
 
                 repo.saveAll(productImages);
 
+        }
+
+        public void deletProductImage(Product product) {
+
+                List<ProductImage> images = repo.findAllByProduct(product);
+
+                List<String> imagesFileNames = images.stream()
+                .map(ProductImage::getImageFileName)
+                .toList();
+
+                imageUtils.deleteFilesBatch(imagesFileNames);
+                
         }
 
 }

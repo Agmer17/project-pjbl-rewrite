@@ -39,24 +39,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // 🔥 INTERCEPT FORM SUBMIT - Kirim hanya file yang valid
-    form?.addEventListener("submit", async (e) => {
+    form?.addEventListener("submit", (e) => {
         e.preventDefault(); // Stop default submit
 
         // Bersihkan format harga
         priceInput.value = priceInput.value.replace(/,/g, "");
 
-        // Buat FormData baru
-        const formData = new FormData();
-
-        // Ambil semua field text/select (bukan file)
-        const formElements = form.elements;
-        for (let element of formElements) {
-            if (element.type !== 'file' && element.name) {
-                formData.append(element.name, element.value);
-            }
-        }
-
-        // Tambahkan HANYA file yang valid (ada isinya)
+        // Validasi gambar
         const allFileInputs = [
             mainInput,
             document.getElementById("extraImage1"),
@@ -68,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
         let validFileCount = 0;
         allFileInputs.forEach(input => {
             if (input && input.files.length > 0 && input.files[0].size > 0) {
-                formData.append('allProductImage', input.files[0]);
                 validFileCount++;
             }
         });
@@ -81,24 +69,15 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Kirim via fetch
-        try {
-            const response = await fetch(form.action, {
-                method: 'POST',
-                body: formData
-            });
-
-            if (response.ok) {
-                // Redirect ke halaman success atau produk list
-                window.location.href = response.url || '/admin/products';
-            } else {
-                const errorText = await response.text();
-                alert('Gagal menyimpan produk: ' + errorText);
+        // Hapus input file yang kosong agar tidak dikirim
+        allFileInputs.forEach(input => {
+            if (input && (!input.files.length || input.files[0].size === 0)) {
+                input.removeAttribute('name'); // Hapus name agar tidak dikirim
+                // ATAU input.disabled = true;
             }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Terjadi kesalahan saat mengirim data');
-        }
+        });
+
+        form.submit();
     });
 });
 

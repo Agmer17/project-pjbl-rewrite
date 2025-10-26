@@ -21,7 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import app.exception.ImageNotValidException;
 import lombok.Getter;
-
+import lombok.extern.slf4j.Slf4j;
+@Slf4j
 @Component
 @Getter
 public class ImageUtils {
@@ -31,11 +32,11 @@ public class ImageUtils {
 
     public ImageFormat isValidImage(MultipartFile imageFile, String fallback) {
         if (imageFile.isEmpty()) {
-            throw new ImageNotValidException("File gambar tidak boleh kosong", fallback);
+            throw new ImageNotValidException(fallback, "gambar tidak boleh kosong");
         }
 
         if (imageFile.getSize() > MAXIMUM_IMAGE_SIZE) {
-            throw new ImageNotValidException("File terlalu besar, maksimal 2MB", fallback);
+            throw new ImageNotValidException(fallback, "Maksimal besar gambar adalah 2MB");
         }
 
         try {
@@ -112,5 +113,24 @@ public class ImageUtils {
 
     public String getUploadDir() {
         return IMAGE_UPLOAD_DIR;
+    }
+
+    @Async("taskExecutor")
+    public void deleteFilesBatch(List<String> fileNames) {
+        if (fileNames == null || fileNames.isEmpty()) {
+            return;
+        }
+
+        fileNames.stream()
+                .filter(fileName -> fileName != null && !fileName.isBlank())
+                .forEach(fileName -> {
+                    try {
+                        Path filePath = Paths.get(IMAGE_UPLOAD_DIR, fileName);
+                        Files.deleteIfExists(filePath);
+                        log.debug("File dihapus: {}", fileName);
+                    } catch (IOException e) {
+                        log.error("Gagal menghapus file: {}", fileName, e);
+                    }
+                });
     }
 }

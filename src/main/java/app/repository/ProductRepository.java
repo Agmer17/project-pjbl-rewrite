@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import app.model.entity.Product;
@@ -31,6 +32,26 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             ORDER BY p.createdAt DESC
             """)
     Page<ProductProjection> findAllProductsForDashboard(Pageable pageable);
+
+    @Query("""
+                SELECT
+                    p.id AS id,
+                    p.name AS name,
+                    p.desc AS desc,
+                    p.price AS price,
+                    c.id AS categoryId,
+                    c.name AS categoryName,
+                    p.createdAt AS createdAt,
+                    MIN(CASE WHEN pi.galleryImage = false THEN pi.imageFileName END) AS thumbnailUrl,
+                    COUNT(pi.id) AS imageCount
+                FROM Product p
+                LEFT JOIN p.category c
+                LEFT JOIN p.images pi
+                WHERE (:categoryId IS NULL OR c.id = :categoryId)
+                GROUP BY p.id, p.name, p.desc, p.price, c.id, c.name, p.createdAt
+            """)
+    Page<ProductProjection> findAllProductsForDashboard(
+            @Param("categoryId") UUID categoryId, Pageable pageable);
 
     @Query(value = """
             SELECT

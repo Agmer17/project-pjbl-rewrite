@@ -1,6 +1,5 @@
 package app.exception;
 
-import org.springframework.http.HttpStatus;
 
 import app.exception.common.BaseException;
 import lombok.Getter;
