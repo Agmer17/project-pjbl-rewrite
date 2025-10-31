@@ -50,6 +50,7 @@ public class ProductImageService {
                                         ProductImage.builder()
                                                         .imageFileName(savedFileNames.get(i))
                                                         .product(product)
+                                                        .galleryImage(i == 0)
                                                         .imageOrder(i + 1)
                                                         .build());
                 }
@@ -85,7 +86,7 @@ public class ProductImageService {
                                 .toList();
 
                 shiftImageOrder(product, deletedOrders);
-                
+
                 repo.deleteAllByIdIn(imageIds);
 
                 deleteAllFiles(imageFileNames);
@@ -105,13 +106,14 @@ public class ProductImageService {
                 // for future programmer, tolong optimisasi ini
                 // soalnya buat delete gambar sampe 3 query lebih, nanti ubah aja jpa nya biar
                 // jadi 2 query
-                List<ProductImage> remainingImages = repo.findAllByProduct(product);
+                List<ProductImage> remainingImages = product.getImages();
 
                 remainingImages.sort(Comparator.comparing(ProductImage::getImageOrder));
 
-                int currentOrder = 1;
-                for (ProductImage img : remainingImages) {
-                        img.setImageOrder(currentOrder++);
+                for (Integer deletedOrder : deletedOrders) {
+                        remainingImages.stream()
+                                        .filter(img -> img.getImageOrder() > deletedOrder)
+                                        .forEach(img -> img.setImageOrder(img.getImageOrder() - 1));
                 }
 
                 repo.saveAll(remainingImages);

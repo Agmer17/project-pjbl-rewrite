@@ -11,6 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import app.interceptor.AdminInterceptor;
 import app.interceptor.JwtAuthenticationInterceptor;
+import app.interceptor.OptionalJwtSessionInterceptor;
 import app.utils.ImageUtils;
 
 @Configuration
@@ -25,12 +26,17 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Autowired
     private ImageUtils imageUtils;
 
+    @Autowired
+    private OptionalJwtSessionInterceptor oInterceptor;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor).addPathPatterns("/user/**", "/live-chat/**", "/live-chat",
                 "/admin", "/admin/**");
 
         registry.addInterceptor(adminInterceptor).addPathPatterns("/admin", "/admin/**");
+
+        registry.addInterceptor(oInterceptor).addPathPatterns("/**");
     }
 
     @Override
