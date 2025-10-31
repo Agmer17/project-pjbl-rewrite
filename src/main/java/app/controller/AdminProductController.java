@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import app.exception.FieldValidationException;
 import app.model.dto.ProductPostDto;
+import app.model.dto.UpdateProductRequest;
 import app.model.entity.Product;
 import app.model.entity.ProductCategory;
 import app.model.entity.ProductProjection;
@@ -80,15 +81,33 @@ public class AdminProductController {
     }
 
     @GetMapping("/edit/{id}")
-    public String getEditPage(@PathVariable UUID productId) {
+    public String getEditPage(@PathVariable UUID id, Model model) {
+
+        Product product = productService.getProductDetails(id);
+
+        model.addAttribute("product", product);
+        model.addAttribute("formRequest", new UpdateProductRequest());
+        model.addAttribute("categories", productService.getAllCategory());
     
-        return null;
+        return "admin/EditProduct";
     }
     
 
     @PostMapping("/edit/{id}")
-    public String postEditProduct() {        
-        return null;
+    public String postEditProduct(@PathVariable UUID id, 
+    @Valid @ModelAttribute UpdateProductRequest req,
+    BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            throw new FieldValidationException("Harap isi data dengan benar", bindingResult, "/admin/products/edit/"+id); 
+
+        }
+
+        productService.editProduct(req);
+
+
+
+        return "redirect:/admin/products/edit/"+id;
     }
 
     @GetMapping("/delete/{id}")

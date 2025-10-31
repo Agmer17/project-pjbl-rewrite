@@ -85,16 +85,14 @@ public class ImageUtils {
             futures.add(saveImageAsync(files.get(i), allFileExt.get(i)));
         }
 
-        // Tunggu semua selesai, meski salah satu error
         CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
-        // Ambil hasil file name yang sukses
         return futures.stream()
                 .map(f -> {
                     try {
                         return f.join();
                     } catch (Exception e) {
-                        return null; // abaikan yang gagal
+                        return null;
                     }
                 })
                 .filter(Objects::nonNull)

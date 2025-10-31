@@ -28,22 +28,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Format harga
     priceInput.addEventListener("input", (e) => {
-        let value = e.target.value.replace(/,/g, "");
+        let value = e.target.value.replace(/\./g, "");
         if (!isNaN(value) && value.length > 0) {
-            e.target.value = Number(value).toLocaleString("en-US");
+            e.target.value = Number(value).toLocaleString("id-ID");
         } else {
             e.target.value = "";
         }
     });
 
-    // 🔥 INTERCEPT FORM SUBMIT - Kirim hanya file yang valid
     form?.addEventListener("submit", (e) => {
-        e.preventDefault(); // Stop default submit
+        e.preventDefault();
 
-        // Bersihkan format harga
-        priceInput.value = priceInput.value.replace(/,/g, "");
+        priceInput.value = priceInput.value.replace(/\./g, "")
 
         // Validasi gambar
         const allFileInputs = [

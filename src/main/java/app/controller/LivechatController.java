@@ -84,6 +84,7 @@ public class LivechatController {
 
                 UUID userId = UUID.fromString(creds.get("id", String.class));
 
+
                 ChatHistoryDto data = service.getHistoryBeetween(userId, receiverId);
 
                 model.addAttribute("data", data);

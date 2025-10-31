@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import app.exception.DataNotFoundEx;
 import app.model.custom.UserRole;
 import app.model.dto.ChatHistoryDto;
 import app.model.dto.ChatListDto;
@@ -103,8 +104,15 @@ public class LiveChatService {
                         .build())
                 .collect(Collectors.toList());
 
-        UserProfileProjection senderData = userRepository.findProfileById(sender).get();
-        UserProfileProjection receiverData = userRepository.findProfileById(receiver).get();
+        UserProfileProjection senderData = userRepository.findProfileById(sender).orElse(null);
+        UserProfileProjection receiverData = userRepository.findProfileById(receiver).orElse(null);
+
+
+        if (senderData == null || receiverData == null) {
+
+            throw new DataNotFoundEx("Akun kamu mungkin telah terhapus, silahkan login ulang", "/login");
+            
+        }
 
         return ChatHistoryDto
                 .builder()
