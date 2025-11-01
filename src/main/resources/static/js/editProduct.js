@@ -4,7 +4,7 @@
 let updatedImageIds = [];      // List<UUID>
 let updatedImageFiles = [];    // List<MultipartFile>
 let imageToDelete = new Set(); // Set<UUID>
-let newImagesFilesTemp = [];   // List<File>
+let newImagesFilesTemp = new Map();
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // ===== HANDLE ADD NEW IMAGE =====
     document.querySelectorAll(".input-image-new").forEach(input => {
         input.addEventListener("change", e => {
             const file = e.target.files[0];
@@ -87,15 +88,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const fIndex = String(Date.now())
             newImagesFilesTemp.set(fIndex, file)
+
+            console.log(newImagesFilesTemp.values())
             imgEl.dataset.index = fIndex
 
 
             imgEl.classList.remove("hidden");
+            // 💡 REVISI: Menggunakan h-full object-cover untuk aspek kotak dan terpusat
             imgEl.classList.add(
                 "w-full",
-                "h-56",
-                "md:h-64",
-                "object-cover",
+                "h-full",
+                "object-cover", // PAKSA CENTER & FILL
                 "transition-transform",
                 "duration-300",
                 "group-hover:scale-105"
@@ -104,7 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
             if (svgPlaceholder) svgPlaceholder.classList.add("hidden");
             if (textPlaceholder) textPlaceholder.classList.add("hidden");
 
-            wrapper.className = "relative w-full rounded-2xl overflow-hidden group shadow-lg border border-neutral";
+            // 💡 REVISI: Mengubah class wrapper agar sesuai dengan style gambar yang sudah ada (kotak)
+            wrapper.className = "relative w-full rounded-lg overflow-hidden group shadow-md shadow-base-300/70 border border-base-300/70 aspect-square";
 
             const overlay = wrapper.querySelector(".overlay");
             const actions = wrapper.querySelector(".actions");
@@ -120,6 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // ===== HANDLE DELETE NEW IMAGE =====
     document.querySelectorAll(".btn-new-delete").forEach(delBtn => {
         delBtn.addEventListener("click", (e) => {
             const actionsDiv = e.target.closest(".actions");
@@ -131,9 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const img = wrapper.querySelector(".new-img-uploads");
             const dataIndex = img?.dataset.index;
 
-            const svgPlaceholder = wrapper.querySelector(".placeholder-svg");
-            if (svgPlaceholder) svgPlaceholder.classList.remove("hidden");
-
+            // Logika Map tetap sama
             if (dataIndex && newImagesFilesTemp.has(dataIndex)) {
                 newImagesFilesTemp.delete(dataIndex);
             }
@@ -146,6 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
+    // ===== HANDLE EDIT NEW IMAGE SLOT (RE-UPLOAD) =====
     document.querySelectorAll(".input-new-edit").forEach(update => {
         update.addEventListener("change", (e) => {
 
@@ -163,7 +167,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const index = imgEl.dataset.index;
 
+            // Logika Map tetap sama
             newImagesFilesTemp.set(index, file)
+
+            console.log(newImagesFilesTemp)
             imgEl.onload = () => URL.revokeObjectURL(imgEl.src)
 
             console.log(newImagesFilesTemp)
@@ -171,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
     })
 
-
+    // ===== PRICE INPUT FORMATTING (Tetap sama) =====
     const input = document.querySelector("#price");
     input.addEventListener("input", (e) => {
         const cursor = input.selectionStart; // simpan posisi kursor
@@ -181,8 +188,6 @@ document.addEventListener("DOMContentLoaded", () => {
         input.setSelectionRange(cursor, cursor); // biar kursor gak lompat
     });
 
-
-    const form = document.querySelector("#updateProductForm");
     const priceInput = document.querySelector("#price");
 
     // bikin supaya saat diketik ada format titik ribuan
@@ -195,75 +200,89 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    // ===== FORM SUBMIT LOGIC (Tetap sama) =====
+    const form = document.querySelector("#updateProductForm");
 
-        const formData = new FormData();
-        const id = document.querySelector("#productId")?.value;
-        const name = document.querySelector("#productName")?.value;
-        const description = document.querySelector("#productDescription")?.value;
-        const price = priceInput.value.replace(/\./g, "");
-        const categoryId = document.querySelector("select[name='categoryId']")?.value;
+    form.addEventListener("submit", (e) => {
+        // jangan preventDefault, biar SSR redirect + flash attribute jalan
 
-        // ✅ Basic fields
-        formData.append("id", id);
-        formData.append("name", name);
-        formData.append("description", description);
-        formData.append("price", price);
-        formData.append("categoryId", categoryId);
+        // --- Bersihkan hidden/input file dinamis lama ---
+        form.querySelectorAll("input[data-dynamic]").forEach(el => el.remove());
 
-        // ✅ New images (List<MultipartFile>)
-        newImagesFilesTemp.forEach((file) => {
-            formData.append("newImagesFiles", file);
+        // --- Price hidden (bersih tanpa titik ribuan) ---
+        let rawPrice = priceInput.value.replace(/\./g, "");
+        let priceHidden = document.createElement("input");
+        priceHidden.type = "hidden";
+        priceHidden.name = "price"; // ini yang akan dikirim ke Spring
+        priceHidden.value = rawPrice;
+        priceHidden.dataset.dynamic = "true";
+        form.appendChild(priceHidden);
+
+        // --- File baru ---
+        newImagesFilesTemp.forEach(file => {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            const input = document.createElement("input");
+            input.type = "file";
+            input.name = "newImagesFiles";
+            input.files = dt.files;
+            input.dataset.dynamic = "true";
+            form.appendChild(input);
         });
 
-        // ✅ Images to delete (List<UUID>)
-        imageToDelete.forEach((id) => {
-            formData.append("imageToDelete", id);
+        // --- File yang diupdate ---
+        updatedImageFiles.forEach(file => {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            const input = document.createElement("input");
+            input.type = "file";
+            input.name = "updatedImageFiles";
+            input.files = dt.files;
+            input.dataset.dynamic = "true";
+            form.appendChild(input);
         });
 
-        // ✅ Updated images - 2 list terpisah (harus urutan sama!)
-        updatedImageIds.forEach((id) => {
-            formData.append("updatedImageIds", id);
+        // --- ID gambar yang diupdate ---
+        updatedImageIds.forEach(id => {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "updatedImageIds";
+            input.value = id;
+            input.dataset.dynamic = "true";
+            form.appendChild(input);
         });
 
-        updatedImageFiles.forEach((file) => {
-            formData.append("updatedImageFiles", file);
+        // --- ID gambar yang dihapus ---
+        imageToDelete.forEach(id => {
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.name = "imageToDelete";
+            input.value = id;
+            input.dataset.dynamic = "true";
+            form.appendChild(input);
         });
 
-        // Debug log
-        console.log("=== SUBMITTING DATA ===");
-        console.log("Updated IDs:", updatedImageIds);
-        console.log("Updated Files:", updatedImageFiles.map(f => f.name));
-        console.log("New Images:", newImagesFilesTemp.map(f => f.name));
-        console.log("To Delete:", Array.from(imageToDelete));
+        // Debug
+        console.log("=== DATA YANG DIKIRIM ===");
+        console.log("Price:", rawPrice);
+        console.log("New Files:", [...newImagesFilesTemp.values()].map(f => f.name));
+        console.log("Updated Files:", [...updatedImageFiles.values()].map(f => f.name));
+        console.log("Updated IDs:", [...updatedImageIds]);
+        console.log("Deleted IDs:", [...imageToDelete]);
 
-        try {
-            const res = await fetch(`/admin/products/edit/${id}`, {
-                method: "POST",
-                body: formData
-            });
-
-            if (res.redirected) {
-                window.location.href = res.url;
-            } else if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
-        } catch (err) {
-            console.error("❌ Gagal mengirim data:", err);
-            alert("Terjadi kesalahan saat menyimpan produk. Silakan coba lagi.");
-        }
+        // --- Submit form ---
+        form.submit();
     });
+
+
 
 })
 
+// ===== RESET IMAGE SLOT FUNCTION (Hanya Perbaikan Class) =====
 function resetImageSlot(wrapper) {
     const imgEl = wrapper.querySelector(".new-img-uploads");
 
-    // Perbaikan: Gunakan class unik .placeholder-svg untuk menargetkan SVG placeholder utama
     const svgPlaceholder = wrapper.querySelector(".placeholder-svg");
-
-    // Asumsi: span "Tambah gambar" berada dalam label yang sama dengan placeholder-svg
     const textPlaceholder = wrapper.querySelector("label span");
 
     const overlay = wrapper.querySelector(".overlay");
@@ -273,17 +292,17 @@ function resetImageSlot(wrapper) {
         imgEl.classList.add("hidden");
         imgEl.removeAttribute("src");
         delete imgEl.dataset.index;
+        // 💡 REVISI: Menghapus class h-full w-full object-cover
+        imgEl.classList.remove("w-full", "h-full", "object-cover", "transition-transform", "duration-300", "group-hover:scale-105");
     }
 
-    // SVG placeholder sekarang akan muncul kembali
     if (svgPlaceholder) svgPlaceholder.classList.remove("hidden");
-
-    // Text placeholder juga muncul kembali
     if (textPlaceholder) textPlaceholder.classList.remove("hidden");
 
     if (overlay) overlay.classList.add("hidden");
     if (actions) actions.classList.add("hidden");
 
+    // 💡 REVISI: Mengembalikan class wrapper ke kondisi awal yang memiliki aspect-square
     wrapper.className =
-        "relative w-full h-56 md:h-64 flex items-center justify-center border-2 border-dashed border-neutral-400 rounded-2xl cursor-pointer hover:bg-neutral/10 transition-colors duration-300 group";
+        "relative w-full aspect-square flex items-center justify-center border-2 border-dashed border-primary/50 rounded-lg cursor-pointer hover:bg-base-300 transition-colors duration-300 group shadow-md shadow-base-300/70";
 }

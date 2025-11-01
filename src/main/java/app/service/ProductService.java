@@ -98,9 +98,12 @@ public class ProductService {
                 .orElseThrow(() -> new DataNotFoundEx("barang mungkin telah terhapus", "/admin/products/"));
     }
 
+    @Transactional
     public void editProduct(UpdateProductRequest request) {
         Product product = productRepository.findById(request.getId())
         .orElseThrow(()-> new DataNotFoundEx("Produk mungkin telah terhapus! hubungi admin lainnya", "/admin/products/"));
+        // System.out.printf("\n\n\n\n\n\n\n\n\n\n size array file baru : %d\n\n\n\n\n\n\n\n\n\n\n", request.getNewImagesFiles().size());
+        // System.out.printf("\n\n\n\n\n\n\n\n\n\n size array file baru : %s\n\n\n\n\n\n\n\n\n\n\n", request.getNewImagesFiles().get(0).getOriginalFilename());
 
 
         if (request.getImageToDelete() != null &&!request.getImageToDelete().isEmpty()) {
@@ -110,15 +113,27 @@ public class ProductService {
 
         if (request.getUpdatedImageIds() != null && request.getUpdatedImageFiles() != null) {
             
-            
             if (!validateUpdatedImages(request)) {
                 throw new ImageNotValidException("/admin/products/edit/"+request.getId(), "Data gambar tidak valid");
             }
 
-            
-            System.out.println("\n\n\n\n\n\n\n\n\n udah muncul dan bsia diupdate \n\n\n\n\n\n\n");
-
+            productImageService.editImageFromRequest(request.getUpdatedImageIds(), request.getUpdatedImageFiles(), product);
         }
+
+        
+        if (request.getNewImagesFiles() != null) {
+            
+            if (!request.getNewImagesFiles().isEmpty()) {
+                productImageService.saveAllImageToExistingProduct(request.getNewImagesFiles(), "/admin/products/edit/"+product.getId(), product);
+            }
+        }
+
+
+        product.setName(request.getName());
+        product.setDesc(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setCategory(categoryService.getById(request.getCategoryId()));
+
 
 
     }

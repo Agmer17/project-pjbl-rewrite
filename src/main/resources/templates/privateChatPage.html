@@ -16,6 +16,9 @@
 <body class="bg-base-100 text-base-content flex flex-col min-h-screen font-sans w-screen">
     <div th:replace="fragment/navbar :: navbar"></div>
 
+    <div class="hidden ring-success"></div>
+    <div class="hidden ring-base-200"></div>
+
     <!-- 🧠 Header -->
     <header class="navbar bg-base-100 shadow-md border-b border-base-200 sticky top-16 z-40">
         <div class="flex items-center gap-3 px-4 py-2 w-full">
@@ -29,11 +32,11 @@
 
             <!-- avatar punya receiver -->
 
-             
+
             <div id="receiverAvatar" class="avatar relative">
-                <div class="w-10 md:w-12 rounded-full ring ring-neutral ring-offset-base-100 ring-offset-2">
+                <div class="w-10 md:w-12 rounded-full ring ring-base-200 ring-offset-base-100 ring-offset-2">
                     <img th:src="@{${#strings.isEmpty(data.receiver.profilePicture) ? '/img/default.jpg' : '/uploads/' + data.receiver.profilePicture}}"
-                            alt="Profile Picture" />
+                        alt="Profile Picture" />
                 </div>
             </div>
 
@@ -94,6 +97,7 @@
                 const res = await fetch('/live-chat/online-users');
                 if (!res.ok) throw new Error('Fetch failed');
                 const onlineUserIds = await res.json();
+                console.log(onlineUserIds)
                 const isOnline = onlineUserIds.map(String).includes(String(receiverId));
                 updateAvatarStatus(isOnline);
             } catch (err) {
@@ -101,13 +105,17 @@
             }
         }
 
-        // === 🟢 Update avatar class ===
         function updateAvatarStatus(isOnline) {
             receiverAvatar.classList.remove('avatar-online', 'avatar-offline');
             receiverAvatar.classList.add(isOnline ? 'avatar-online' : 'avatar-offline');
+
+            const ringElement = receiverAvatar.querySelector('.rounded-full');
+            if (ringElement) {
+                ringElement.classList.remove('ring-base-200', 'ring-success');
+                ringElement.classList.add(isOnline ? 'ring-success' : 'ring-base-200');
+            }
         }
 
-        // === 💬 WebSocket ===
         stompClient.connect({}, () => {
             console.log('✅ WebSocket Connected');
 
@@ -117,14 +125,15 @@
             });
 
             // dengarkan event presence
-            stompClient.subscribe('/topic/presence', (payload) => {
-                const event = JSON.parse(payload.body);
-                if (event.userId === receiverId) {
-                    updateAvatarStatus(event.type === 'USER_ONLINE');
-                    console.log(event.type === 'USER_ONLINE'
-                        ? `🟢 ${receiverId} online`
-                        : `🔴 ${receiverId} offline`);
-                }
+            stompClient.subscribe('/topic/online-users', (payload) => {
+                const onlineUserIds = JSON.parse(payload.body);
+                console.log("yg online sekarang dari event" + onlineUserIds)
+                const isOnline = onlineUserIds.map(String).includes(String(receiverId));
+
+                console.log("apakah receiver online " + isOnline)
+
+
+                updateAvatarStatus(isOnline);
             });
 
             checkReceiverOnline(); // pertama kali load

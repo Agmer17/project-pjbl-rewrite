@@ -4,54 +4,119 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin - Tambah Pengguna Baru</title>
+    <title>Admin - Edit Layanan</title>
     <link rel="stylesheet" th:href="@{/css/output.css}" />
 </head>
 
-<body class="font-sans bg-base-100 min-h-screen text-neutral">
-
-
+<body class="font-sans bg-base-200 min-h-screen text-neutral">
     <div th:replace="fragment/navbar :: navbar"></div>
 
-    <div class="flex flex-col lg:flex-row mt-16 min-h-screen mb-20 bg-base-100">
+    <div class="flex flex-col lg:flex-row mt-16 min-h-screen mb-20 bg-base-200">
 
         <div th:replace="fragment/navbar :: sidebar('products')"></div>
 
-        <main class="h-full w-full lg:w-[calc(100%-4rem)] lg:p-0">
 
-            <form th:action="@{/admin/products/update/{id}(${product.id})}" th:object="${formrequest}"
-                class="p-4 h-full" id="updateProductForm">
+        <main class="h-full w-full lg:w-[calc(100%-4rem)] p-4 lg:p-8">
 
-                <div class="w-full flex flex-col lg:flex-row gap-4">
-                    <div class="card flex-1 shadow-xl p-4 mb-4 lg:mb-0 bg-white rounded-2xl border-neutral border">
-                        <h1 class="font-semibold text-3xl mb-3">Product Image</h1>
-                        <div class="divider divider-neutral"></div>
+            <div class="flex w-full gap-4 font-bold mb-4">
+                <div class="text-neutral">
+                    <a th:href="@{/admin/products/}" class="btn btn-outline btn-neutral btn-sm sm:btn-md">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
 
-                        <div class="relative w-full rounded-2xl overflow-hidden group shadow-sm border border-neutral">
+            <div class="w-full flex mb-4" th:if="${errorMessage}">
+                <div
+                    class="alert alert-error shadow-lg rounded-xl flex w-full justify-between items-center transition-opacity duration-500 ease-in opacity-100">
+                    <div class="flex gap-4 items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+
+                        <span th:text="${errorMessage}"></span>
+                    </div>
+                    <div class="flex-none">
+                        <button class="btn btn-sm btn-ghost btn-circle" onclick="this.closest('.alert').remove()">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-current" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="w-full flex mb-4" th:if="${successMsg}">
+                <div
+                    class="alert alert-success shadow-lg rounded-xl flex w-full justify-between items-center transition-opacity duration-500 ease-in opacity-100">
+                    <div class="flex gap-4 items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span th:text="${successMsg}"></span>
+                    </div>
+                    <div class="flex-none">
+                        <button class="btn btn-sm btn-ghost btn-circle" onclick="this.closest('.alert').remove()">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-current" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+            <form th:action="@{/admin/products/edit/{id}(id=${product.id})}" th:object="${formrequest}"
+                class="h-full w-full" id="updateProductForm" method="post">
+
+                <div class="w-full flex flex-col lg:flex-row gap-8">
+
+                    <div
+                        class="lg:flex-[0.6] card p-6 mb-4 lg:mb-0 bg-white rounded-2xl shadow-xl shadow-base-300/50 border border-base-300/50">
+                        <h1 class="font-extrabold text-3xl text-primary mb-4 border-b-2 border-base-300/70 pb-2">🖼️
+                            Product Media</h1>
+
+                        <div class="divider divider-base-300 my-0 opacity-0"></div>
+
+                        <div
+                            class="relative w-full rounded-xl overflow-hidden group shadow-2xl shadow-primary/30 border-2 border-primary/20 mt-4 aspect-video">
+
                             <img th:src="@{'/uploads/' + ${product.images[0].imageFileName}}" alt="Product"
-                                class="w-full aspect-video object-cover transition-transform duration-300 group-hover:scale-105" />
+                                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                loading="lazy" />
 
                             <div
-                                class="absolute inset-0 bg-black/50 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                class="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-all duration-300">
                             </div>
 
-                            <div class="absolute top-2 right-2 flex gap-2 opacity-100 z-10">
-
+                            <div class="absolute top-3 right-3 flex gap-2 opacity-100 z-10">
                                 <label
-                                    class="btn btn-sm btn-primary shadow-md cursor-pointer flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    class="btn btn-xs btn-primary shadow-xl cursor-pointer flex items-center justify-center rounded-full hover:bg-primary-focus">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414
                                 a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                     </svg>
-                                    <input type="file" name="image" class="hidden input-image-edit" accept="image/*"
+                                    <input type="file" class="hidden input-image-edit" accept="image/*"
                                         th:attr="data-image-id=${product.images[0].id}">
                                 </label>
 
                                 <button type="button"
-                                    class="btn btn-sm btn-error shadow-md flex items-center justify-center btn-delete"
+                                    class="btn btn-xs btn-error shadow-xl flex items-center justify-center btn-delete rounded-full hover:bg-error-focus"
                                     th:attr="data-image-id=${product.images[0].id}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862
                                 a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4
@@ -61,164 +126,166 @@
                             </div>
 
                             <div
-                                class="absolute inset-0 flex items-center justify-center text-white font-medium text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                Gambar thumbnail
+                                class="absolute inset-0 flex items-center justify-center text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                Gambar Utama
                             </div>
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-6">
+                        <h2 class="font-bold text-xl text-gray-700 mt-6 mb-3">Galeri Produk (Max 4)</h2>
+                        <div class="grid grid-cols-3 sm:grid-cols-4 gap-4">
                             <div th:each="image, iterStat : ${product.images}"
                                 th:if="${iterStat.index > 0 and iterStat.index <= 4}"
-                                class="relative w-full rounded-2xl overflow-hidden group shadow-lg border border-neutral">
-
+                                class="relative w-full rounded-lg overflow-hidden group shadow-md shadow-base-300/70 border border-base-300/70 aspect-square">
                                 <img th:src="@{'/uploads/' + ${image.imageFileName}}" alt="Product Image"
-                                    class="w-full h-56 md:h-64 object-cover transition-transform duration-300 group-hover:scale-105" />
-
+                                    class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    loading="lazy" />
                                 <div
-                                    class="absolute inset-0 bg-black/50 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                    class="absolute inset-0 bg-black/40 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-all duration-300">
                                 </div>
 
-                                <div class="absolute top-3 right-3 flex gap-2 opacity-100 z-10">
+                                <div class="absolute top-2 right-2 flex gap-1 opacity-100 z-10">
                                     <label
-                                        class="btn btn-sm btn-primary shadow-md cursor-pointer flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        class="btn btn-xs btn-primary shadow-lg cursor-pointer flex items-center justify-center rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414
                                     a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
-                                        <input type="file" name="image" class="hidden input-image-edit" accept="image/*"
+                                        <input type="file" class="hidden input-image-edit" accept="image/*"
                                             th:attr="data-image-id=${image.id}" />
                                     </label>
 
                                     <button type="button"
-                                        class="btn btn-sm btn-error shadow-md flex items-center justify-center btn-delete"
+                                        class="btn btn-xs btn-error shadow-lg flex items-center justify-center btn-delete rounded-full"
                                         th:attr="data-image-id=${image.id}">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862
                                     a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4
                                     a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </button>
-                                </div>
-
-                                <div
-                                    class="absolute inset-0 flex items-center justify-center text-white font-semibold text-base opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                    Gambar produk [[${iterStat.index}]]
                                 </div>
                             </div>
 
                             <div th:if="${#lists.size(product.images) < 5}"
-                                th:each="i : ${#numbers.sequence(#lists.size(product.images) + 1, 5)}" class="relative w-full h-56 md:h-64 flex items-center justify-center border-2 border-dashed
-     border-neutral-400 rounded-2xl cursor-pointer hover:bg-neutral/10 transition-colors
-     duration-300 group">
-
+                                th:each="i : ${#numbers.sequence(#lists.size(product.images) + 1, 5)}" class="relative w-full aspect-square flex items-center justify-center border-2 border-dashed
+                                border-primary/50 rounded-lg cursor-pointer hover:bg-base-300 transition-colors
+                                duration-300 group shadow-md shadow-base-300/70">
                                 <img src="" class="hidden new-img-uploads">
 
                                 <div
-                                    class="overlay absolute inset-0 bg-black/50 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-all duration-300 hidden">
+                                    class="overlay absolute inset-0 bg-black/40 backdrop-blur-[1px] opacity-0 group-hover:opacity-100 transition-all duration-300 hidden">
                                 </div>
-
                                 <div class="actions absolute top-3 right-3 flex gap-2 z-10 hidden">
                                     <label
-                                        class="btn btn-sm btn-primary shadow-md cursor-pointer flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        class="btn btn-xs btn-primary shadow-lg cursor-pointer flex items-center justify-center rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414
-                                    a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414 a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                         <input type="file" class="hidden input-new-edit" accept="image/*" />
                                     </label>
-
                                     <button type="button"
-                                        class="btn btn-sm btn-error shadow-md flex items-center justify-center btn-new-delete">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+                                        class="btn btn-xs btn-error shadow-lg flex items-center justify-center btn-new-delete rounded-full">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862
-                                    a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4
-                                    a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862 a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4 a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </button>
                                 </div>
 
-                                <label class="flex flex-col items-center justify-center gap-2 cursor-pointer">
+                                <label class="flex flex-col items-center justify-center gap-2 cursor-pointer p-2">
                                     <svg xmlns="http://www.w3.org/2000/svg"
-                                        class="h-12 w-12 text-neutral-500 group-hover:text-neutral-700 placeholder-svg"
+                                        class="h-8 w-8 text-primary group-hover:text-primary-focus placeholder-svg"
                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M12 4v16m8-8H4" />
                                     </svg>
                                     <span
-                                        class="text-neutral-500 text-base font-medium group-hover:text-neutral-700">Tambah
-                                        gambar</span>
-                                    <input type="file" name="newImagesFiles" class="hidden input-image-new"
-                                        accept="image/*" />
+                                        class="text-neutral-500 text-xs font-medium group-hover:text-neutral-700">Tambah</span>
+                                    <input type="file" class="hidden input-image-new" accept="image/*" />
                                 </label>
                             </div>
                         </div>
 
                     </div>
 
-                    <!-- data layanan -->
-                    <div class="card flex-1 p-4 card-lg shadow-xl bg-white rounded-2xl border border-neutral">
-                        <h1 class="text-2xl md:text-3xl font-semibold">Data Layanan</h1>
-                        <div class="divider-neutral divider"></div>
+                    <div
+                        class="lg:flex-[0.4] card p-6 bg-white rounded-2xl shadow-xl shadow-base-300/50 border border-base-300/50">
+                        <h1
+                            class="text-2xl md:text-3xl font-extrabold text-primary mb-4 border-b-2 border-base-300/70 pb-2">
+                            📝 Detail Data</h1>
+
+                        <div class="divider-base-300 divider my-0 opacity-0"></div>
 
                         <input type="hidden" name="id" id="productId" th:value="${product.id}">
 
-                        <fieldset class="fieldset text-neutral">
-                            <legend class="fieldset-legend text-[18px]">Nama layanan</legend>
-                            <input type="text" class="input input-primary focus-within:outline-primary"
-                                placeholder="nama baru" th:value="${product.name}" id="productName" />
-                            <p th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'name')}"
-                                th:text="${validationErrors.name}" class="label text-error">error</p>
-                        </fieldset>
-
-                        <fieldset class="fieldset">
-                            <legend class="fieldset-legend">Deskrips layanan</legend>
-                            <textarea class="textarea h-24 w-full textarea-neutral" placeholder="deskripsi"
-                                th:text="${product.desc}" id="productDescription"></textarea>
-                            <div class="label text-error"
-                                th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'description')}"
-                                th:text="${validationErrors.description}"></div>
+                        <fieldset class="fieldset text-neutral mt-4">
+                            <legend class="fieldset-legend text-lg font-semibold text-gray-700 mb-1">Nama layanan
+                            </legend>
+                            <input type="text"
+                                th:classappend="${validationErrors != null and #maps.containsKey(validationErrors, 'name')} ? 'border-error ring-2 ring-error' : 'focus:border-primary focus:ring-2 focus:ring-primary/50'"
+                                class="input input-bordered w-full transition-all duration-200" placeholder="nama baru"
+                                th:value="${product.name}" id="productName" name="name" />
+                            <label class="label"
+                                th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'name')}">
+                                <span class="label-text-alt text-error" th:text="${validationErrors.name}">Error
+                                    message</span>
+                            </label>
                         </fieldset>
 
                         <fieldset class="fieldset text-neutral">
-                            <legend class="fieldset-legend text-[18px]">Harga layanan</legend>
-                            <input type="text" id="price" class="input input-primary focus-within:outline-primary"
-                                placeholder="harga baru"
-                                th:value="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}" />
-                            <p th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'price')}"
-                                th:text="${validationErrors.price}" class="label text-error">
-                                error
-                            </p>
-                        </fieldset>
-
-                        <fieldset class="fieldset text-neutral">
-                            <legend class="fieldset-legend text-[18px]">Kategori</legend>
-                            <select name="categoryId" class="select select-primary w-full" required>
+                            <legend class="fieldset-legend text-lg font-semibold text-gray-700 mb-1">Kategori</legend>
+                            <select name="categoryId"
+                                class="select select-bordered w-full select-md transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/50"
+                                required>
                                 <option value="" disabled th:if="${product.category == null}" selected>Pilih kategori
                                 </option>
-
                                 <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
                                     th:selected="${product.category != null and c.id == product.category.id}">
                                 </option>
                             </select>
                         </fieldset>
 
+                        <fieldset class="fieldset text-neutral">
+                            <legend class="fieldset-legend text-lg font-semibold text-gray-700 mb-1">Harga layanan (Rp)
+                            </legend>
+                            <input type="text" id="price"
+                                th:classappend="${validationErrors != null and #maps.containsKey(validationErrors, 'price')} ? 'border-error ring-2 ring-error' : 'focus:border-primary focus:ring-2 focus:ring-primary/50'"
+                                class="input input-bordered w-full transition-all duration-200" placeholder="harga baru"
+                                th:value="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}" />
+                            <p th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'price')}"
+                                th:text="${validationErrors.price}" class="label text-error text-sm font-medium">
+                                error
+                            </p>
+                        </fieldset>
+
+                        <fieldset class="fieldset">
+                            <legend class="fieldset-legend text-lg font-semibold text-gray-700 mb-1">Deskripsi layanan
+                            </legend>
+                            <textarea
+                                th:classappend="${validationErrors != null and #maps.containsKey(validationErrors, 'description')} ? 'border-error ring-2 ring-error' : 'focus:border-primary focus:ring-2 focus:ring-primary/50'"
+                                class="textarea textarea-bordered h-40 w-full transition-all duration-200"
+                                placeholder="deskripsi" th:text="${product.desc}" id="productDescription"
+                                name="description"></textarea>
+                            <div class="label text-error text-sm font-medium"
+                                th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'description')}"
+                                th:text="${validationErrors.description}"></div>
+                        </fieldset>
 
                     </div>
 
                 </div>
 
-                <div class="w-full flex justify-center">
-                    <div class="w-full md:w-3/4 flex justify-center mt-4 gap-4">
+                <div class="w-full flex flex-col justify-center mt-10 p-4 gap-4 md:flex-row">
 
-                        <button class="btn btn-outline btn-primary font-semibold p-3 flex-1">BATAL</button>
-                        <button type="submit" class="btn btn-success font-semibold p-3 flex-1">SIMPAN</button>
-
-                    </div>
-
+                    <button type="button"
+                        class="btn btn-lg btn-outline p-2 md:p-4 btn-neutral font-semibold flex-1 text-base rounded-lg md:flex-1">BATAL</button>
+                    <button type="submit"
+                        class="btn btn-lg md:p-4 p-2 btn-success font-bold flex-1 text-base rounded-lg shadow-xl shadow-success/30 md:flex-1">SIMPAN</button>
                 </div>
             </form>
 

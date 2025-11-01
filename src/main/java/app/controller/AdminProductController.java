@@ -96,7 +96,8 @@ public class AdminProductController {
     @PostMapping("/edit/{id}")
     public String postEditProduct(@PathVariable UUID id, 
     @Valid @ModelAttribute UpdateProductRequest req,
-    BindingResult bindingResult) {
+    BindingResult bindingResult,
+    RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             throw new FieldValidationException("Harap isi data dengan benar", bindingResult, "/admin/products/edit/"+id); 
@@ -106,7 +107,7 @@ public class AdminProductController {
         productService.editProduct(req);
 
 
-
+        redirectAttributes.addFlashAttribute("successMsg", "Berhasil mengupdate data");
         return "redirect:/admin/products/edit/"+id;
     }
 
