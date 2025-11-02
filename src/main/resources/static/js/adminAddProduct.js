@@ -78,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// 🟢 Fungsi di bawah ini dideklarasikan di global scope
 const categoryDialog = document.getElementById('categoryDialog');
 const categorySelect = document.getElementById('categorySelect');
 

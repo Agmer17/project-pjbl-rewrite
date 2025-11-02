@@ -8,6 +8,8 @@ import app.model.entity.ProductCategory;
 
 public interface ProductCategoryRepo extends JpaRepository<ProductCategory, UUID> {
 
+    Boolean existsByName(String name);
+
     
     
 }
