@@ -271,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Deleted IDs:", [...imageToDelete]);
 
         // --- Submit form ---
-        form.submit();
+        // form.submit();
     });
 
 

@@ -45,7 +45,9 @@ public class ProductCategory {
     @Column(name = "description")
     private String description;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", cascade = { CascadeType.PERSIST, CascadeType.MERGE },
+            orphanRemoval = false 
+    )
     @JsonIgnore
     @Builder.Default
     private List<Product> products = new ArrayList<>();
@@ -53,5 +55,5 @@ public class ProductCategory {
     @Column(name = "created_at")
     @CreationTimestamp
     private LocalDateTime createdAt;
-    
+
 }

@@ -55,7 +55,8 @@ public class Product {
     private BigDecimal price;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false, foreignKey = @ForeignKey(name = "product_category_id_fkey"))
+    @JoinColumn(name = "category_id", nullable = true, // Ubah jadi true
+            foreignKey = @ForeignKey(name = "product_category_id_fkey"))
     @JsonIgnore
     private ProductCategory category;
 

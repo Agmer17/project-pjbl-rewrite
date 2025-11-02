@@ -15,118 +15,137 @@
     <div th:replace="fragment/navbar :: navbar"></div>
 
     <!-- Layout utama -->
-    <div class="flex flex-col lg:flex-row mt-16 min-h-screen mb-20 bg-base-100">
+    <div class="flex flex-col lg:flex-row mt-16 min-h-screen bg-base-100">
         <!-- Sidebar -->
         <div th:replace="fragment/navbar :: sidebar('products')"></div>
-        <main class="bg-white h-full flex flex-col gap-4 p-4 w-full">
-            <div class="w-full flex justify-between px-4">
-                <div class="text-neutral">
-                    <a th:href="@{/admin/products/}"
-                        class="btn btn-outline btn-neutral btn-sm sm:btn-md tooltip tooltip-bottom" data-tip="kembali">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                    </a>
-                </div>
+        <main class="bg-base-100 min-h-screen flex flex-col gap-12 p-6 md:p-10 w-full mb-20">
+
+            <!-- Header: Tombol kembali & edit -->
+            <div class="w-full flex justify-between items-center">
+                <a th:href="@{/admin/products/}"
+                    class="btn btn-circle btn-neutral btn-outline hover:btn-neutral hover:text-base-100 transition-all tooltip"
+                    data-tip="Kembali">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                </a>
+
                 <a th:href="@{/admin/products/edit/{id}(id=${product.id})}"
-                    class="btn btn-warning btn-square tooltip tooltip-bottom" data-tip="Edit Produk">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24"
+                    class="btn btn-square btn-neutral btn-outline tooltip tooltip-left" data-tip="Edit Produk">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                 </a>
             </div>
-            <div class="w-full mx-auto px-4">
-                <div class="flex flex-col md:flex-row gap-10 items-start">
-                    <!-- Carousel -->
-                    <div class="w-full md:w-1/2">
-                        <div class="relative w-full overflow-hidden rounded-2xl border border-neutral-200 shadow-sm">
-                            <div class="carousel w-full">
-                                <div th:each="img, iterStat : ${product.images}" th:id="'slide' + ${iterStat.index}"
-                                    class="carousel-item relative w-full flex justify-center items-center">
-                                    <img th:src="@{'/uploads/' + ${img.imageFileName}}" alt="Product Image"
-                                        class="object-cover w-full h-[300px] sm:h-[400px] md:h-[500px]" />
-                                    <div
-                                        class="absolute inset-x-0 top-1/2 flex justify-between px-3 transform -translate-y-1/2">
-                                        <a th:with="prevIndex = ${iterStat.index == 0 ? #lists.size(product.images) - 1 : iterStat.index - 1}"
-                                            th:href="'#slide' + ${prevIndex}"
-                                            class="btn btn-circle btn-sm bg-white/70 hover:bg-white/90 border-none text-neutral">❮</a>
-                                        <a th:with="nextIndex = ${(iterStat.index + 1) % #lists.size(product.images)}"
-                                            th:href="'#slide' + ${nextIndex}"
-                                            class="btn btn-circle btn-sm bg-white/70 hover:bg-white/90 border-none text-neutral">❯</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
-                        <!-- Thumbnail -->
-                        <div class="flex gap-3 mt-4 overflow-x-auto pb-2 no-scrollbar">
-                            <div th:each="img, iter : ${product.images}"
-                                class="w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border border-neutral-200 hover:border-neutral transition-all cursor-pointer">
-                                <a th:href="'#slide' + ${iter.index}">
-                                    <img th:src="@{'/uploads/' + ${img.imageFileName}}" alt="Thumbnail"
-                                        class="object-cover w-full h-full" />
-                                </a>
+            <!-- Konten utama -->
+            <div class="w-full mx-auto flex flex-col lg:flex-row gap-12 items-start">
+
+                <!-- Gambar utama & thumbnail -->
+                <div class="w-full lg:w-1/2 space-y-4">
+                    <div class="relative w-full overflow-hidden rounded-3xl shadow-lg border border-base-200 group">
+                        <div class="carousel w-full">
+                            <div th:each="img, iterStat : ${product.images}" th:id="'slide' + ${iterStat.index}"
+                                class="carousel-item relative w-full flex justify-center items-center">
+                                <img th:src="@{'/uploads/' + ${img.imageFileName}}" alt="Product Image"
+                                    class="object-cover w-full h-[280px] sm:h-[400px] lg:h-[500px] xl:h-[520px] transition-transform duration-500 group-hover:scale-[1.01]" />
+                                <div class="absolute inset-x-0 top-1/2 flex justify-between px-6 -translate-y-1/2">
+                                    <a th:with="prevIndex = ${iterStat.index == 0 ? #lists.size(product.images) - 1 : iterStat.index - 1}"
+                                        th:href="'#slide' + ${prevIndex}"
+                                        class="btn btn-circle btn-sm md:btn-md bg-base-100/70 hover:bg-primary text-neutral border-none shadow-md transition-all duration-300">❮</a>
+                                    <a th:with="nextIndex = ${(iterStat.index + 1) % #lists.size(product.images)}"
+                                        th:href="'#slide' + ${nextIndex}"
+                                        class="btn btn-circle btn-sm md:btn-md bg-base-100/70 hover:bg-primary text-neutral border-none shadow-md transition-all duration-300">❯</a>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Product Info -->
-                    <div class="w-full md:w-1/2 space-y-6">
-                        <div>
-                            <h1 class="text-2xl md:text-3xl font-bold" th:text="${product.name}">Nama Produk</h1>
-
-                            <div class="flex items-center gap-2 mt-2 mb-4">
-                                <span class="text-sm opacity-70">Kategori:</span>
-                                <a th:href="@{/category/{id}(id=${product.category.id})}"
-                                    class="badge badge-lg badge-outline badge-neutral cursor-pointer hover:bg-neutral hover:text-white transition-colors duration-200"
-                                    th:text="${product.category.name}">
-                                    Kategori
-                                </a>
-                            </div>
-
-                            <p class="text-xs opacity-50"
-                                th:text="'Dibuat pada: ' + ${#temporals.format(product.createdAt, 'dd MMMM yyyy')}"></p>
-                        </div>
-
-                        <div class="text-xl md:text-2xl font-semibold text-neutral">
-                            <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 2, 'POINT')}"></span>
-                            <span class="text-sm font-light opacity-70">IDR</span>
-                        </div>
-
-                        <div>
-                            <h2 class="font-semibold mb-2">Deskripsi</h2>
-                            <p class="text-neutral-700 leading-relaxed text-sm" th:text="${product.desc}">
-                                Deskripsi produk akan tampil di sini.
-                            </p>
-                        </div>
-
-                        <div class="divider my-6"></div>
-
-                        <div class="flex flex-col gap-3 md:flex-row md:gap-4">
-                            <button class="btn btn-outline btn-neutral w-full md:w-full rounded-full px-6 text-lg">
-                                Tanya Admin
-                            </button>
+                    <!-- Thumbnail carousel -->
+                    <div class="flex gap-2 mt-2 overflow-x-auto pb-2 no-scrollbar justify-center">
+                        <div th:each="img, iter : ${product.images}">
+                            <a th:href="'#slide' + ${iter.index}">
+                                <img th:src="@{'/uploads/' + ${img.imageFileName}}" alt="Thumbnail"
+                                    class="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 rounded-xl object-cover border-2 border-transparent hover:border-primary transition-all duration-300 cursor-pointer" />
+                            </a>
                         </div>
                     </div>
                 </div>
 
-                <!-- Gallery bawah -->
-                <div th:if="${#lists.size(product.images) > 1}" class="mt-12">
-                    <h2 class="text-xl font-semibold mb-4">Galeri Produk</h2>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div th:each="img : ${product.images}"
-                            class="rounded-xl overflow-hidden border border-neutral-200">
-                            <img th:src="@{'/uploads/' + ${img.imageFileName}}" alt="Gallery Image"
-                                class="object-cover w-full h-full hover:scale-105 transition-transform duration-300" />
+                <!-- Detail produk -->
+                <div class="w-full lg:w-1/2 space-y-8">
+
+                    <div class="flex flex-col gap-2">
+                        <a th:href="@{/category/{id}(id=${product.category.id})}"
+                            class="badge badge-lg badge-neutral text-base-100 hover:brightness-110 transition-all"
+                            th:text="${product.category.name}">
+                            Kategori
+                        </a>
+                        <p class="text-xs text-neutral/70"
+                            th:text="'Dibuat pada: ' + ${#temporals.format(product.createdAt, 'dd MMMM yyyy')}"></p>
+                    </div>
+
+                    <div>
+                        <h1 class="text-4xl md:text-5xl font-extrabold text-neutral leading-tight tracking-tight"
+                            th:text="${product.name}">Nama Produk</h1>
+                    </div>
+
+                    <div class="border-t border-base-200 pt-4">
+                        <p class="text-3xl md:text-4xl font-black text-neutral flex items-center gap-2">
+                            <span class="text-lg font-semibold">IDR</span>
+                            <span th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}"></span>
+                        </p>
+                    </div>
+
+                    <div>
+                        <h2 class="text-lg font-semibold mb-2 text-neutral-800">Deskripsi Layanan</h2>
+                        <p class="text-neutral-700 leading-relaxed text-base" th:text="${product.desc}">
+                            Deskripsi produk akan tampil di sini.
+                        </p>
+                    </div>
+
+                    <div class="pt-4">
+                        <a href="#"
+                            class="btn btn-lg w-full bg-neutral text-base-100 hover:bg-neutral/90 rounded-2xl transition-all duration-300 shadow-md hover:shadow-xl flex items-center gap-2 justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 4v-4z" />
+                            </svg>
+                            Konsultasikan Paket Ini
+                        </a>
+                        <p class="text-center text-xs text-neutral/60 mt-2">
+                            Hubungi admin untuk detail dan penawaran.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gallery / Portfolio -->
+            <div th:if="${#lists.size(product.images) > 1}" class="mt-16">
+                <h2 class="text-2xl font-extrabold mb-8 text-neutral border-b border-base-200 pb-3">
+                    📂 Portfolio & Hasil Kerja
+                </h2>
+                <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                    <div th:each="img : ${product.images}"
+                        class="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer">
+                        <img th:src="@{'/uploads/' + ${img.imageFileName}}" alt="Gallery Image"
+                            class="object-cover w-full h-48 md:h-64 aspect-square transition-transform duration-500 ease-in-out group-hover:scale-105" />
+                        <div
+                            class="absolute inset-0 bg-base-100/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                            <span
+                                class="text-base-100 text-sm font-medium bg-primary/80 rounded-full px-4 py-2 backdrop-blur-sm">Lihat
+                                Detail</span>
                         </div>
                     </div>
                 </div>
             </div>
         </main>
+
     </div>
     <div th:replace="fragment/navbar :: bottombar('admin')"></div>
 </body>

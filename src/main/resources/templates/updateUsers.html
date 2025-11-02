@@ -12,7 +12,7 @@
     <!-- Navbar (tetap menggunakan fragment Thymeleaf) -->
     <div th:replace="fragment/navbar :: navbar"></div>
 
-    <div class="flex flex-col lg:flex-row mx-auto max-w-7xl mt-16 mb-22">
+    <div class="flex flex-col lg:flex-row mx-auto max-w-7xl mt-16 ">
 
         <!-- Sidebar (desktop: sticky left; mobile: hidden here) -->
         <aside
@@ -21,7 +21,7 @@
         </aside>
 
         <!-- Content wrapper -->
-        <div class="w-full flex-1 max-w-5xl mx-auto flex flex-col gap-4 lg:px-8 lg:mt-6">
+        <div class="w-full flex-1 max-w-5xl mx-auto flex flex-col gap-4 lg:px-8 lg:mt-6 mb-22">
 
             <!-- Sidebar untuk mobile: tampil di bawah navbar, non-sticky -->
             <div class="lg:hidden mt-4">

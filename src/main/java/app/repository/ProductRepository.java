@@ -63,11 +63,11 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     DashboardStatsProjection getDashboardStats();
 
     @Query("""
-                SELECT p FROM Product p
-                LEFT JOIN FETCH p.images
-                JOIN FETCH p.category
-                WHERE p.id = :id
-            """)
+            SELECT p FROM Product p
+            LEFT JOIN FETCH p.images
+            LEFT JOIN FETCH p.category
+            WHERE p.id = :id
+                    """)
     Optional<Product> findDetailById(@Param("id") UUID id);
 
 }

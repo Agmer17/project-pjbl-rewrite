@@ -100,7 +100,9 @@ public class AdminProductController {
     RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
+            System.out.println("\n\n\n\n\n\n"+bindingResult.getAllErrors()+"\n\n\n\n\n\n\n\n");
             throw new FieldValidationException("Harap isi data dengan benar", bindingResult, "/admin/products/edit/"+id); 
+
 
         }
 
