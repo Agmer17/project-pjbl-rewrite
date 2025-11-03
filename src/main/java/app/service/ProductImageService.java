@@ -41,7 +41,7 @@ public class ProductImageService {
                                         ProductImage.builder()
                                                         .imageFileName(savedFileNames.get(i))
                                                         .product(product)
-                                                        .galleryImage(i == 0)
+                                                        .galleryImage(true)
                                                         .imageOrder(i + 1)
                                                         .build());
                 }
@@ -66,7 +66,7 @@ public class ProductImageService {
                         ProductImage newImage = ProductImage.builder()
                                         .imageFileName(newFileNames.get(i))
                                         .product(product)
-                                        .galleryImage(i == 0)
+                                        .galleryImage(true)
                                         .imageOrder(order + 1)
                                         .build();
 
@@ -185,6 +185,28 @@ public class ProductImageService {
                 List<String> savedFileNames = imageUtils.saveImageBatch(allImages, exts);
 
                 return savedFileNames;
+        }
+
+        public List<ProductImage> getAllImage() {
+                return repo.findAll();
+        }
+
+        public List<ProductImage> getNonGallery() {
+                return repo.findAllByGalleryImageFalse();
+        }
+
+        @Transactional
+        public void setNewGalleryFromImages(List<UUID> ids) {
+                List<ProductImage> images = repo.findAllById(ids);
+                images.forEach(img -> img.setGalleryImage(true));
+                // repo.saveAll(images); // optional, bisa dipakai untuk memastikan
+        }
+
+        @Transactional
+        public void removeFromGallery(List<UUID> ids) {
+                List<ProductImage> images = repo.findAllByIdIn(ids);
+
+                images.forEach(img -> img.setGalleryImage(false));
         }
 
 }

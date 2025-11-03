@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -45,6 +47,7 @@ public class ProductImage {
     nullable = false,
     foreignKey = @ForeignKey(name = "product_image_product_id_fkey")
     )
+    @JsonIgnore
     private Product product;
 
     @Column(name = "created_at")

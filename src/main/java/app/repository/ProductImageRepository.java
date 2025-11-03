@@ -15,7 +15,7 @@ import jakarta.transaction.Transactional;
 
 @Repository
 public interface ProductImageRepository extends JpaRepository<ProductImage, UUID> {
-    
+
     List<ProductImage> findAllByProduct(Product product);
 
     @Modifying
@@ -25,4 +25,8 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, UUID
 
     @Query("SELECT i FROM ProductImage i WHERE i.id IN :ids")
     List<ProductImage> findAllByIdIn(@Param("ids") List<UUID> ids);
+
+    List<ProductImage> findAllByGalleryImageTrue();
+
+    List<ProductImage> findAllByGalleryImageFalse();
 }
