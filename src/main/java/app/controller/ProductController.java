@@ -41,7 +41,6 @@ public class ProductController {
             List<Reviews> rawReviews = reviewsService.getFromProduct(id, "/error/404.html");
 
             List<Reviews> reviews = rawReviews.stream().filter(r -> r.getStatus() == ReviewStatus.ACCEPTED).toList();
-
             Double averageReviews = reviews.stream().mapToInt(Reviews::getRating)
                     .average().orElse(0.0);
             Map<Integer, Long> reviewsratingCount = reviewsService.countRatings(reviews);
@@ -59,7 +58,9 @@ public class ProductController {
         UserRole currentUserRole = UserRole.valueOf(creds.get("role", String.class));
 
         Product productDetails = service.getProductDetails(id, "/error/404.html");
-        List<Reviews> reviews = reviewsService.getFromProduct(id, "/error/404.html");
+        List<Reviews> rawReviews = reviewsService.getFromProduct(id, "/error/404.html");
+
+        List<Reviews> reviews = rawReviews.stream().filter(r -> r.getStatus() == ReviewStatus.ACCEPTED).toList();
         Double averageReviews = reviews.stream().mapToInt(Reviews::getRating)
                 .average().orElse(0.0);
         Map<Integer, Long> reviewsratingCount = reviewsService.countRatings(reviews);
