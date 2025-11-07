@@ -92,10 +92,16 @@ public class ProductService {
 
     }
 
+    public Product getProductDetails(UUID id, String reds) {
+
+        return productRepository.findDetailById(id)
+                .orElseThrow(() -> new DataNotFoundEx("barang mungkin telah terhapus", reds));
+    }
+
     public Product getProductDetails(UUID id) {
 
         return productRepository.findDetailById(id)
-                .orElseThrow(() -> new DataNotFoundEx("barang mungkin telah terhapus", "/admin/products/"));
+                .orElse(null);
     }
 
     @Transactional

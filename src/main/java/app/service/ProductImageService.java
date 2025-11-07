@@ -187,8 +187,8 @@ public class ProductImageService {
                 return savedFileNames;
         }
 
-        public List<ProductImage> getAllImage() {
-                return repo.findAll();
+        public List<ProductImage> getGalleryAllImage() {
+                return repo.findAllByGalleryImageTrue();
         }
 
         public List<ProductImage> getNonGallery() {

@@ -211,4 +211,8 @@ public class UserService {
 
     }
 
+    public Users getUserById(UUID id) {
+        return userRepo.findById(id).orElse(null);
+    }
+
 }

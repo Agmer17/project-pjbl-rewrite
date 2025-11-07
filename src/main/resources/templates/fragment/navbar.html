@@ -60,7 +60,7 @@
         </a>
 
         <!-- Gallery -->
-        <a th:href="@{/gallery}" th:if="${#ctx.session.creds == null or #ctx.session.creds.get('role') != 'ADMIN'}">
+        <a th:href="@{/gallery/}" th:if="${#ctx.session.creds == null or #ctx.session.creds.get('role') != 'ADMIN'}">
             <button class="btn btn-circle p-2 border-none text-neutral"
                 th:classappend="${activePage == 'gallery'} ? 'bg-neutral text-white' : ''">
                 <svg width="29" height="29" viewBox="0 0 32 30" fill="none" xmlns="http://www.w3.org/2000/svg">

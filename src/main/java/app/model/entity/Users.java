@@ -69,4 +69,5 @@ public class Users {
     @Column(name = "user_gender")
     private Gender gender;
 
+
 }

@@ -70,4 +70,9 @@ public class Product {
     @CreationTimestamp
     private LocalDateTime createdAt;
 
+    
+    @OneToMany(mappedBy = "product", orphanRemoval = true)
+    @Builder.Default
+    private List<Reviews> reviews = new ArrayList<>();
+
 }

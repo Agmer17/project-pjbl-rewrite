@@ -13,16 +13,42 @@
 
     <!-- Navbar -->
     <div th:replace="fragment/navbar :: navbar"></div>
+    <div id="toast-container" class="toast toast-top toast-end z-50"></div>
+    <dialog id="confirmDeleteModal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box bg-base-100 shadow-2xl border border-neutral/20 rounded-2xl">
+            <h3 class="font-bold text-lg text-error mb-2 flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-error" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Konfirmasi Penghapusan
+            </h3>
+            <p class="text-sm text-neutral-content mb-6">
+                Apakah kamu yakin ingin menghapus review ini? Tindakan ini tidak bisa dibatalkan.
+            </p>
+
+            <div class="modal-action flex flex-col sm:flex-row gap-3 justify-end">
+                <button id="confirmDeleteBtn"
+                    class="btn btn-error text-white w-full sm:w-auto hover:brightness-110 transition-all">
+                    Hapus
+                </button>
+                <button id="cancelDeleteBtn"
+                    class="btn w-full sm:w-auto border-neutral/30 hover:bg-base-200 transition-all">
+                    Batal
+                </button>
+            </div>
+        </div>
+    </dialog>
 
     <!-- Layout utama -->
     <div class="flex flex-col lg:flex-row mt-16 min-h-screen bg-base-100">
         <!-- Sidebar -->
-        <div th:replace="fragment/navbar :: sidebar('products')"></div>
+        <th:block th:if="${admin}">
+            <div th:replace="fragment/navbar :: sidebar('products')"></div>
+        </th:block>
         <main class="bg-base-100 min-h-screen flex flex-col gap-12 p-6 md:p-10 w-full mb-20">
-
-            <!-- Header: Tombol kembali & edit -->
             <div class="w-full flex justify-between items-center">
-                <a th:href="@{/admin/products/}"
+                <a th:href="@{${role == 'ADMIN'} ? '/admin/products/' : '/products'}"
                     class="btn btn-circle btn-neutral btn-outline hover:btn-neutral hover:text-base-100 transition-all tooltip"
                     data-tip="Kembali">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -32,7 +58,8 @@
                     </svg>
                 </a>
 
-                <a th:href="@{/admin/products/edit/{id}(id=${product.id})}"
+
+                <a th:href="@{/admin/products/edit/{id}(id=${product.id})}" th:if="${admin}"
                     class="btn btn-square btn-neutral btn-outline tooltip tooltip-left" data-tip="Edit Produk">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -42,10 +69,7 @@
                 </a>
             </div>
 
-            <!-- Konten utama -->
             <div class="w-full mx-auto flex flex-col lg:flex-row gap-12 items-start">
-
-                <!-- Gambar utama & thumbnail -->
                 <div class="w-full lg:w-1/2 space-y-4">
                     <div class="relative w-full overflow-hidden rounded-3xl shadow-lg border border-base-200 group">
                         <div class="carousel w-full">
@@ -65,7 +89,6 @@
                         </div>
                     </div>
 
-                    <!-- Thumbnail carousel -->
                     <div class="flex gap-2 mt-2 overflow-x-auto pb-2 no-scrollbar justify-center">
                         <div th:each="img, iter : ${product.images}">
                             <a th:href="'#slide' + ${iter.index}">
@@ -76,9 +99,7 @@
                     </div>
                 </div>
 
-                <!-- Detail produk -->
                 <div class="w-full lg:w-1/2 space-y-8">
-
                     <div class="flex flex-col gap-2">
                         <a th:href="@{/category/{id}(id=${product.category.id})}"
                             class="badge badge-lg badge-neutral text-base-100 hover:brightness-110 transition-all"
@@ -108,7 +129,7 @@
                         </p>
                     </div>
 
-                    <div class="pt-4">
+                    <div class="pt-4" th:if="${!admin}">
                         <a href="#"
                             class="btn btn-lg w-full bg-neutral text-base-100 hover:bg-neutral/90 rounded-2xl transition-all duration-300 shadow-md hover:shadow-xl flex items-center gap-2 justify-center">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -125,7 +146,6 @@
                 </div>
             </div>
 
-            <!-- Gallery / Portfolio -->
             <div th:if="${#lists.size(product.images) > 1}" class="mt-16">
                 <h2 class="text-2xl font-extrabold mb-8 text-neutral border-b border-base-200 pb-3">
                     📂 Portfolio & Hasil Kerja
@@ -144,10 +164,161 @@
                     </div>
                 </div>
             </div>
+
+            <div class="mt-16 max-w-5xl mx-auto w-full">
+
+                <div class="w-full flex justify-between">
+                    <h2 class=" text-xl md:text-2xl font-extrabold mb-8 text-neutral border-b border-base-200 pb-3">
+                        ⭐ Ulasan Pelanggan
+                    </h2>
+                    <a th:href="@{/reviews/details/{id}(id=${product.id})}"
+                        class="text-warning btn btn-warning btn-circle btn-outline hover:text-white">
+                        <svg height="24" id="Layer_1" style="enable-background:new 0 0 512 512;" version="1.1"
+                            viewBox="0 0 512 512" width="24" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" stroke="currentColor" fill="currentColor">
+                            <polygon
+                                points="160,128.4 192.3,96 352,256 352,256 352,256 192.3,416 160,383.6 287.3,256 " />
+                        </svg>
+
+                    </a>
+
+                </div>
+
+                <div th:if="${!#lists.isEmpty(reviews)}" th:with="totalReviews=${reviews.size()}">
+                    <div class="card bg-base-100 shadow-lg border border-base-300 mb-8 rounded-3xl">
+                        <div class="card-body p-6 md:p-10">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                                <div
+                                    class="md:col-span-1 flex flex-col items-center md:items-start justify-center border-b md:border-b-0 md:border-r border-base-300 pb-6 md:pb-0 md:pr-8">
+                                    <div class="text-6xl md:text-7xl font-extrabold text-gray-900 mb-2"
+                                        th:text="${#numbers.formatDecimal(avg,1,1)}">4.8</div>
+                                    <div class="flex items-center gap-1 mb-2">
+                                        <span th:each="i : ${#numbers.sequence(1,5)}"
+                                            th:classappend="${avg >= i ? 'text-amber-500' : 'text-gray-300'}"
+                                            class="text-2xl md:text-3xl">★</span>
+                                    </div>
+                                    <div class="text-sm md:text-base text-gray-600"
+                                        th:text="${totalReviews} + ' ulasan'">
+                                        286 ulasan</div>
+                                </div>
+
+                                <div class="md:col-span-2 space-y-4">
+                                    <div th:each="ratingLevel : ${#numbers.sequence(5,1)}"
+                                        th:with="count=${reviewRatingCount.get(ratingLevel) ?: 0L}">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-sm md:text-base text-gray-700 w-6"
+                                                th:text="${ratingLevel}">5</span>
+                                            <span class="text-amber-500 text-sm md:text-base">★</span>
+                                            <progress class="progress progress-warning h-2 flex-1"
+                                                th:value="${totalReviews > 0 ? (count * 100.0 / totalReviews) : 0}"
+                                                max="100"></progress>
+                                            <span class="text-sm md:text-base text-gray-600 w-12 text-right"
+                                                th:text="${count}">100</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div th:if="${!#lists.isEmpty(reviews)}" class="space-y-6">
+
+                    <th:block th:each="review, iterStat : ${reviews}">
+                        <div th:if="${iterStat.index < 3}"
+                            class="card bg-base-100 shadow-md border border-base-200 hover:shadow-xl transition-shadow duration-300 rounded-2xl">
+                            <div class="card-body p-6 md:p-8">
+                                <div class="flex items-start gap-4">
+
+                                    <div class="avatar placeholder">
+                                        <div class="w-12 h-12 rounded-full overflow-hidden"
+                                            th:classappend="${review.user.profilePicture == null ? 'bg-gray-200 text-gray-600 flex items-center justify-center' : ''}">
+                                            <img th:if="${review.user.profilePicture != null}"
+                                                th:src="@{'/uploads/' + ${review.user.profilePicture}}" alt="User photo"
+                                                class="w-full h-full object-cover" />
+                                            <span th:if="${review.user.profilePicture == null}"
+                                                class="text-lg font-semibold"
+                                                th:text="${review.user.fullName != null ? #strings.substring(review.user.fullName,0,1) : 'U'}">A</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex flex-row justify-between gap-2 mb-3">
+                                            <div>
+                                                <h3 class="font-semibold text-gray-900 text-lg md:text-xl"
+                                                    th:text="${review.user.fullName}">Astolfo</h3>
+                                                <p class="text-xs md:text-sm text-gray-500"
+                                                    th:text="${#temporals.format(review.createdAt, 'dd MMM yyyy')}">04
+                                                    Nov 2025
+                                                </p>
+                                            </div>
+
+                                            <button
+                                                class="btn btn-error btn-sm text-white flex items-center gap-1 rounded-full px-3 py-1 hover:opacity-90 transition-opacity"
+                                                th:attr="data-id=${review.id}" onclick="deleteReview(this)"
+                                                th:if="${admin}">
+                                                <svg viewBox="0 0 448 512" width="18" height="18" fill="currentColor"
+                                                    xmlns="http://www.w3.org/2000/svg">
+                                                    <path
+                                                        d="M432 80h-82.38l-34-56.75C306.1 8.827 291.4 0 274.6 0H173.4C156.6 0 141 8.827 132.4 23.25L98.38 80H16C7.125 80 0 87.13 0 96v16C0 120.9 7.125 128 16 128H32v320c0 35.35 28.65 64 64 64h256c35.35 0 64-28.65 64-64V128h16C440.9 128 448 120.9 448 112V96C448 87.13 440.9 80 432 80zM171.9 50.88C172.9 49.13 174.9 48 177 48h94c2.125 0 4.125 1.125 5.125 2.875L293.6 80H154.4L171.9 50.88zM352 464H96c-8.837 0-16-7.163-16-16V128h288v320C368 456.8 360.8 464 352 464zM224 416c8.844 0 16-7.156 16-16V192c0-8.844-7.156-16-16-16S208 183.2 208 192v208C208 408.8 215.2 416 224 416zM144 416C152.8 416 160 408.8 160 400V192c0-8.844-7.156-16-16-16S128 183.2 128 192v208C128 408.8 135.2 416 144 416zM304 416c8.844 0 16-7.156 16-16V192c0-8.844-7.156-16-16-16S288 183.2 288 192v208C288 408.8 295.2 416 304 416z" />
+                                                </svg>
+                                                <span class="hidden sm:inline">Hapus</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="flex items-center gap-1 mb-2">
+                                            <span th:each="i : ${#numbers.sequence(1,5)}"
+                                                th:classappend="${review.rating >= i ? 'text-amber-500' : 'text-gray-300'}"
+                                                class="text-lg md:text-xl">★</span>
+                                            <span class="text-sm md:text-base font-medium text-gray-700 ml-1"
+                                                th:text="${#numbers.formatDecimal(review.rating,1,1)}">4.0</span>
+                                        </div>
+
+                                        <p class="text-gray-700 leading-relaxed mb-4" th:text="${review.textReview}">
+                                            Ulasan
+                                        </p>
+                                        <div th:switch="${review.status}">
+                                            <span th:case="'APPROVED'"
+                                                class="badge badge-success badge-sm">Approved</span>
+                                            <span th:case="'PENDING'"
+                                                class="badge badge-warning badge-sm">Pending</span>
+                                            <span th:case="'REJECTED'"
+                                                class="badge badge-error badge-sm">Rejected</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </th:block>
+
+                    <div th:if="${#lists.size(reviews) > 3}" class="text-center pt-4">
+                        <button class="btn btn-outline btn-neutral">Lihat Semua <span
+                                th:text="${#lists.size(reviews)}"></span> Ulasan</button>
+                    </div>
+                </div>
+
+                <div th:if="${#lists.isEmpty(reviews)}"
+                    class="card bg-base-100 shadow-md border border-base-200 mt-8 rounded-2xl">
+                    <div class="card-body p-12 text-center">
+                        <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        <h3 class="text-xl md:text-2xl font-semibold text-gray-900 mb-2">Belum ada ulasan!</h3>
+                        <p class="text-sm md:text-base text-gray-500">Jadilah yang pertama untuk memberikan ulasan.</p>
+                    </div>
+                </div>
+
+            </div>
         </main>
 
     </div>
     <div th:replace="fragment/navbar :: bottombar('admin')"></div>
+    <script th:src="@{/js/reviewBase.js}"></script>
 </body>
 
 </html>

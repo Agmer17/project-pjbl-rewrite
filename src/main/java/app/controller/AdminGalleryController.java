@@ -27,7 +27,7 @@ public class AdminGalleryController {
 
     @GetMapping({"/", ""})
     public String getGalleryImage(Model model) {
-        List<ProductImage> images = service.getAllImage();
+        List<ProductImage> images = service.getGalleryAllImage();
         model.addAttribute("images", images);
         
         return "admin/AdminGallery";
