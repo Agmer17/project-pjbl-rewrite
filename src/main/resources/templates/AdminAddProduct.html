@@ -8,7 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/output.css}" />
 </head>
 
-<body class="font-sans bg-white min-h-screen text-neutral">
+<body class="font-sans bg-base-200 min-h-screen text-neutral">
 
 
     <!-- Navbar -->
@@ -21,24 +21,22 @@
 
 
 
-        <main class="bg-white h-full flex flex-col gap-4 p-4 w-full mb-20">
+        <main class="bg-base-200 h-full flex flex-col gap-4 p-6 w-full mb-20">
 
-            <!-- header judul page dan icon -->
-            <div class="flex w-full justify-between gap-4 font-bold">
+            <div class="flex w-full gap-4 font-bold mb-4">
                 <div class="text-neutral">
-                    <a th:href="@{/admin/products/}" class="btn btn-outline btn-neutral btn-sm sm:btn-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
+                    <a th:href="@{/admin/products/}"
+                        class="inline-flex items-center gap-2 mb-6 text-sm font-medium text-neutral hover:text-primary transition-colors group">
+                        <div
+                            class="w-10 h-10 rounded-full border border-neutral group-hover:border-primary flex items-center justify-center transition-all group-hover:scale-110">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 12H5M12 19l-7-7 7-7" />
+                            </svg>
+                        </div>
+                        <span th:text="@{'kembali ke dahsboard'}" class="text-lg"></span>
                     </a>
                 </div>
-                <h1 class=" text-2xl md:text-3xl">
-                    tambah layanan baru
-                </h1>
             </div>
-            <!--  -->
 
 
 
@@ -67,15 +65,17 @@
             <form class="w-full h-full flex flex-col gap-4" th:action="@{/admin/products/add}" method="post"
                 enctype="multipart/form-data">
 
-                <div class="md:flex">
-                    <div class="w-full card bg-base-100 p-4 space-y-6 md:flex-2">
-                        <h1 class="text-xl font-bold">Gambar Produk</h1>
+                <div class="flex gap-6 flex-col md:flex-row">
+
+
+                    <div class="w-full card bg-white p-4 space-y-6 rounded-2xl md:flex-2">
+                        <h1 class="text-2xl font-bold">Gambar Produk</h1>
 
                         <!-- Gambar utama -->
                         <div>
                             <label class="relative block cursor-pointer group">
-                                <img id="mainPreview" src="https://via.placeholder.com/400x300?text=Gambar+Utama"
-                                    class="rounded-xl w-full h-64 object-cover border border-neutral/30" />
+                                <img id="mainPreview"
+                                    class="rounded-xl w-full h-64 object-cover border border-neutral" />
                                 <div
                                     class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-12 h-12 text-white" fill="none"
@@ -95,8 +95,8 @@
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             <!-- Template gambar tambahan -->
                             <label class="relative block cursor-pointer group" for="extraImage1">
-                                <img id="extraPreview1" src="https://via.placeholder.com/150?text=Tambahan+1"
-                                    class="rounded-xl w-full h-32 object-cover border border-neutral/30" />
+                                <img id="extraPreview1"
+                                    class="rounded-xl w-full h-32 object-cover border border-neutral" />
                                 <div
                                     class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none"
@@ -110,8 +110,8 @@
                             </label>
 
                             <label class="relative block cursor-pointer group" for="extraImage2">
-                                <img id="extraPreview2" src="https://via.placeholder.com/150?text=Tambahan+2"
-                                    class="rounded-xl w-full h-32 object-cover border border-neutral/30" />
+                                <img id="extraPreview2"
+                                    class="rounded-xl w-full h-32 object-cover border border-neutral" />
                                 <div
                                     class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none"
@@ -125,8 +125,8 @@
                             </label>
 
                             <label class="relative block cursor-pointer group" for="extraImage3">
-                                <img id="extraPreview3" src="https://via.placeholder.com/150?text=Tambahan+3"
-                                    class="rounded-xl w-full h-32 object-cover border border-neutral/30" />
+                                <img id="extraPreview3"
+                                    class="rounded-xl w-full h-32 object-cover border border-neutral" />
                                 <div
                                     class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none"
@@ -140,8 +140,8 @@
                             </label>
 
                             <label class="relative block cursor-pointer group" for="extraImage4">
-                                <img id="extraPreview4" src="https://via.placeholder.com/150?text=Tambahan+4"
-                                    class="rounded-xl w-full h-32 object-cover border border-neutral/30" />
+                                <img id="extraPreview4"
+                                    class="rounded-xl w-full h-32 object-cover border border-neutral" />
                                 <div
                                     class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none"
@@ -157,37 +157,41 @@
                     </div>
 
                     <!-- metadata -->
-                    <div class="card bg-base-100 p-4 md:flex-1">
-                        <fieldset class="fieldset">
-                            <legend class="fieldset-legend text-lg">Nama layanan</legend>
-                            <input type="text" class="input input-neutral" placeholder="maksimal 255 karakter"
-                                name="name" />
+                    <div class="card bg-white rounded-2xl p-4 md:flex-1">
+                        <fieldset class="fieldset text-neutral">
+                            <legend class="fieldset-legend text-2xl font-semibold text-gray-700 mb-1">Nama layanan
+                            </legend>
+                            <input type="text"
+                                class="input w-full bg-white border-neutral focus:border-primary focus:ring-0 transition-all duration-200"
+                                placeholder="maksimal 255 karakter" name="name" />
                         </fieldset>
                         <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'name')}"
-                            th:text="${validationErrors.name}" class="text-error text-[14px]">
-                        </span>
+                            th:text="${validationErrors.name}" class="text-error text-sm"></span>
 
-                        <fieldset class="fieldset">
-                            <legend class="fieldset-legend text-lg">Deskripsi layanan</legend>
-                            <textarea name="desc" class="textarea textarea-neutral"
-                                placeholder="Tulis deskripsi produk di sini..." rows="4"></textarea>
+                        <fieldset class="fieldset text-neutral">
+                            <legend class="fieldset-legend text-lg font-semibold text-gray-700 mb-1">Deskripsi layanan
+                            </legend>
+                            <textarea
+                                class="textarea w-full h-40 bg-white border-neutral focus:border-primary focus:ring-0 transition-all duration-200"
+                                placeholder="Tulis deskripsi produk di sini..." rows="4" name="desc"></textarea>
                         </fieldset>
                         <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'desc')}"
-                            th:text="${validationErrors.desc}" class="text-error text-[14px]">
-                        </span>
+                            th:text="${validationErrors.desc}" class="text-error text-sm"></span>
 
-                        <fieldset class="fieldset">
-                            <legend class="fieldset-legend text-lg">Harga layanan</legend>
-                            <input type="text" id="priceInput" name="price" class="input input-neutral"
+                        <fieldset class="fieldset text-neutral">
+                            <legend class="fieldset-legend text-lg font-semibold text-gray-700 mb-1">Harga layanan
+                            </legend>
+                            <input type="text" id="priceInput" name="price"
+                                class="input w-full bg-white border-neutral focus:border-primary focus:ring-0 transition-all duration-200"
                                 placeholder="contoh: 10,000" />
                         </fieldset>
                         <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'price')}"
-                            th:text="${validationErrors.price}" class="text-error text-[14px]">
-                        </span>
+                            th:text="${validationErrors.price}" class="text-error text-sm"></span>
 
                         <div class="form-control">
                             <label class="label">Kategori Produk</label>
-                            <select id="categorySelect" name="categoryId" class="select select-bordered w-full"
+                            <select id="categorySelect" name="categoryId"
+                                class="select w-full bg-white border-neutral focus:border-primary focus:ring-0 transition-all duration-200"
                                 onchange="handleCategorySelect(this)">
                                 <option disabled selected>Pilih kategori</option>
                                 <option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.name}">
@@ -196,21 +200,21 @@
                             </select>
                         </div>
                         <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'categoryId')}"
-                            th:text="${validationErrors.categoryId}" class="text-error text-[14px]">
-                        </span>
-
+                            th:text="${validationErrors.categoryId}" class="text-error text-sm"></span>
                     </div>
+
+
                 </div>
                 <!-- gambar -->
                 <!--  -->
 
-                <div class="w-full flex p-4 gap-4">
-                    <button type="submit" class="btn btn-success flex-1">
-                        upload produk
-                    </button>
-                    <a th:href="@{/admin/}" class="flex-1 btn btn-outline btn-primary">
-                        batal
+                <div class="w-full flex flex-col justify-center mt-10 p-4 gap-4 md:flex-row">
+                    <a th:href="@{/admin/products/}"
+                        class="btn btn-outline p-2 md:p-4 btn-primary font-semibold flex-1 text-base rounded-lg md:flex-1">
+                        Batal
                     </a>
+                    <button type="submit"
+                        class="btn md:p-4 p-2 btn-success font-bold flex-1 text-base rounded-lg shadow-xl shadow-success/30 md:flex-1">SIMPAN</button>
                 </div>
 
             </form>

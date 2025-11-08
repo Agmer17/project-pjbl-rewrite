@@ -70,6 +70,7 @@ public class ReviewController {
         Double averageReviews = service.averageReviews(reviews);
         Map<Integer, Long> reviewsratingCount = service.countRatings(reviews);
         Boolean eligible = service.eligible(rawReviews, userId);
+        Boolean isPending = service.isReviewPending(userId, rawReviews);
 
         model.addAttribute("admin", currentUserRole == UserRole.ADMIN);
         model.addAttribute("productId", id);
@@ -77,6 +78,7 @@ public class ReviewController {
         model.addAttribute("reviews", reviews);
         model.addAttribute("reviewRatingCount", reviewsratingCount);
         model.addAttribute("eligible", eligible);
+        model.addAttribute("isPending", isPending);
 
         System.out.println("\n\n\n\n\n\n" + "eligble : " + eligible + "\n\n\n\n\n\n\n\n\n\n\n\n\n");
         return "productReviews";

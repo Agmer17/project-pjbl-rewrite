@@ -12,234 +12,293 @@
     <!-- Navbar (tetap menggunakan fragment Thymeleaf) -->
     <div th:replace="fragment/navbar :: navbar"></div>
 
-    <div class="flex flex-col lg:flex-row mx-auto max-w-7xl mt-16 ">
-
-        <!-- Sidebar (desktop: sticky left; mobile: hidden here) -->
-        <aside
-            class="hidden lg:block lg:w-64 flex-shrink-0 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto bg-white border-r border-neutral-200">
-            <div th:replace="fragment/navbar :: sidebar('users')"></div>
-        </aside>
+    <div class="flex flex-col lg:flex-row mt-16 min-h-screen bg-base-100">
+        <!-- Sidebar -->
+        <div th:replace="fragment/navbar :: sidebar('users')"></div>
 
         <!-- Content wrapper -->
-        <div class="w-full flex-1 max-w-5xl mx-auto flex flex-col gap-4 lg:px-8 lg:mt-6 mb-22">
+        <div class="w-full flex-1 mx-auto flex p-4 flex-col gap-4 mb-22">
 
-            <!-- Sidebar untuk mobile: tampil di bawah navbar, non-sticky -->
-            <div class="lg:hidden mt-4">
-                <div th:replace="fragment/navbar :: sidebar('users')"></div>
-            </div>
-            
-            <div class="px-4">
-                <div class="mb-6 md:mb-4 mt-4 lg:mt-0">
-                    <div class="flex items-center gap-3 mb-2">
-                        <a th:href="@{/admin/users/}" class="btn btn-ghost btn-sm btn-circle"
-                            aria-label="Kembali ke daftar pengguna">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                            </svg>
-                        </a>
-                        <h1 class="text-2xl md:text-3xl font-bold text-neutral-800">Update User Profile</h1>
-                    </div>
-                    <p class="text-neutral-600 text-sm md:text-base ml-12">Kelola dan perbarui informasi pengguna</p>
-                </div>
-                <!-- Header -->
-    
-                <div class="alert alert-info mt-6 shadow-lg border border-info/20">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                        class="stroke-current shrink-0 w-6 h-6" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <div class="text-sm">
-                        <p class="font-semibold">Informasi Penting</p>
-                        <p>Perubahan data user akan langsung berlaku setelah disimpan. Pastikan data yang dimasukkan sudah
-                            benar.</p>
-                    </div>
-                </div>
-    
-                <!-- Card utama -->
-                <div class="card bg-base-100 shadow-lg border border-neutral-200">
-                    <div class="card-body p-4 md:p-8">
-    
-                        <!-- Header profil ringkas -->
+            <!-- Header Kembali -->
+            <div class="px-4 sm:px-6 lg:px-8 py-4">
+                <div class="text-neutral">
+                    <a th:href="@{/admin/users/}"
+                        class="inline-flex items-center gap-2 mb-4 text-sm font-medium text-neutral hover:text-primary transition-colors group">
                         <div
-                            class="flex flex-col md:flex-row items-center md:items-start gap-4 pb-6 border-b border-neutral-200 mb-6">
-                            <div class="avatar">
-                                <div
-                                    class="w-20 h-20 md:w-24 md:h-24 rounded-full ring ring-neutral-300 ring-offset-base-100 ring-offset-2 overflow-hidden bg-gray-100">
-                                    <!-- Tampilkan foto upload jika ada, jika tidak tampilkan default -->
-                                    <th:block th:if="${!#strings.isEmpty(formRequest.profilePicture)}">
-                                        <img th:src="@{'/uploads/' + ${formRequest.profilePicture}}" alt="Foto Profil" />
-                                    </th:block>
-                                    <th:block th:unless="${!#strings.isEmpty(formRequest.profilePicture)}">
-                                        <img src="/img/default.jpg" alt="Default Profil" />
-                                    </th:block>
+                            class="w-9 h-9 rounded-full border border-neutral group-hover:border-primary flex items-center justify-center transition-all group-hover:scale-110">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 12H5M12 19l-7-7 7-7" />
+                            </svg>
+                        </div>
+                        <span class="text-base sm:text-lg" th:text="@{'kembali ke dashboard'}"></span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Main Card -->
+            <main class="w-full min-h-screen px-0 sm:px-4 md:px-6 lg:px-8 md:py-8">
+                <div
+                    class="card w-full max-w-4xl mx-auto bg-white shadow-2xl rounded-none sm:rounded-2xl border border-gray-100 overflow-hidden backdrop-blur-sm bg-opacity-95">
+                    <div class="card-body p-4 sm:p-6 md:p-10">
+
+                        <!-- Header Section -->
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-800 mb-2 flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 sm:w-7 sm:h-7 text-primary-500"
+                                fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                            Kelola Pengguna
+                        </h1>
+                        <p class="text-gray-500 mb-6 sm:mb-8 border-b pb-3 sm:pb-4 text-sm sm:text-base">
+                            Edit dan perbarui data profil serta peran (role) pengguna ini.
+                        </p>
+
+                        <!-- Avatar + Info -->
+                        <div
+                            class="flex flex-col lg:flex-row items-center lg:items-start gap-5 sm:gap-8 pb-5 sm:pb-6 border-b border-gray-200 mb-6 sm:mb-8">
+
+                            <!-- Avatar -->
+                            <div class="flex flex-col items-center">
+                                <div class="avatar relative group">
+                                    <div
+                                        class="w-24 h-24 sm:w-28 sm:h-28 rounded-full ring-4 ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden bg-gray-200 shadow-lg">
+                                        <th:block th:if="${!#strings.isEmpty(formRequest.profilePicture)}">
+                                            <img th:src="@{'/uploads/' + ${formRequest.profilePicture}}"
+                                                alt="Foto Profil" id="profileImagePreview"
+                                                class="object-cover w-full h-full" />
+                                        </th:block>
+                                        <th:block th:unless="${!#strings.isEmpty(formRequest.profilePicture)}">
+                                            <img src="/img/default.jpg" alt="Default Profil" id="profileImagePreview"
+                                                class="object-cover w-full h-full" />
+                                        </th:block>
+                                    </div>
                                 </div>
+                                <p class="text-xs text-gray-400 mt-2">Pratinjau Foto Profil</p>
                             </div>
-    
-                            <div class="text-center md:text-left flex-1 min-w-0">
-                                <h2 class="text-xl md:text-2xl font-semibold text-neutral-800 truncate"
+
+                            <!-- User Info -->
+                            <div class="text-center lg:text-left flex-1 min-w-0 pt-2">
+                                <h2 class="text-xl sm:text-2xl md:text-3xl font-bold text-neutral-800 mb-1 truncate"
                                     th:text="${formRequest.fullName}">John Doe</h2>
-                                <p class="text-neutral-600 truncate" th:text="${formRequest.email}">john.doe@example.com</p>
-    
-                                <div class="flex flex-wrap gap-2 mt-2 justify-center md:justify-start">
-                                    <span class="badge badge-neutral" th:text="${formRequest.role}">USER</span>
-                                    <span class="badge badge-outline badge-neutral"
-                                        th:text="${formRequest.username}">@johndoe</span>
+                                <p class="text-primary-600 font-medium mb-2 sm:mb-3 truncate"
+                                    th:text="${formRequest.email}">
+                                    john.doe@example.com</p>
+
+                                <div class="flex flex-wrap gap-2 sm:gap-3 justify-center lg:justify-start">
+                                    <div th:classappend="${formRequest.role == 'ADMIN'} ? 'badge-primary' : 'badge-accent'"
+                                        class="badge font-bold uppercase text-xs sm:text-sm px-3 py-2 rounded-full shadow-sm transition-all hover:scale-105"
+                                        th:text="${formRequest.role}">ADMIN</div>
+                                    <div
+                                        class="badge badge-outline badge-neutral font-mono text-xs sm:text-sm px-3 py-2 rounded-full border">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3 mr-1">
+                                            <circle cx="12" cy="12" r="4" />
+                                            <path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8" />
+                                        </svg>
+                                        <span th:text="${formRequest.username}">@johndoe</span>
+                                    </div>
                                 </div>
-    
-                                <p class="text-xs text-neutral-500 mt-2">
+
+                                <p class="text-xs text-neutral-500 mt-4">
                                     Bergabung sejak:
-                                    <span th:text="${#temporals.format(formRequest.createdAt, 'dd MMMM yyyy')}">01 Januari
-                                        2024</span>
+                                    <span th:text="${#temporals.format(formRequest.createdAt, 'dd MMMM yyyy')}"
+                                        class="font-semibold text-gray-600">01 Januari 2024</span>
                                 </p>
                             </div>
                         </div>
-    
-                        <!-- Form update -->
+
+                        <!-- Form Update -->
                         <form th:action="@{/admin/users/update/{id}(id=${formRequest.id})}" th:object="${formRequest}"
-                            method="post" enctype="multipart/form-data" class="space-y-6" novalidate>
-    
+                            method="post" enctype="multipart/form-data" class="space-y-6 sm:space-y-8" novalidate>
                             <input type="hidden" th:field="*{id}" />
-    
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
-    
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-8">
+
                                 <!-- Username -->
                                 <div class="form-control w-full">
                                     <label class="label">
-                                        <span class="label-text font-medium text-neutral-700">Username <span
-                                                class="text-error">*</span></span>
+                                        <span
+                                            class="label-text font-semibold text-gray-700 text-sm sm:text-base">Username
+                                            <span class="text-error font-bold">*</span></span>
                                     </label>
                                     <input type="text" th:field="*{username}" placeholder="Masukkan username"
-                                        class="input input-bordered input-neutral w-full" required aria-required="true" />
+                                        class="input input-bordered input-neutral w-full shadow-sm focus:ring-2 focus:ring-primary/70 rounded-lg"
+                                        required />
                                     <label class="label"
                                         th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'username')}">
-                                        <span class="label-text-alt text-error" th:text="${validationErrors.username}">Error
-                                            message</span>
+                                        <span class="label-text-alt text-error font-medium"
+                                            th:text="${validationErrors.username}">Error message</span>
                                     </label>
                                 </div>
-    
+
                                 <!-- Email -->
                                 <div class="form-control w-full">
                                     <label class="label">
-                                        <span class="label-text font-medium text-neutral-700">Email <span
-                                                class="text-error">*</span></span>
+                                        <span class="label-text font-semibold text-gray-700 text-sm sm:text-base">Email
+                                            <span class="text-error font-bold">*</span></span>
                                     </label>
                                     <input type="email" th:field="*{email}" placeholder="user@example.com"
-                                        class="input input-bordered input-neutral w-full" required aria-required="true" />
+                                        class="input input-bordered input-neutral w-full shadow-sm focus:ring-2 focus:ring-primary/70 rounded-lg"
+                                        required />
                                     <label class="label"
                                         th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'email')}">
-                                        <span class="label-text-alt text-error" th:text="${validationErrors.email}">Error
-                                            message</span>
+                                        <span class="label-text-alt text-error font-medium"
+                                            th:text="${validationErrors.email}">Error message</span>
                                     </label>
                                 </div>
-    
-                                <!-- Nama lengkap -->
+
+                                <!-- Nama Lengkap -->
                                 <div class="form-control w-full">
                                     <label class="label">
-                                        <span class="label-text font-medium text-neutral-700">Nama Lengkap <span
-                                                class="text-error">*</span></span>
+                                        <span class="label-text font-semibold text-gray-700 text-sm sm:text-base">Nama
+                                            Lengkap
+                                            <span class="text-error font-bold">*</span></span>
                                     </label>
                                     <input type="text" th:field="*{fullName}" placeholder="Masukkan nama lengkap"
-                                        class="input input-bordered input-neutral w-full" required aria-required="true" />
-                                    <label class="label"
-                                        th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'fullName')}">
-                                        <span class="label-text-alt text-error" th:text="${validationErrors.fullName}">Error
-                                            message</span>
-                                    </label>
+                                        class="input input-bordered input-neutral w-full shadow-sm focus:ring-2 focus:ring-primary/70 rounded-lg"
+                                        required />
                                 </div>
-    
+
                                 <!-- Nomor Telepon -->
                                 <div class="form-control w-full">
                                     <label class="label">
-                                        <span class="label-text font-medium text-neutral-700">Nomor Telepon</span>
+                                        <span class="label-text font-semibold text-gray-700 text-sm sm:text-base">Nomor
+                                            Telepon</span>
                                     </label>
                                     <input type="tel" th:field="*{phoneNumber}" placeholder="08xxxxxxxxxx"
-                                        class="input input-bordered input-neutral w-full" />
-                                    <label class="label"
-                                        th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'phoneNumber')}">
-                                        <span class="label-text-alt text-error"
-                                            th:text="${validationErrors.phoneNumber}">Error
-                                            message</span>
-                                    </label>
+                                        class="input input-bordered input-neutral w-full shadow-sm focus:ring-2 focus:ring-primary/70 rounded-lg" />
                                 </div>
-    
+
                                 <!-- Gender -->
                                 <div class="form-control w-full">
                                     <label class="label">
-                                        <span class="label-text font-medium text-neutral-700">Jenis Kelamin</span>
+                                        <span class="label-text font-semibold text-gray-700 text-sm sm:text-base">Jenis
+                                            Kelamin</span>
                                     </label>
                                     <select th:field="*{gender}"
-                                        class="select select-bordered select-neutral w-full font-normal">
-                                        <option value="">Pilih gender</option>
+                                        class="select select-bordered select-neutral w-full font-normal shadow-sm rounded-lg">
+                                        <option value="" disabled selected>Pilih gender</option>
                                         <option th:each="g : ${genders}" th:value="${g}" th:text="${g}"></option>
                                     </select>
                                 </div>
-    
+
                                 <!-- Role -->
                                 <div class="form-control w-full">
                                     <label class="label">
-                                        <span class="label-text font-medium text-neutral-700">Role</span>
+                                        <span class="label-text font-semibold text-gray-700 text-sm sm:text-base">Role
+                                            Pengguna</span>
                                     </label>
                                     <select th:field="*{role}"
-                                        class="select select-bordered select-neutral w-full font-normal">
-                                        <option value="">Pilih role</option>
+                                        class="select select-bordered select-neutral w-full font-normal shadow-sm rounded-lg">
+                                        <option value="" disabled selected>Pilih role</option>
                                         <option th:each="r : ${roles}" th:value="${r}" th:text="${r}"></option>
                                     </select>
                                 </div>
-    
-                                <!-- Foto Profil -->
+
+                                <!-- Upload Foto -->
                                 <div class="form-control w-full md:col-span-2">
-                                    <label class="label">
-                                        <span class="label-text font-medium text-neutral-700">Foto Profil</span>
+                                    <label class="label pb-1">
+                                        <span class="label-text font-semibold text-neutral text-sm sm:text-base">Ganti
+                                            Foto
+                                            Profil</span>
                                     </label>
-                                    <input type="file" th:field="*{profilePicture}" accept="image/*"
-                                        class="file-input file-input-bordered file-input-neutral w-full" />
-                                    <label class="label">
-                                        <span class="label-text-alt text-neutral-500">Format: JPG, PNG, maksimal 5MB</span>
+
+                                    <label for="profilePictureInput"
+                                        class="flex flex-col items-center justify-center w-full h-28 sm:h-32 border-2 border-dashed border-primary/40 rounded-xl cursor-pointer bg-base-100 hover:bg-base-200 transition-all">
+                                        <div class="flex flex-col items-center text-neutral text-sm">
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                class="w-8 h-8 sm:w-10 sm:h-10 opacity-60" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                    d="M3 16.5V18a2.25 2.25 0 002.25 2.25h13.5A2.25 2.25 0 0021 18v-1.5M7.5 12l4.5 4.5m0 0L16.5 12m-4.5 4.5V3" />
+                                            </svg>
+                                            <p class="font-medium mt-1 text-sm">Klik untuk pilih foto</p>
+                                            <p class="text-xs opacity-50">JPG, PNG — max 5MB</p>
+                                        </div>
                                     </label>
+
+                                    <input type="file" id="profilePictureInput" name="profilePicture" accept="image/*"
+                                        class="hidden" />
+                                    <p id="selectedFileText" class="text-sm mt-2 text-neutral/70 hidden"></p>
                                 </div>
                             </div>
-    
-                            <div class="divider">opsional</div>
-    
+
+                            <!-- Password -->
+                            <div class="divider text-xs sm:text-sm font-medium text-gray-500 mt-8 mb-6">UBAH PASSWORD
+                                (OPSIONAL)
+                            </div>
+
                             <div class="form-control w-full">
-                                <input type="text" name="password" id="password" placeholder="password"
-                                    class="input input-bordered input-neutral w-full" />
-                                <label class="label"
-                                    th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'password')}">
-                                    <span class="label-text-alt text-error" th:text="${validationErrors.password}">Error
-                                        message</span>
+                                <label class="label">
+                                    <span class="label-text font-semibold text-gray-700 text-sm sm:text-base">Password
+                                        Baru</span>
                                 </label>
+                                <input type="password" name="password" id="password"
+                                    placeholder="Kosongkan jika tidak ingin diubah"
+                                    class="input input-bordered input-warning w-full shadow-sm focus:ring-2 focus:ring-warning/70 rounded-lg" />
                             </div>
-    
-                            <div class="w-full p-2 flex md:flex-start gap-4">
-    
-                                <a th:href="@{/admin/users/}" class="flex-1 btn btn-accent btn-outline">
-                                    batal
+
+                            <!-- Action Buttons -->
+                            <div class="w-full flex flex-col justify-center mt-10 p-4 gap-4 md:flex-row">
+                                <a th:href="@{/admin/users/}"
+                                    class="btn btn-outline p-2 md:p-4 btn-primary font-semibold flex-1 text-base rounded-lg md:flex-1">
+                                    Batal
                                 </a>
-    
-                                <button class="btn btn-success flex-1" type="submit">
-                                    simpan perubahan
-                                </button>
-    
+                                <button type="submit"
+                                    class="btn md:p-4 p-2 btn-success font-bold flex-1 text-base rounded-lg shadow-xl shadow-success/30 md:flex-1">SIMPAN</button>
                             </div>
-    
                         </form>
                     </div>
                 </div>
-
-            </div>
-
-
-            <!-- Informasi penting -->
-
+            </main>
         </div>
+
     </div>
 
     <!-- Bottombar/footer (fragment Thymeleaf) -->
     <div th:replace="fragment/navbar :: bottombar('admin')"></div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fileInput = document.getElementById('profilePictureInput');
+            const imagePreview = document.getElementById('profileImagePreview');
+            const text = document.getElementById("selectedFileText");
+
+            // Pastikan kedua elemen ditemukan
+            if (fileInput && imagePreview) {
+                fileInput.addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+
+                    if (file) {
+                        const reader = new FileReader();
+
+                        reader.onload = (e) => {
+                            // Set src image preview dengan data URL dari file yang diupload
+                            imagePreview.src = e.target.result;
+                        };
+
+                        // Baca file sebagai Data URL
+                        reader.readAsDataURL(file);
+                    }
+                    // Jika input dibatalkan/dikosongkan, image akan tetap menunjukkan foto profil lama (dari Thymeleaf)
+                });
+            }
+
+            fileInput.addEventListener("change", () => {
+                const file = fileInput.files?.[0];
+
+                if (file) {
+                    text.textContent = `File terpilih: ${file.name}`;
+                    text.classList.remove("hidden");
+                } else {
+                    text.classList.add("hidden");
+                    text.textContent = "";
+                }
+            });
+        });
+
+    </script>
 </body>
 
 </html>

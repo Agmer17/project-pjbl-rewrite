@@ -22,99 +22,78 @@
         <div th:replace="fragment/navbar :: sidebar('users')"></div>
 
         <!-- Konten Utama -->
-        <main class="flex-1 p-4 sm:p-6 lg:p-8 bg-base-50 mb-20">
+        <main class="flex-1 p-4 sm:p-6 lg:p-8 bg-base-100 mb-20">
 
-            <!-- Header -->
-            <div
-                class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 border-b border-neutral-300 dark:border-neutral-700 pb-4 gap-4">
-
-                <h1 class="text-2xl sm:text-3xl font-bold text-base-content w-full sm:w-auto">
-                    Detail Pengguna:
-                    <span th:text="${user != null ? user.username : 'Tidak Ditemukan'}"></span>
-                </h1>
-
-                <div class="flex flex-wrap gap-2 w-full sm:w-auto justify-between">
-                    <a th:href="@{/admin/users/}" class="btn btn-sm sm:btn-md btn-ghost flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <!-- Header Back -->
+            <div class="text-neutral">
+                <a th:href="@{/admin/users/}"
+                    class="inline-flex items-center gap-2 mb-6 text-sm font-medium text-neutral hover:text-primary transition-colors group">
+                    <div
+                        class="w-10 h-10 rounded-full border border-neutral group-hover:border-primary flex items-center justify-center transition-all group-hover:scale-110">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
                         </svg>
-                        Kembali
-                    </a>
-
-                    <a th:if="${user}" th:href="@{/admin/users/update/{id}(id=${user.id})}"
-                        class="btn btn-sm sm:btn-md btn-warning flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                        </svg>
-                        Edit
-                    </a>
-                </div>
+                    </div>
+                    <span th:text="@{'kembali ke dahsboard'}" class="text-lg"></span>
+                </a>
             </div>
 
-            <!-- Detail Pengguna -->
-            <div th:if="${user}">
+            <!-- User Profile Card -->
+            <div th:if="${user}"
+                class="max-w-4xl mx-auto rounded-2xl shadow-xl border border-neutral dark:border-neutral-700 overflow-hidden bg-white">
+
+                <!-- Avatar & Name -->
                 <div
-                    class="bg-base-200 p-4 sm:p-6 lg:p-8 rounded-xl shadow-xl border border-neutral-300 dark:border-neutral-700 max-w-4xl mx-auto">
-
-                    <!-- Avatar dan Nama -->
-                    <div
-                        class="flex flex-col items-center text-center border-b border-neutral-300 dark:border-neutral-600 pb-6 mb-6">
-                        <div class="avatar mb-4">
-                            <div class="w-28 sm:w-32 rounded-full ring ring-primary ring-offset-base-200 ring-offset-2">
-                                <img th:src="${user.profilePicture != null and user.profilePicture != ''} 
-                                            ? @{/uploads/} + ${user.profilePicture} 
-                                            : @{/img/default.jpg}" alt="Foto Profil"
-                                    class="object-cover w-full h-full" />
-                            </div>
+                    class="flex flex-col items-center text-center p-6 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-400">
+                    <div class="avatar mb-4">
+                        <div
+                            class="w-32 h-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2 overflow-hidden">
+                            <img th:src="${user.profilePicture != null and user.profilePicture != ''} 
+        ? @{/uploads/} + ${user.profilePicture} 
+        : @{/img/default.jpg}" alt="Foto Profil"
+                                class="object-cover w-full h-full transition-transform duration-300 hover:scale-110" />
                         </div>
-                        <h2 class="text-xl sm:text-2xl font-bold text-base-content" th:text="${user.username}">
-                            Username Pengguna
-                        </h2>
-                        <div class="badge badge-soft badge-accent" th:text="${user.role}">
-                                
-                            </div>
                     </div>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-base-content" th:text="${user.username}">Username
+                    </h2>
+                    <div class="badge badge-accent mt-2" th:text="${user.role}">ROLE</div>
+                </div>
 
-                    <!-- Detail Grid -->
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <!-- Kiri -->
-                        <div class="flex flex-col gap-4 justify-center">
-                            <div>
-                                <span class="text-sm font-medium opacity-70">Nama Lengkap</span>
-                                <p class="text-base sm:text-lg font-semibold" th:text="${user.fullName ?: '-'}"></p>
-                            </div>
-                            <div>
-                                <span class="text-sm font-medium opacity-70">Email</span>
-                                <p class="text-base sm:text-lg font-semibold" th:text="${user.email}"></p>
-                            </div>
-                            <div>
-                                <span class="text-sm font-medium opacity-70">No. Telepon</span>
-                                <p class="text-base sm:text-lg font-semibold" th:text="${user.phoneNumber ?: '-'}"></p>
-                            </div>
-                        </div>
-
-                        <!-- Kanan -->
-                        <div class="flex flex-col gap-4">
-                            <div>
-                                <span class="text-sm font-medium opacity-70">Jenis Kelamin</span>
-                                <p class="text-base sm:text-lg font-semibold" th:text="${user.gender ?: '-'}"></p>
-                            </div>
-                            <div>
-                                <span class="text-sm font-medium opacity-70">ID Pengguna</span>
-                                <p class="text-base sm:text-lg font-semibold break-words" th:text="${user.id}"></p>
-                            </div>
-                            <div>
-                                <span class="text-sm font-medium opacity-70">Dibuat Pada</span>
-                                <p class="text-base sm:text-lg font-semibold"
-                                    th:text="${#temporals.format(user.createdAt, 'dd MMMM yyyy (HH:mm)')}"></p>
-                            </div>
-                        </div>
+                <!-- Info Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 p-6">
+                    <div
+                        class="bg-white rounded-xl shadow hover:shadow-lg p-4 transition-all duration-200 flex flex-col">
+                        <span class="text-sm font-medium text-neutral opacity-70">Nama Lengkap</span>
+                        <p class="text-lg font-semibold mt-1" th:text="${user.fullName ?: '-'}">Nama Lengkap</p>
+                    </div>
+                    <div
+                        class="bg-white rounded-xl shadow hover:shadow-lg p-4 transition-all duration-200 flex flex-col">
+                        <span class="text-sm font-medium text-neutral opacity-70">Email</span>
+                        <p class="text-lg font-semibold mt-1" th:text="${user.email}">email@example.com</p>
+                    </div>
+                    <div
+                        class="bg-white rounded-xl shadow hover:shadow-lg p-4 transition-all duration-200 flex flex-col">
+                        <span class="text-sm font-medium text-neutral opacity-70">No. Telepon</span>
+                        <p class="text-lg font-semibold mt-1" th:text="${user.phoneNumber ?: '-'}">081234567890</p>
+                    </div>
+                    <div
+                        class="bg-white rounded-xl shadow hover:shadow-lg p-4 transition-all duration-200 flex flex-col">
+                        <span class="text-sm font-medium text-neutral opacity-70">Jenis Kelamin</span>
+                        <p class="text-lg font-semibold mt-1" th:text="${user.gender ?: '-'}">Laki-laki</p>
+                    </div>
+                    <div
+                        class="bg-white rounded-xl shadow hover:shadow-lg p-4 transition-all duration-200 flex flex-col">
+                        <span class="text-sm font-medium text-neutral opacity-70">ID Pengguna</span>
+                        <p class="text-lg font-semibold mt-1 break-all" th:text="${user.id}">uuid-xxxx</p>
+                    </div>
+                    <div
+                        class="bg-white rounded-xl shadow hover:shadow-lg p-4 transition-all duration-200 flex flex-col">
+                        <span class="text-sm font-medium text-neutral opacity-70">Dibuat Pada</span>
+                        <p class="text-lg font-semibold mt-1"
+                            th:text="${#temporals.format(user.createdAt, 'dd MMMM yyyy (HH:mm)')}">12 Januari 2024</p>
                     </div>
                 </div>
+
             </div>
 
             <!-- Jika user null -->
@@ -127,17 +106,16 @@
                     </svg>
                     <div class="text-center sm:text-left">
                         <h3 class="font-bold">Pengguna Tidak Ditemukan!</h3>
-                        <p class="text-sm opacity-80">
-                            Data pengguna yang Anda cari mungkin telah dihapus atau ID tidak valid.
-                        </p>
+                        <p class="text-sm opacity-80">Data pengguna yang Anda cari mungkin telah dihapus atau ID tidak
+                            valid.</p>
                     </div>
-                    <a th:href="@{/admin/users/}" class="btn btn-sm btn-outline btn-error w-full sm:w-auto">
-                        Kembali ke Daftar
-                    </a>
+                    <a th:href="@{/admin/users/}" class="btn btn-sm btn-outline btn-error w-full sm:w-auto">Kembali ke
+                        Daftar</a>
                 </div>
             </div>
 
         </main>
+
     </div>
 
     <!-- Bottom Bar -->

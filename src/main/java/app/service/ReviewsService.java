@@ -65,7 +65,6 @@ public class ReviewsService {
 
     }
 
-
     @Transactional
     public ResponseEntity<?> saveReviews(PostReviewRequest req, UUID userId) {
 
@@ -113,7 +112,6 @@ public class ReviewsService {
     public ResponseEntity<?> deleteReviews(UUID reviewId) {
         Reviews reviews = reviewRepo.findById(reviewId).orElse(null);
 
-
         if (reviews == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("review tidak ditemukan");
         }
@@ -140,11 +138,17 @@ public class ReviewsService {
 
         return ResponseEntity.ok().body("berhasil mengacc review");
 
-
     }
 
     public List<ReviewData> getPendingReviews() {
         return reviewRepo.findAllPendingReviewCards();
+    }
+
+    public Boolean isReviewPending(UUID userId, List<Reviews> reviews) {
+        boolean isPending = reviews.stream()
+                .anyMatch(r -> r.getUser().getId().equals(userId) &&
+                        r.getStatus() == ReviewStatus.PENDING);
+        return isPending;
     }
 
 }

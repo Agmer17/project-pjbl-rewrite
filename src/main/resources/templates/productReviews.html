@@ -52,18 +52,36 @@
             <a th:href="@{${admin} ? '/admin/products/detail/' + ${productId} : '/products/detail/' + ${productId}}"
                 class="inline-flex items-center gap-2 mb-6 text-sm font-medium text-neutral hover:text-primary transition-colors group">
                 <div
-                    class="w-8 h-8 rounded-full border-2 border-neutral/30 group-hover:border-primary flex items-center justify-center transition-all group-hover:scale-110">
+                    class="w-10 h-10 rounded-full border border-neutral group-hover:border-primary flex items-center justify-center transition-all group-hover:scale-110">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 12H5M12 19l-7-7 7-7" />
                     </svg>
                 </div>
-                <span>Kembali ke produk</span>
+                <span class="text-lg">Kembali ke produk</span>
             </a>
 
             <!-- Page Header -->
             <div class="mb-8">
                 <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-neutral mb-2">Ulasan & Rating</h1>
                 <p class="text-sm sm:text-base text-neutral/60">Lihat apa kata pembeli tentang produk ini</p>
+            </div>
+
+
+            <!-- Alert Pending Review yang bisa di-close -->
+            <div th:if="${isPending}" x-data="{ open: true }" x-show="open"
+                class="alert alert-info shadow-lg mb-6 transition-all duration-300">
+                <div class="flex-1 flex items-start sm:items-center gap-2">
+                    <!-- Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 w-6 h-6" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z" />
+                    </svg>
+                    <!-- Message -->
+                    <span>
+                        Review kamu sedang dicek oleh admin. Mohon tunggu beberapa saat sampai review kamu muncul disini
+                    </span>
+                </div>
             </div>
 
             <!-- Write Review Form (Only if eligible) -->

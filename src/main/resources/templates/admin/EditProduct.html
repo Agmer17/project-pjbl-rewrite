@@ -20,12 +20,15 @@
 
             <div class="flex w-full gap-4 font-bold mb-4">
                 <div class="text-neutral">
-                    <a th:href="@{/admin/products/}" class="btn btn-outline btn-neutral btn-sm sm:btn-md">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
+                    <a th:href="@{/admin/products/}"
+                        class="inline-flex items-center gap-2 mb-6 text-sm font-medium text-neutral hover:text-primary transition-colors group">
+                        <div
+                            class="w-10 h-10 rounded-full border border-neutral/30 group-hover:border-primary flex items-center justify-center transition-all group-hover:scale-110">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M19 12H5M12 19l-7-7 7-7" />
+                            </svg>
+                        </div>
+                        <span th:text="@{'kembali ke dahsboard'}" class="text-lg"></span>
                     </a>
                 </div>
             </div>
@@ -81,7 +84,7 @@
             <form th:action="@{/admin/products/edit/{id}(id=${product.id})}" th:object="${formrequest}"
                 class="h-full w-full" id="updateProductForm" method="post" enctype="multipart/form-data">
 
-                <div class="w-full flex flex-col lg:flex-row gap-8">
+                <div class="w-full flex flex-col md:flex-row gap-8">
 
                     <div
                         class="lg:flex-[0.6] card p-6 mb-4 lg:mb-0 bg-white rounded-2xl shadow-xl shadow-base-300/50 border border-base-300/50">
@@ -217,19 +220,21 @@
                         class="lg:flex-[0.4] card p-6 bg-white rounded-2xl shadow-xl shadow-base-300/50 border border-base-300/50">
                         <h1
                             class="text-2xl md:text-3xl font-extrabold text-primary mb-4 border-b-2 border-base-300/70 pb-2">
-                            📝 Detail Data</h1>
+                            📝 Detail Data
+                        </h1>
 
                         <div class="divider-base-300 divider my-0 opacity-0"></div>
 
                         <input type="hidden" name="id" id="productId" th:value="${product.id}">
 
+                        <!-- Nama layanan -->
                         <fieldset class="fieldset text-neutral mt-4">
                             <legend class="fieldset-legend text-lg font-semibold text-gray-700 mb-1">Nama layanan
                             </legend>
                             <input type="text"
-                                th:classappend="${validationErrors != null and #maps.containsKey(validationErrors, 'name')} ? 'border-error ring-2 ring-error' : 'focus:border-primary focus:ring-2 focus:ring-primary/50'"
-                                class="input input-bordered w-full transition-all duration-200" placeholder="nama baru"
-                                th:value="${product.name}" id="productName" name="name" />
+                                th:classappend="${validationErrors != null and #maps.containsKey(validationErrors, 'name')} ? 'border-error ring-2 ring-error' : 'focus:border-primary focus:ring-0'"
+                                class="input w-full bg-white border-neutral transition-all duration-200"
+                                placeholder="nama baru" th:value="${product.name}" id="productName" name="name" />
                             <label class="label"
                                 th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'name')}">
                                 <span class="label-text-alt text-error" th:text="${validationErrors.name}">Error
@@ -237,13 +242,12 @@
                             </label>
                         </fieldset>
 
+                        <!-- Kategori -->
                         <fieldset class="fieldset text-neutral">
                             <legend class="fieldset-legend text-lg font-semibold text-gray-700 mb-1">Kategori</legend>
-
                             <div class="flex gap-2">
-                                <!-- Select utama -->
                                 <select id="categorySelect" name="categoryId"
-                                    class="select select-bordered w-full select-md transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/50"
+                                    class="select w-full bg-white border-neutral transition-all duration-200 focus:border-primary focus:ring-0"
                                     required onchange="handleCategorySelect(this)">
                                     <option value="" disabled th:if="${product.category == null}" selected>Pilih
                                         kategori</option>
@@ -253,27 +257,24 @@
                                     <option value="new" class="text-primary">+ Tambah Kategori Baru</option>
                                 </select>
 
-                                <!-- Tombol edit & hapus -->
                                 <div class="flex gap-1">
                                     <button id="editCategoryBtn" type="button" class="btn btn-outline btn-sm"
-                                        onclick="openEditCategoryDialog()">
-                                        ✏️
-                                    </button>
+                                        onclick="openEditCategoryDialog()">✏️</button>
                                     <button id="deleteCategoryBtn" type="button"
-                                        class="btn btn-outline btn-sm btn-error" onclick="openDeleteCategoryDialog()">
-                                        🗑️
-                                    </button>
+                                        class="btn btn-outline btn-sm btn-error"
+                                        onclick="openDeleteCategoryDialog()">🗑️</button>
                                 </div>
                             </div>
                         </fieldset>
 
-
+                        <!-- Harga layanan -->
                         <fieldset class="fieldset text-neutral">
                             <legend class="fieldset-legend text-lg font-semibold text-gray-700 mb-1">Harga layanan (Rp)
                             </legend>
                             <input type="text" id="price"
-                                th:classappend="${validationErrors != null and #maps.containsKey(validationErrors, 'price')} ? 'border-error ring-2 ring-error' : 'focus:border-primary focus:ring-2 focus:ring-primary/50'"
-                                class="input input-bordered w-full transition-all duration-200" placeholder="harga baru"
+                                th:classappend="${validationErrors != null and #maps.containsKey(validationErrors, 'price')} ? 'border-error ring-2 ring-error' : 'focus:border-primary focus:ring-0'"
+                                class="input w-full bg-white border-neutral transition-all duration-200"
+                                placeholder="harga baru"
                                 th:value="${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}" />
                             <p th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'price')}"
                                 th:text="${validationErrors.price}" class="label text-error text-sm font-medium">
@@ -281,29 +282,31 @@
                             </p>
                         </fieldset>
 
+                        <!-- Deskripsi layanan -->
                         <fieldset class="fieldset">
                             <legend class="fieldset-legend text-lg font-semibold text-gray-700 mb-1">Deskripsi layanan
                             </legend>
                             <textarea
-                                th:classappend="${validationErrors != null and #maps.containsKey(validationErrors, 'description')} ? 'border-error ring-2 ring-error' : 'focus:border-primary focus:ring-2 focus:ring-primary/50'"
-                                class="textarea textarea-bordered h-40 w-full transition-all duration-200"
+                                th:classappend="${validationErrors != null and #maps.containsKey(validationErrors, 'description')} ? 'border-error ring-2 ring-error' : 'focus:border-primary focus:ring-0'"
+                                class="textarea w-full h-40 bg-white border-neutral transition-all duration-200"
                                 placeholder="deskripsi" th:text="${product.desc}" id="productDescription"
                                 name="description"></textarea>
                             <div class="label text-error text-sm font-medium"
                                 th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'description')}"
                                 th:text="${validationErrors.description}"></div>
                         </fieldset>
-
                     </div>
+
 
                 </div>
 
                 <div class="w-full flex flex-col justify-center mt-10 p-4 gap-4 md:flex-row">
-
-                    <button type="button"
-                        class="btn btn-lg btn-outline p-2 md:p-4 btn-neutral font-semibold flex-1 text-base rounded-lg md:flex-1">BATAL</button>
+                    <a th:href="@{/admin/products/}"
+                        class="btn btn-outline p-2 md:p-4 btn-primary font-semibold flex-1 text-base rounded-lg md:flex-1">
+                        Batal
+                    </a>
                     <button type="submit"
-                        class="btn btn-lg md:p-4 p-2 btn-success font-bold flex-1 text-base rounded-lg shadow-xl shadow-success/30 md:flex-1">SIMPAN</button>
+                        class="btn md:p-4 p-2 btn-success font-bold flex-1 text-base rounded-lg shadow-xl shadow-success/30 md:flex-1">SIMPAN</button>
                 </div>
             </form>
 
