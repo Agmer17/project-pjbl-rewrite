@@ -88,6 +88,8 @@ public class LivechatController {
                 ChatHistoryDto data = service.getHistoryBeetween(userId, receiverId);
 
                 model.addAttribute("data", data);
+                model.addAttribute("userId", userId);
+                model.addAttribute("receiverId", receiverId);
 
                 return "privateChatPage";
         }

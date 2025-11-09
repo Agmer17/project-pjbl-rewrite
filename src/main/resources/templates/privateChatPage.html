@@ -16,6 +16,8 @@
 <body class="bg-base-100 text-base-content flex flex-col min-h-screen font-sans w-screen">
     <div th:replace="fragment/navbar :: navbar"></div>
 
+    <div class="hidden" id="userId" th:attr="data-userId=${data.currentUser.id}"></div>
+    <div class="hidden" id="receiverId" th:attr="data-receiverId=${data.receiver.id}"></div>
     <div class="hidden ring-success"></div>
     <div class="hidden ring-base-200"></div>
 
@@ -50,16 +52,30 @@
     <!-- 🗨️ Chat messages -->
     <main id="chat-messages"
         class="flex-1 overflow-y-auto bg-base-100 p-4 md:p-6 flex flex-col gap-3 scroll-smooth mt-18">
-        <div th:each="chat : ${data.chatHistory}">
-            <div class="chat" th:classappend="${chat.ownMessage} ? ' chat-end' : ' chat-start'">
-                <div class="chat-bubble shadow-lg max-w-xs md:max-w-md"
-                    th:classappend="${chat.ownMessage} ? ' bg-neutral text-neutral-content' : ' bg-base-200 text-base-content'"
-                    th:text="${chat.text}">
-                </div>
-                <div class="chat-footer mt-1 text-xs opacity-70"
-                    th:text="${#temporals.format(chat.timeStamp, 'HH:mm')}">12:30</div>
+        <th:block th:with="lastDate = ''">
+            <div th:each="chat, iterStat : ${data.chatHistory}">
+                <th:block th:with="currentDateYMD = ${#temporals.format(chat.timeStamp, 'yyyy-MM-dd')}">
+                    <!-- Tampilkan date separator hanya jika tanggal berbeda -->
+                    <div th:if="${iterStat.first || !#strings.equals(currentDateYMD, data.chatHistory[iterStat.index - 1].timeStamp.format(T(java.time.format.DateTimeFormatter).ofPattern('yyyy-MM-dd')))}"
+                        class="flex justify-center my-2 chat-date-separator">
+                        <div class="badge badge-lg bg-base-300 text-base-content/80 shadow-md"
+                            th:attr="data-date=${currentDateYMD}">
+                            <span th:text="${#temporals.format(chat.timeStamp, 'EEEE, d MMM yyyy')}">Tanggal</span>
+                        </div>
+                    </div>
+
+                    <!-- Chat bubble -->
+                    <div class="chat" th:classappend="${chat.ownMessage} ? ' chat-end' : ' chat-start'">
+                        <div class="chat-bubble shadow-lg max-w-xs md:max-w-md"
+                            th:classappend="${chat.ownMessage} ? ' bg-neutral text-neutral-content' : ' bg-base-200 text-base-content'"
+                            th:text="${chat.text}">
+                        </div>
+                        <div class="chat-footer mt-1 text-xs opacity-70" th:attr="data-timestamp=${chat.timeStampEpoch}"
+                            th:text="${#temporals.format(chat.timeStamp, 'HH:mm')}">12:30</div>
+                    </div>
+                </th:block>
             </div>
-        </div>
+        </th:block>
     </main>
 
     <!-- 📝 Input -->
@@ -82,106 +98,7 @@
     <input type="hidden" id="userId" th:value="${data.currentUser.id}" />
     <input type="hidden" id="receiverId" th:value="${data.receiver.id}" />
 
-    <script th:inline="javascript">
-        const userId = /*[[${data.currentUser.id}]]*/ null;
-        const receiverId = /*[[${data.receiver.id}]]*/ null;
-
-        const socket = new SockJS('/ws');
-        const stompClient = Stomp.over(socket);
-
-        const receiverAvatar = document.getElementById('receiverAvatar');
-
-        // === ✅ Fetch & Tandai status online ===
-        async function checkReceiverOnline() {
-            try {
-                const res = await fetch('/live-chat/online-users');
-                if (!res.ok) throw new Error('Fetch failed');
-                const onlineUserIds = await res.json();
-                console.log(onlineUserIds)
-                const isOnline = onlineUserIds.map(String).includes(String(receiverId));
-                updateAvatarStatus(isOnline);
-            } catch (err) {
-                console.error('❌ Gagal ambil online users:', err);
-            }
-        }
-
-        function updateAvatarStatus(isOnline) {
-            receiverAvatar.classList.remove('avatar-online', 'avatar-offline');
-            receiverAvatar.classList.add(isOnline ? 'avatar-online' : 'avatar-offline');
-
-            const ringElement = receiverAvatar.querySelector('.rounded-full');
-            if (ringElement) {
-                ringElement.classList.remove('ring-base-200', 'ring-success');
-                ringElement.classList.add(isOnline ? 'ring-success' : 'ring-base-200');
-            }
-        }
-
-        stompClient.connect({}, () => {
-            console.log('✅ WebSocket Connected');
-
-            stompClient.subscribe(`/user/${userId}/queue/messages`, (msg) => {
-                const data = JSON.parse(msg.body);
-                appendMessage(data.text, data.ownMessage);
-            });
-
-            // dengarkan event presence
-            stompClient.subscribe('/topic/online-users', (payload) => {
-                const onlineUserIds = JSON.parse(payload.body);
-                console.log("yg online sekarang dari event" + onlineUserIds)
-                const isOnline = onlineUserIds.map(String).includes(String(receiverId));
-
-                console.log("apakah receiver online " + isOnline)
-
-
-                updateAvatarStatus(isOnline);
-            });
-
-            checkReceiverOnline(); // pertama kali load
-        });
-
-        // === ✉️ Kirim pesan ===
-        const form = document.getElementById("chat-form");
-        const input = document.getElementById("chat-input");
-        const messages = document.getElementById("chat-messages");
-
-        messages.scrollTop = messages.scrollHeight;
-
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const text = input.value.trim();
-            if (!text) return;
-
-            const payload = { receiverId, text };
-            stompClient.send("/app/chat", {}, JSON.stringify(payload));
-            input.value = "";
-        });
-
-        // === 💬 Tambah pesan ke UI ===
-        function appendMessage(text, isSender, timeStamp = new Date()) {
-            const wrapper = document.createElement("div");
-            wrapper.className = `chat ${isSender ? "chat-end" : "chat-start"}`;
-
-            const bubble = document.createElement("div");
-            bubble.className = `chat-bubble shadow-lg max-w-xs md:max-w-md ${isSender ? "bg-neutral text-neutral-content" : "bg-base-200 text-base-content"}`;
-            bubble.textContent = text;
-
-            const footer = document.createElement("div");
-            footer.className = "chat-footer mt-1 text-xs opacity-70";
-            footer.textContent = new Date(timeStamp).toLocaleTimeString("id-ID", {
-                hour: "2-digit",
-                minute: "2-digit"
-            });
-
-            wrapper.appendChild(bubble);
-            wrapper.appendChild(footer);
-            messages.appendChild(wrapper);
-            messages.scrollTop = messages.scrollHeight;
-        }
-
-        window.addEventListener('beforeunload', () => {
-            if (stompClient.connected) stompClient.disconnect();
-        });
-    </script>
+    <script th:src="@{/js/privateChatPage.js}"></script>
 </body>
 
 </html>

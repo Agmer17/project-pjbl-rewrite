@@ -1,6 +1,7 @@
 package app.service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import app.event.OnlineUsersListener;
 import app.exception.DataNotFoundEx;
 import app.model.custom.UserRole;
 import app.model.dto.ChatHistoryDto;
@@ -21,6 +23,7 @@ import app.model.entity.Users;
 import app.model.projection.UserProfileProjection;
 import app.repository.LiveChatRepository;
 import app.repository.UserRepository;
+import jakarta.transaction.Transactional;
 
 @Service
 /**
@@ -60,6 +63,13 @@ public class LiveChatService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private OnlineUsersListener onlineListener;
+
+    @Transactional
     public LiveChatResponseDto saveMessage(ChatMessage message, UUID senderId, UUID receiverId) {
 
         Users sender = userRepository.getReferenceById(senderId);
@@ -85,6 +95,12 @@ public class LiveChatService {
                 .ownMessage(false)
                 .build();
 
+            if (!isReceiverOnline(receiver)) {
+                emailService.sendNotificationEmails("http://localhost/live-chat", receiver.getEmail(), sender.getUsername());
+            }
+
+        
+
         return responseForReceiver;
 
     }
@@ -98,6 +114,7 @@ public class LiveChatService {
                         .chatId(ch.getId())
                         .sender(ch.getSender().getId())
                         .receiver(ch.getReceiver().getId())
+                        .timeStampEpoch(ch.getCreatedAt().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
                         .text(ch.getText())
                         .timeStamp(ch.getCreatedAt())
                         .ownMessage(ch.getSender().getId().equals(sender))
@@ -163,5 +180,10 @@ public class LiveChatService {
             return chats;
 
         }
+    }
+
+    private Boolean isReceiverOnline(Users u) {
+        return onlineListener.getOnlineUserIds().contains(u.getId());
+
     }
 }

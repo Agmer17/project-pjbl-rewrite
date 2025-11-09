@@ -20,5 +20,6 @@ public class LiveChatResponseDto {
     private UUID receiver;
     private String text;
     private LocalDateTime timeStamp;
+    private Long timeStampEpoch;
     private Boolean ownMessage;
 }
