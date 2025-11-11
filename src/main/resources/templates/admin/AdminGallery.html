@@ -33,20 +33,18 @@
 
             </div>
 
-            <!-- Masonry-style grid -->
-            <div class="columns-2 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
+            <!-- Masonry-style grid dengan gaya Path -->
+            <div class="columns-2 sm:columns-3 lg:columns-4 xl:columns-5 gap-2 sm:gap-3">
                 <!-- Loop thymeleaf -->
                 <div th:each="image : ${images}" th:if="${image.galleryImage == true}"
-                    class="relative break-inside-avoid overflow-hidden rounded-2xl shadow-md group transition-all duration-300 hover:shadow-xl">
-
+                    class="relative break-inside-avoid overflow-hidden rounded-xl mb-2 sm:mb-3 group transition-all duration-300 hover:shadow-2xl hover:scale-[1.02]">
                     <!-- Gambar -->
                     <img th:src="@{'/uploads/' + ${image.imageFileName}}" alt="Gallery Image"
-                        class="w-full object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105"
-                        style="min-height: 180px; max-height: 360px;" />
-
+                        class="w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
+                        style="min-height: 150px; max-height: 400px;" />
                     <!-- Tombol delete -->
                     <button
-                        class="absolute top-2 right-2 bg-red-600/80 hover:bg-red-700 text-white rounded-full p-2 shadow-md transition"
+                        class="absolute top-2 right-2 bg-red-600/90 hover:bg-red-700 text-white rounded-full p-2 shadow-lg transition opacity-0 group-hover:opacity-100"
                         th:attr="data-id=${image.id}" title="Delete image">
                         <!-- SVG trash icon -->
                         <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
