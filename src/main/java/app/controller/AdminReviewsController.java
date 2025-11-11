@@ -51,6 +51,7 @@ public class AdminReviewsController {
 
 
         model.addAttribute("pendingReviews", servive.getPendingReviews());
+        model.addAttribute("approvedReviews", servive.getAllReviews());
         return "admin/AdminReviews";
     }
 }

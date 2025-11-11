@@ -58,11 +58,9 @@ window.addEventListener("DOMContentLoaded", () => {
         if (diffDays === 0) return "Hari Ini";
         if (diffDays === 1) return "Kemarin";
         if (diffDays < 7) {
-            // Kurang dari seminggu: tampilkan nama hari
             return messageDate.toLocaleDateString("id-ID", { weekday: 'long' });
         }
 
-        // Lebih dari atau sama dengan seminggu: tampilkan tanggal penuh
         return messageDate.toLocaleDateString("id-ID", {
             year: 'numeric',
             month: 'short',
@@ -70,7 +68,6 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // === 3. INISIALISASI (Mengubah Label Hari Thymeleaf ke Label Relatif) ===
     function initializeDateMarkers() {
         // Mencari elemen pemisah hari yang dibuat oleh Thymeleaf
         const markers = messagesContainer.querySelectorAll('.chat-date-separator > .badge');
@@ -88,13 +85,9 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Panggil saat DOMContentLoaded
     initializeDateMarkers();
 
 
-    // === 4. FUNGSI CHAT DAN WEBSOCKET ===
-
-    // ... (Fungsi checkReceiverOnline dan updateAvatarStatus tetap sama) ...
     async function checkReceiverOnline() {
         try {
             const res = await fetch('/live-chat/online-users');
@@ -136,7 +129,7 @@ window.addEventListener("DOMContentLoaded", () => {
             updateAvatarStatus(isOnline);
         });
 
-        checkReceiverOnline(); // Cek status online pertama kali
+        checkReceiverOnline();
     });
 
     // === ✉️ Kirim pesan ===

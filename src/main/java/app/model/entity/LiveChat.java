@@ -33,10 +33,10 @@ import lombok.Setter;
  * Hubungan dengan Users:
  *
  * - Komposisi (Composition) + Asosiasi Many-to-One:
- *   - Field 'sender' dan 'receiver' menunjuk ke Users.
- *   - Banyak LiveChat dapat dikaitkan dengan satu Users (Many-to-One).
- *   - Cascade delete diatur → jika Users dihapus, LiveChat terkait ikut terhapus.
- *     Artinya LiveChat tidak bisa eksis tanpa Users, sehingga ini komposisi.
+ * - Field 'sender' dan 'receiver' menunjuk ke Users.
+ * - Banyak LiveChat dapat dikaitkan dengan satu Users (Many-to-One).
+ * - Cascade delete diatur → jika Users dihapus, LiveChat terkait ikut terhapus.
+ * Artinya LiveChat tidak bisa eksis tanpa Users, sehingga ini komposisi.
  */
 public class LiveChat {
 
@@ -46,21 +46,23 @@ public class LiveChat {
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sender_id", nullable = false, 
-                foreignKey = @ForeignKey(name = "live_chat_sender_id_fkey"))
-    private Users sender;  
+    @JoinColumn(name = "sender_id", nullable = false, foreignKey = @ForeignKey(name = "live_chat_sender_id_fkey"))
+    private Users sender;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "receiver_id", nullable = false, 
-                foreignKey = @ForeignKey(name = "live_chat_receiver_id_fkey"))
-    private Users receiver;  
-   
+    @JoinColumn(name = "receiver_id", nullable = false, foreignKey = @ForeignKey(name = "live_chat_receiver_id_fkey"))
+    private Users receiver;
+
     @Column(columnDefinition = "TEXT", name = "message")
     private String text;
-    
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
+
     @Column(name = "is_read")
     private Boolean haveRead;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", foreignKey = @ForeignKey(name = "live_chat_product_id_fkey"))
+    private Product product;
 }

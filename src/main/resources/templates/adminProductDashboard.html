@@ -84,26 +84,35 @@
                 </div>
             </div>
 
-            <!-- Filter & Search -->
-            <div class="flex flex-col sm:flex-row gap-4 mb-6">
-                <div class="form-control flex-1">
-                    <input type="text" placeholder="Search products... 🔍"
-                        class="input input-bordered w-full bg-white" />
+            <form id="searchForm" class="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6" method="get">
+                <div class="form-control flex-1 w-full sm:w-auto">
+                    <label for="searchInput" class="sr-only">Cari produk...</label>
+                    <input id="searchInput" type="search" name="q" placeholder="Cari produk... 🔍"
+                        class="input input-bordered w-full bg-white transition duration-150 ease-in-out focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                        th:value="${search}" />
                 </div>
-                <select class="select select-bordered bg-white" onchange="handleCategoryChange(this)">
-                    <option value="" th:selected="${#strings.isEmpty(selectedCategoryId)}">
-                        Semua Kategori
-                    </option>
-                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"
-                        th:selected="${category.id == selectedCategoryId}">
-                    </option>
-                </select>
-                <select class="select select-bordered bg-white">
-                    <option selected>Sort by Latest</option>
-                    <option>Sort by Name</option>
-                    <option>Sort by Price</option>
-                </select>
-            </div>
+                <div class="w-full sm:w-auto">
+                    <label for="categorySelect" class="sr-only">Pilih Kategori</label>
+                    <select id="categorySelect" name="cat"
+                        class="select select-bordered bg-white w-full sm:min-w-[150px] transition duration-150 ease-in-out focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="" th:selected="${#strings.isEmpty(selectedCategoryId)}">
+                            Semua Kategori
+                        </option>
+                        <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"
+                            th:selected="${category.id == selectedCategoryId}">
+                        </option>
+                    </select>
+                </div>
+                <div class="w-full sm:w-auto">
+                    <label for="sortSelect" class="sr-only">Urutkan Berdasarkan</label>
+                    <select id="sortSelect" name="ord"
+                        class="select select-bordered bg-white w-full sm:min-w-[150px] transition duration-150 ease-in-out focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <option value="desc" th:selected="${order == 'desc'}">Terbaru</option>
+                        <option value="asc" th:selected="${order == 'asc'}">Terlama</option>
+                    </select>
+                </div>
+            </form>
+
 
             <!-- Products Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

@@ -151,4 +151,8 @@ public class ReviewsService {
         return isPending;
     }
 
+    public List<ReviewData> getAllReviews() {
+        return reviewRepo.findAllReviewData();
+    }
+
 }

@@ -236,9 +236,9 @@
                                     <div class="avatar placeholder">
                                         <div class="w-12 h-12 rounded-full overflow-hidden"
                                             th:classappend="${review.user.profilePicture == null ? 'bg-gray-200 text-gray-600 flex items-center justify-center' : ''}">
-                                            <img th:if="${review.user.profilePicture != null}"
-                                                th:src="@{'/uploads/' + ${review.user.profilePicture}}" alt="User photo"
-                                                class="w-full h-full object-cover" />
+                                            <img th:src="@{/uploads/{pic}(pic=${review.user.profilePicture})}"
+                                                th:alt="${review.user.fullName}" class="w-full h-full object-cover"
+                                                onerror="this.onerror=null; this.src='/img/default.jpg';" />
                                             <span th:if="${review.user.profilePicture == null}"
                                                 class="text-lg font-semibold"
                                                 th:text="${review.user.fullName != null ? #strings.substring(review.user.fullName,0,1) : 'U'}">A</span>
@@ -318,7 +318,8 @@
         </main>
 
     </div>
-    <div th:replace="fragment/navbar :: bottombar('admin')"></div>
+    <div th:replace="fragment/navbar :: bottombar(${activePage == 'admin'} ? 'admin' : 'products')"></div>
+
     <script th:src="@{/js/reviewBase.js}"></script>
 </body>
 

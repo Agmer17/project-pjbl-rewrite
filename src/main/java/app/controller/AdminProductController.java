@@ -45,8 +45,9 @@ public class AdminProductController {
     public String getProductDashboard(Model model,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(name = "cat", required = false) UUID categoryId,
-            @RequestParam(name = "ord", required = false, defaultValue = "desc") String orderBy) {
-        Page<ProductProjection> pageable = productService.getAllProducts(page, categoryId, orderBy);
+            @RequestParam(name = "ord", required = false, defaultValue = "desc") String orderBy,
+            @RequestParam(name = "q", required = false) String search) {
+        Page<ProductProjection> pageable = productService.getAllProducts(page, categoryId, orderBy, search);
         DashboardStatsProjection stats = productService.getProductStatsData();
 
         model.addAttribute("selectedCategoryId", categoryId);
@@ -59,6 +60,8 @@ public class AdminProductController {
         model.addAttribute("hasNext", pageable.hasNext());
         model.addAttribute("hasPrevious", pageable.hasPrevious());
         model.addAttribute("categories", productService.getAllCategory());
+        model.addAttribute("order", orderBy);
+        model.addAttribute("search", search);
         return "adminProductDashboard";
     }
 

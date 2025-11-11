@@ -9,14 +9,6 @@
 
         <div class="flex gap-4">
             <div class="flex-none">
-                <svg class="border-primary" width="25" height="25" viewBox="0 0 27 27" fill="none"
-                    xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M25 25L19.4507 19.4507M19.4507 19.4507C20.3999 18.5014 21.1529 17.3745 21.6666 16.1343C22.1803 14.8941 22.4447 13.5648 22.4447 12.2224C22.4447 10.8799 22.1803 9.55067 21.6666 8.31044C21.1529 7.0702 20.3999 5.9433 19.4507 4.99406C18.5014 4.04483 17.3745 3.29185 16.1343 2.77813C14.8941 2.26441 13.5648 2 12.2224 2C10.8799 2 9.55067 2.26441 8.31044 2.77813C7.0702 3.29185 5.9433 4.04483 4.99406 4.99406C3.077 6.91113 2 9.51123 2 12.2224C2 14.9335 3.077 17.5336 4.99406 19.4507C6.91113 21.3677 9.51123 22.4447 12.2224 22.4447C14.9335 22.4447 17.5336 21.3677 19.4507 19.4507Z"
-                        stroke="#061650" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-            </div>
-            <div class="flex-none">
                 <svg class="border-primary" width="25" height="25" viewBox="0 0 25 25" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path fill-rule="evenodd" clip-rule="evenodd"
@@ -29,41 +21,61 @@
     </div>
 
     <div th:fragment="bottombar(activePage)" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-50
-         w-[90%] max-w-sm bg-white
-         shadow-lg rounded-2xl border border-gray-200/40
-         flex justify-around items-center py-3 px-4">
+         w-[95%] sm:w-[85%] md:w-[70%] lg:w-[600px] xl:w-[650px] max-w-4xl
+         bg-white shadow-lg rounded-2xl border border-gray-200/40
+         flex justify-around items-center 
+         py-2.5 px-3 sm:py-3 sm:px-4 md:py-4 md:px-6
+         gap-1 sm:gap-2 md:gap-3 lg:gap-4">
 
         <!-- Home -->
         <a th:href="@{/}">
-            <button class="btn btn-circle border-none p-2 text-neutral"
+            <button
+                class="btn btn-circle border-none p-1.5 sm:p-2 md:p-2.5 text-neutral transition-all duration-200 hover:scale-110"
                 th:classappend="${activePage == 'home'} ? 'bg-neutral text-white' : ''">
-                <svg width="29" height="30" viewBox="0 0 29 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" viewBox="0 0 29 30" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M2.55556 28.05H9.93956V18.1501C9.93956 17.7043 10.0949 17.3305 10.4056 17.0289C10.7149 16.726 11.0982 16.5746 11.5556 16.5746H17.5556C18.0129 16.5746 18.3969 16.726 18.7076 17.0289C19.0169 17.3305 19.1716 17.7043 19.1716 18.1501V28.05H26.5556V11.1011C26.5556 10.9009 26.5109 10.7189 26.4216 10.5551C26.3322 10.3913 26.2102 10.2483 26.0556 10.1261L15.2876 2.2132C15.0822 2.039 14.8382 1.9519 14.5556 1.9519C14.2729 1.9519 14.0296 2.039 13.8256 2.2132L3.05556 10.1261C2.90222 10.2509 2.78022 10.3939 2.68956 10.5551C2.59889 10.7163 2.55422 10.8983 2.55556 11.1011V28.05ZM0.555557 28.05V11.1011C0.555557 10.6019 0.670224 10.1293 0.899557 9.68346C1.12889 9.23757 1.44489 8.87033 1.84756 8.58174L12.6176 0.629835C13.1816 0.209946 13.8256 0 14.5496 0C15.2736 0 15.9216 0.209946 16.4936 0.629835L27.2636 8.57979C27.6676 8.86838 27.9836 9.23627 28.2116 9.68346C28.4409 10.1293 28.5556 10.6019 28.5556 11.1011V28.05C28.5556 28.5726 28.3562 29.0283 27.9576 29.417C27.5589 29.8057 27.0916 30 26.5556 30H18.7876C18.3289 30 17.9449 29.8492 17.6356 29.5476C17.3262 29.2447 17.1716 28.8703 17.1716 28.4244V18.5265H11.9396V28.4244C11.9396 28.8716 11.7849 29.246 11.4756 29.5476C11.1662 29.8492 10.7829 30 10.3256 30H2.55556C2.01956 30 1.55222 29.8057 1.15356 29.417C0.75489 29.0283 0.555557 28.5726 0.555557 28.05Z"
                         fill="currentColor" />
                 </svg>
-
             </button>
         </a>
 
         <!-- LiveChat -->
         <a th:href="@{/live-chat}">
-            <button class="btn btn-circle p-2 border-none text-neutral"
+            <button
+                class="btn btn-circle p-1.5 sm:p-2 md:p-2.5 border-none text-neutral transition-all duration-200 hover:scale-110"
                 th:classappend="${activePage == 'chat'} ? 'bg-neutral text-white' : ''">
-                <svg width="29" height="29" viewBox="0 0 31 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" viewBox="0 0 31 30" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M10.0556 12.8749H21.3889M10.0556 17.8333H17.8472M22.8056 2.72877C20.653 1.48313 18.2092 0.82917 15.7222 0.833271C7.89797 0.833271 1.55556 7.17569 1.55556 14.9999C1.55556 17.2666 2.08822 19.4086 3.03314 21.3084C3.28531 21.8127 3.36889 22.3893 3.22297 22.9347L2.38006 26.0882C2.29657 26.4003 2.29665 26.7288 2.38028 27.0409C2.4639 27.3529 2.62814 27.6375 2.8565 27.866C3.08486 28.0945 3.36932 28.2589 3.6813 28.3427C3.99329 28.4265 4.32184 28.4268 4.63397 28.3435L7.78747 27.4992C8.33485 27.3609 8.91392 27.4279 9.41522 27.6876C11.3744 28.6631 13.5336 29.1694 15.7222 29.1666C23.5465 29.1666 29.8889 22.8242 29.8889 14.9999C29.8889 12.4202 29.199 9.9991 27.9934 7.9166"
                         stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
                 </svg>
+            </button>
+        </a>
 
+        <!-- Products -->
+        <a th:href="@{/products/}">
+            <button
+                class="btn btn-circle border-none p-1.5 sm:p-2 md:p-2.5 text-neutral transition-all duration-200 hover:scale-110"
+                th:classappend="${activePage == 'products'} ? 'bg-neutral text-white' : ''">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" viewBox="0 0 27 27" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M25 25L19.4507 19.4507M19.4507 19.4507C20.3999 18.5014 21.1529 17.3745 21.6666 16.1343C22.1803 14.8941 22.4447 13.5648 22.4447 12.2224C22.4447 10.8799 22.1803 9.55067 21.6666 8.31044C21.1529 7.0702 20.3999 5.9433 19.4507 4.99406C18.5014 4.04483 17.3745 3.29185 16.1343 2.77813C14.8941 2.26441 13.5648 2 12.2224 2C10.8799 2 9.55067 2.26441 8.31044 2.77813C7.0702 3.29185 5.9433 4.04483 4.99406 4.99406C3.077 6.91113 2 9.51123 2 12.2224C2 14.9335 3.077 17.5336 4.99406 19.4507C6.91113 21.3677 9.51123 22.4447 12.2224 22.4447C14.9335 22.4447 17.5336 21.3677 19.4507 19.4507Z"
+                        stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
             </button>
         </a>
 
         <!-- Gallery -->
         <a th:href="@{/gallery/}" th:if="${#ctx.session.creds == null or #ctx.session.creds.get('role') != 'ADMIN'}">
-            <button class="btn btn-circle p-2 border-none text-neutral"
+            <button
+                class="btn btn-circle p-1.5 sm:p-2 md:p-2.5 border-none text-neutral transition-all duration-200 hover:scale-110"
                 th:classappend="${activePage == 'gallery'} ? 'bg-neutral text-white' : ''">
-                <svg width="29" height="29" viewBox="0 0 32 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" viewBox="0 0 32 30" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M29.3356 8.38881H2.66444C2.19353 8.38881 1.74191 8.57587 1.40893 8.90886C1.07595 9.24184 0.888885 9.69346 0.888885 10.1644V27.391C0.888885 27.8619 1.07595 28.3136 1.40893 28.6465C1.74191 28.9795 2.19353 29.1666 2.66444 29.1666H29.3356C29.8065 29.1666 30.2581 28.9795 30.5911 28.6465C30.924 28.3136 31.1111 27.8619 31.1111 27.391V10.1644C31.1111 9.69346 30.924 9.24184 30.5911 8.90886C30.2581 8.57587 29.8065 8.38881 29.3356 8.38881ZM29.2222 27.2777H2.77777V10.2777H29.2222V27.2777Z"
                         fill="currentColor" />
@@ -80,15 +92,16 @@
                         d="M29.3356 5.55547C29.3356 5.30499 29.2361 5.06477 29.0589 4.88765C28.8818 4.71053 28.6416 4.61103 28.3911 4.61103H3.83555C3.58507 4.61103 3.34485 4.71053 3.16773 4.88765C2.99061 5.06477 2.89111 5.30499 2.89111 5.55547V6.49992H29.3356V5.55547Z"
                         fill="currentColor" />
                 </svg>
-
-
             </button>
         </a>
 
+        <!-- Admin -->
         <a th:href="@{/admin/}" th:if="${#ctx.session.creds?.get('role') == 'ADMIN'}">
-            <button class="btn btn-circle p-2 border-none text-neutral"
+            <button
+                class="btn btn-circle p-1.5 sm:p-2 md:p-2.5 border-none text-neutral transition-all duration-200 hover:scale-110"
                 th:classappend="${activePage == 'admin'} ? 'bg-neutral text-white' : ''">
-                <svg height="29" viewBox="0 0 48 48" width="29" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"
+                    fill="currentColor">
                     <path d="M0 0h48v48H0z" fill="none" />
                     <path d="M6 26h16V6H6v20zm0 16h16V30H6v12zm20 0h16V22H26v20zm0-36v12h16V6H26z" />
                 </svg>
@@ -97,15 +110,15 @@
 
         <!-- Profile -->
         <a th:href="@{/user/my-profile}">
-            <button class="btn btn-circle p-2 border-none text-neutral"
+            <button
+                class="btn btn-circle p-1.5 sm:p-2 md:p-2.5 border-none text-neutral transition-all duration-200 hover:scale-110"
                 th:classappend="${activePage == 'profile'} ? 'bg-neutral text-white' : ''">
-
-                <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg class="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7" viewBox="0 0 28 28" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M1.11111 23.4999H0.319448H1.11111ZM7.44445 17.1666V16.3749V17.1666ZM20.1111 17.1666V16.3749V17.1666ZM1.11111 23.4999H1.90278C1.90278 22.0302 2.48663 20.6206 3.5259 19.5814L2.9661 19.0216L2.40631 18.4618C1.07012 19.798 0.319448 21.6103 0.319448 23.4999H1.11111ZM2.9661 19.0216L3.5259 19.5814C4.56516 18.5421 5.97471 17.9583 7.44445 17.9583V17.1666V16.3749C5.55478 16.3749 3.74251 17.1256 2.40631 18.4618L2.9661 19.0216ZM7.44445 17.1666V17.9583H20.1111V17.1666V16.3749H7.44445V17.1666ZM20.1111 17.1666V17.9583C21.5809 17.9583 22.9904 18.5421 24.0297 19.5814L24.5895 19.0216L25.1493 18.4618C23.8131 17.1256 22.0008 16.3749 20.1111 16.3749V17.1666ZM24.5895 19.0216L24.0297 19.5814C25.0689 20.6206 25.6528 22.0302 25.6528 23.4999H26.4444H27.2361C27.2361 21.6103 26.4854 19.798 25.1493 18.4618L24.5895 19.0216ZM26.4444 23.4999H25.6528C25.6528 24.1298 25.4026 24.7339 24.9572 25.1793L25.517 25.7391L26.0767 26.2989C26.8191 25.5566 27.2361 24.5497 27.2361 23.4999H26.4444ZM25.517 25.7391L24.9572 25.1793C24.5118 25.6247 23.9077 25.8749 23.2778 25.8749V26.6666V27.4583C24.3276 27.4583 25.3344 27.0412 26.0767 26.2989L25.517 25.7391ZM23.2778 26.6666V25.8749H4.27778V26.6666V27.4583H23.2778V26.6666ZM4.27778 26.6666V25.8749C3.64789 25.8749 3.0438 25.6247 2.5984 25.1793L2.03861 25.7391L1.47882 26.2989C2.22115 27.0412 3.22797 27.4583 4.27778 27.4583V26.6666ZM2.03861 25.7391L2.5984 25.1793C2.153 24.7339 1.90278 24.1298 1.90278 23.4999H1.11111H0.319448C0.319448 24.5497 0.736485 25.5566 1.47882 26.2989L2.03861 25.7391ZM18.5278 6.08325H17.7361C17.7361 8.26938 15.9639 10.0416 13.7778 10.0416V10.8333V11.6249C16.8384 11.6249 19.3194 9.14383 19.3194 6.08325H18.5278ZM13.7778 10.8333V10.0416C11.5917 10.0416 9.81945 8.26938 9.81945 6.08325H9.02778H8.23611C8.23611 9.14383 10.7172 11.6249 13.7778 11.6249V10.8333ZM9.02778 6.08325H9.81945C9.81945 3.89712 11.5917 2.12492 13.7778 2.12492V1.33325V0.541585C10.7172 0.541585 8.23611 3.02267 8.23611 6.08325H9.02778ZM13.7778 1.33325V2.12492C15.9639 2.12492 17.7361 3.89713 17.7361 6.08325H18.5278H19.3194C19.3194 3.02267 16.8384 0.541585 13.7778 0.541585V1.33325Z"
                         fill="currentColor" />
                 </svg>
-
             </button>
         </a>
 

@@ -14,4 +14,5 @@ import lombok.Setter;
 public class ChatMessage {
     private UUID receiverId;
     private String text;
+    private UUID productId;
 }

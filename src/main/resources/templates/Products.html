@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+</head>
+
+<body class="bg-base-100 min-h-screen font-sans antialiased">
+    <div th:replace="fragment/navbar :: navbar"></div>
+
+    <main class="pt-20 px-4 max-w-4xl mx-auto pb-22">
+
+        <form id="searchForm" class="flex flex-col sm:flex-row gap-3 md:gap-4 mb-6" method="get">
+            <div class="form-control flex-1 w-full sm:w-auto">
+                <label for="searchInput" class="sr-only">Cari produk...</label>
+                <input id="searchInput" type="search" name="q" placeholder="Cari produk... 🔍"
+                    class="input input-bordered w-full bg-white transition duration-150 ease-in-out focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    th:value="${search}" />
+            </div>
+            <div class="w-full sm:w-auto">
+                <label for="categorySelect" class="sr-only">Pilih Kategori</label>
+                <select id="categorySelect" name="cat"
+                    class="select select-bordered bg-white w-full sm:min-w-[150px] transition duration-150 ease-in-out focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="" th:selected="${#strings.isEmpty(selectedCategoryId)}">
+                        Semua Kategori
+                    </option>
+                    <option th:each="category : ${categories}" th:value="${category.id}" th:text="${category.name}"
+                        th:selected="${category.id == selectedCategoryId}">
+                    </option>
+                </select>
+            </div>
+            <div class="w-full sm:w-auto">
+                <label for="sortSelect" class="sr-only">Urutkan Berdasarkan</label>
+                <select id="sortSelect" name="ord"
+                    class="select select-bordered bg-white w-full sm:min-w-[150px] transition duration-150 ease-in-out focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="desc" th:selected="${order == 'desc'}">Terbaru</option>
+                    <option value="asc" th:selected="${order == 'asc'}">Terlama</option>
+                </select>
+            </div>
+        </form>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Product Card -->
+            <a th:each="product : ${products}" th:href="@{/products/detail/{id}(id=${product.id})}"
+                class="card bg-white shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 block overflow-hidden group">
+                <figure class="relative h-56 overflow-hidden bg-gray-200">
+                    <img th:if="${product.thumbnailUrl}" th:src="@{'/uploads/' + ${product.thumbnailUrl}}"
+                        th:alt="${product.name}"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <img th:unless="${product.thumbnailUrl}"
+                        src="https://placehold.co/400x300/e5e7eb/9ca3af?text=No+Image" alt="No image"
+                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                    <div class="absolute top-2 right-2 badge badge-accent">
+                        <span th:text="${product.categoryName}">Category</span>
+                    </div>
+                </figure>
+
+                <div class="card-body p-4">
+                    <h2 class="card-title text-neutral text-lg font-semibold group-hover:text-primary transition-colors duration-200"
+                        th:text="${product.name}">Product Name</h2>
+                    <p class="text-sm text-neutral line-clamp-2" th:text="${product.desc}">Product description goes
+                        here...</p>
+
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="badge badge-outline gap-1">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <span th:text="${product.imageCount}">5</span>
+                        </div>
+                        <div class="text-xs text-neutral-content"
+                            th:text="${#temporals.format(product.createdAt, 'dd MMM yyyy')}">12 Jan 2024</div>
+                    </div>
+
+                    <div class="divider my-2"></div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="text-lg font-bold text-neutral"
+                            th:text="'Rp ' + ${#numbers.formatDecimal(product.price, 0, 'POINT', 0, 'COMMA')}">
+                            Rp 150.000
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+
+    </main>
+
+    <div th:replace="fragment/navbar :: bottombar('products')"></div>
+
+    <script th:src="@{/js/product_dashboard.js}"></script>
+</body>
+
+</html>

@@ -59,17 +59,13 @@ public class ProductService {
 
     }
 
-    public Page<ProductProjection> getAllProducts(int page, UUID categoryId, String orderBy) {
+    public Page<ProductProjection> getAllProducts(int page, UUID categoryId, String orderBy, String search) {
 
         Pageable pageable = PageRequest.of(page, 10,
                 Sort.by(orderBy.equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC,
                         "createdAt"));
-
-        if (categoryId != null) {
-            return productRepository.findAllProductsForDashboard(categoryId, pageable);
-
-        }
-        return productRepository.findAllProductsForDashboard(pageable);
+        String finalSearch = (search == null) ? "" : search;
+        return productRepository.findAllProductsForDashboard(categoryId, finalSearch, pageable);
     }
 
     public DashboardStatsProjection getProductStatsData() {
@@ -107,40 +103,41 @@ public class ProductService {
     @Transactional
     public void editProduct(UpdateProductRequest request) {
         Product product = productRepository.findById(request.getId())
-        .orElseThrow(()-> new DataNotFoundEx("Produk mungkin telah terhapus! hubungi admin lainnya", "/admin/products/"));
-        // System.out.printf("\n\n\n\n\n\n\n\n\n\n size array file baru : %d\n\n\n\n\n\n\n\n\n\n\n", request.getNewImagesFiles().size());
-        // System.out.printf("\n\n\n\n\n\n\n\n\n\n size array file baru : %s\n\n\n\n\n\n\n\n\n\n\n", request.getNewImagesFiles().get(0).getOriginalFilename());
+                .orElseThrow(() -> new DataNotFoundEx("Produk mungkin telah terhapus! hubungi admin lainnya",
+                        "/admin/products/"));
+        // System.out.printf("\n\n\n\n\n\n\n\n\n\n size array file baru :
+        // %d\n\n\n\n\n\n\n\n\n\n\n", request.getNewImagesFiles().size());
+        // System.out.printf("\n\n\n\n\n\n\n\n\n\n size array file baru :
+        // %s\n\n\n\n\n\n\n\n\n\n\n",
+        // request.getNewImagesFiles().get(0).getOriginalFilename());
 
-
-        if (request.getImageToDelete() != null &&!request.getImageToDelete().isEmpty()) {
+        if (request.getImageToDelete() != null && !request.getImageToDelete().isEmpty()) {
 
             productImageService.deleteImageById(request.getImageToDelete(), product);
         }
 
         if (request.getUpdatedImageIds() != null && request.getUpdatedImageFiles() != null) {
-            
+
             if (!validateUpdatedImages(request)) {
-                throw new ImageNotValidException("/admin/products/edit/"+request.getId(), "Data gambar tidak valid");
+                throw new ImageNotValidException("/admin/products/edit/" + request.getId(), "Data gambar tidak valid");
             }
 
-            productImageService.editImageFromRequest(request.getUpdatedImageIds(), request.getUpdatedImageFiles(), product);
+            productImageService.editImageFromRequest(request.getUpdatedImageIds(), request.getUpdatedImageFiles(),
+                    product);
         }
 
-        
         if (request.getNewImagesFiles() != null) {
-            
+
             if (!request.getNewImagesFiles().isEmpty()) {
-                productImageService.saveAllImageToExistingProduct(request.getNewImagesFiles(), "/admin/products/edit/"+product.getId(), product);
+                productImageService.saveAllImageToExistingProduct(request.getNewImagesFiles(),
+                        "/admin/products/edit/" + product.getId(), product);
             }
         }
-
 
         product.setName(request.getName());
         product.setDesc(request.getDescription());
         product.setPrice(request.getPrice());
         product.setCategory(categoryService.getById(request.getCategoryId()));
-
-
 
     }
 

@@ -14,24 +14,33 @@
     <div th:replace="fragment/navbar :: navbar"></div>
 
     <div class="pt-16 pb-20">
-        <div class="bg-white border-b border-neutral-200">
-            <div class="max-w-lg mx-auto px-4 py-4 flex items-center gap-3">
-                <button onclick="history.back()" class="btn btn-ghost btn-sm btn-circle text-neutral">
-                    <i class="fa-solid fa-arrow-left text-lg"></i>
-                </button>
-                <h1 class="text-xl font-bold text-neutral">Update Profil</h1>
+        <div class="px-4 sm:px-6 lg:px-8 py-4">
+            <div class="text-neutral">
+                <a th:href="@{/user/my-profile}"
+                    class="inline-flex items-center gap-2 mb-4 text-sm font-medium text-neutral hover:text-primary transition-colors group">
+                    <div
+                        class="w-9 h-9 rounded-full border border-neutral group-hover:border-primary flex items-center justify-center transition-all group-hover:scale-110">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 12H5M12 19l-7-7 7-7" />
+                        </svg>
+                    </div>
+                    <span class="text-base sm:text-lg" th:text="@{'kembali ke profil'}"></span>
+                </a>
             </div>
         </div>
-
-        <main class="max-w-lg mx-auto px-4 py-6">
+        <main class="max-w-3xl lg:max-w-4xl mx-auto px-4 py-8 md:py-10">
             <form th:object="${formRequest}" th:action="@{/user/update-my-profile}" method="post"
                 enctype="multipart/form-data" id="updateForm">
 
-                <!-- Profile Picture Card -->
-                <div class="bg-white rounded-3xl shadow-lg p-6 mb-4 border border-neutral-100">
+                <div class="mb-6 text-center">
+                    <h1 class="text-3xl font-bold text-neutral mb-2">Perbarui Profil Anda</h1>
+                    <p class="text-neutral-500">Kelola informasi akun dan foto profil Anda.</p>
+                    <div class="divider"></div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-neutral-100">
                     <div class="flex flex-col items-center">
                         <div class="relative group">
-                            <!-- Avatar with ring animation on hover -->
                             <div
                                 class="w-32 h-32 rounded-full border-4 border-neutral-200 shadow-xl overflow-hidden transition-all duration-300 group-hover:border-neutral-400 group-hover:shadow-2xl">
                                 <img id="previewImg"
@@ -40,7 +49,6 @@
                                     class="object-cover w-full h-full transition-transform duration-300 group-hover:scale-110" />
                             </div>
 
-                            <!-- Camera icon overlay -->
                             <label
                                 class="absolute bottom-0 right-0 btn btn-circle btn-sm btn-neutral border-4 border-white shadow-lg cursor-pointer transition-transform duration-200 hover:scale-110">
                                 <i class="fa-solid fa-camera text-sm"></i>
@@ -53,13 +61,16 @@
                             <i class="fa-solid fa-circle-info mr-1"></i>
                             Klik ikon kamera untuk mengubah foto
                         </p>
+                        <p th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'profilePicture')}"
+                            th:text="${validationErrors.profilePicture}"
+                            class="label-text-alt text-error mt-2 flex items-center gap-1">
+                            <i class="fa-solid fa-circle-exclamation"></i>
+                        </p>
                     </div>
                 </div>
 
-                <!-- Form Fields Card -->
-                <div class="bg-white rounded-3xl shadow-lg p-6 space-y-5 border border-neutral-100">
+                <div class="bg-white rounded-3xl shadow-xl p-6 space-y-5 border border-neutral-100">
 
-                    <!-- Username -->
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text font-semibold text-neutral flex items-center gap-2">
@@ -76,7 +87,6 @@
                         </p>
                     </div>
 
-                    <!-- Email -->
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text font-semibold text-neutral flex items-center gap-2">
@@ -93,7 +103,6 @@
                         </p>
                     </div>
 
-                    <!-- Full Name -->
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text font-semibold text-neutral flex items-center gap-2">
@@ -110,7 +119,6 @@
                         </p>
                     </div>
 
-                    <!-- Phone Number -->
                     <div class="form-control">
                         <label class="label">
                             <span class="label-text font-semibold text-neutral flex items-center gap-2">
@@ -128,11 +136,16 @@
                         </label>
                     </div>
 
-                    <!-- gender -->
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium mb-1">Jenis Kelamin</label>
-                        <select th:field="*{gender}" class="border rounded-lg p-2 w-full">
-                            <option value="" disabled selected>Pilih gender</option>
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold text-neutral flex items-center gap-2">
+                                <i class="fa-solid fa-venus-mars text-neutral-400"></i>
+                                Jenis Kelamin
+                            </span>
+                        </label>
+                        <select th:field="*{gender}"
+                            class="select select-bordered w-full bg-neutral-50 border-neutral-200 text-neutral placeholder:text-neutral-400 focus:bg-white focus:border-neutral-400 focus:outline-none transition-all duration-200">
+                            <option value="" disabled selected>Pilih jenis kelamin</option>
                             <option th:each="g : ${genders}" th:value="${g}" th:text="${g}">
                             </option>
                         </select>
@@ -140,8 +153,7 @@
 
                 </div>
 
-                <!-- Submit Button -->
-                <div class="mt-6 pb-6">
+                <div class="mt-8 pb-6">
                     <button type="submit"
                         class="btn btn-neutral w-full shadow-xl hover:shadow-2xl transition-all duration-200 h-14 text-base font-semibold">
                         <i class="fa-solid fa-floppy-disk text-lg"></i>

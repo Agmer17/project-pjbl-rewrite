@@ -86,9 +86,9 @@
                                     john.doe@example.com</p>
 
                                 <div class="flex flex-wrap gap-2 sm:gap-3 justify-center lg:justify-start">
-                                    <div th:classappend="${formRequest.role == 'ADMIN'} ? 'badge-primary' : 'badge-accent'"
-                                        class="badge font-bold uppercase text-xs sm:text-sm px-3 py-2 rounded-full shadow-sm transition-all hover:scale-105"
-                                        th:text="${formRequest.role}">ADMIN</div>
+                                    <span
+                                        class="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-primary/20 text-primary"
+                                        th:text="${formRequest.role}">MALE</span>
                                     <div
                                         class="badge badge-outline badge-neutral font-mono text-xs sm:text-sm px-3 py-2 rounded-full border">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"

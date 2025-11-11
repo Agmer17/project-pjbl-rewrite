@@ -22,12 +22,23 @@ public interface ReviewsRepository extends JpaRepository<Reviews, UUID> {
     List<Reviews> findAllByStatus(ReviewStatus status);
 
     @Query("""
-        SELECT r
-        FROM Reviews r
-        JOIN r.user u
-        JOIN r.product p
-        WHERE r.status = 'PENDING'
-    """)
+                SELECT r
+                FROM Reviews r
+                JOIN FETCH r.user u
+                JOIN FETCH r.product p
+                LEFT JOIN FETCH p.images
+                WHERE r.status = 'PENDING'
+            """)
     List<ReviewData> findAllPendingReviewCards();
-    
+
+    @Query("""
+                SELECT r
+                FROM Reviews r
+                JOIN FETCH r.user u
+                JOIN FETCH r.product p
+                LEFT JOIN FETCH p.images
+                WHERE r.status = 'ACCEPTED'
+            """)
+    List<ReviewData> findAllReviewData();
+
 }
