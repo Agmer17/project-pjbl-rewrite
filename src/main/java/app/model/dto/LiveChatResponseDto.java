@@ -2,7 +2,6 @@ package app.model.dto;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +18,7 @@ public class LiveChatResponseDto {
     private UUID sender;
     private UUID receiver;
     private String text;
+    private ProductChatDto product;
     private LocalDateTime timeStamp;
     private Long timeStampEpoch;
     private Boolean ownMessage;

@@ -18,7 +18,9 @@ import app.model.dto.ChatHistoryDto;
 import app.model.dto.ChatListDto;
 import app.model.dto.ChatMessage;
 import app.model.dto.LiveChatResponseDto;
+import app.model.dto.ProductChatDto;
 import app.model.entity.LiveChat;
+import app.model.entity.Product;
 import app.model.entity.Users;
 import app.model.projection.UserProfileProjection;
 import app.repository.LiveChatRepository;
@@ -69,11 +71,26 @@ public class LiveChatService {
     @Autowired
     private OnlineUsersListener onlineListener;
 
+    @Autowired
+    private ProductService productService;
+
     @Transactional
     public LiveChatResponseDto saveMessage(ChatMessage message, UUID senderId, UUID receiverId) {
 
         Users sender = userRepository.getReferenceById(senderId);
         Users receiver = userRepository.getReferenceById(receiverId);
+        
+        Product product = null;
+        ProductChatDto productChatDto = null;
+
+        if (message.getProductId() != null) {
+            product = productService.getProductDetails(message.getProductId());
+
+            productChatDto = ProductChatDto.fromEntity(product);
+            
+        }
+
+
 
         LiveChat chat = LiveChat.builder()
                 .sender(sender)
@@ -81,6 +98,7 @@ public class LiveChatService {
                 .text(message.getText())
                 .createdAt(LocalDateTime.now())
                 .haveRead(false)
+                .product(product)
                 .build();
 
         chatRepository.save(chat);
@@ -91,6 +109,7 @@ public class LiveChatService {
                 .sender(senderId)
                 .receiver(receiverId)
                 .text(chat.getText())
+                .product(productChatDto)
                 .timeStamp(chat.getCreatedAt())
                 .ownMessage(false)
                 .build();
@@ -98,9 +117,6 @@ public class LiveChatService {
             if (!isReceiverOnline(receiver)) {
                 emailService.sendNotificationEmails("http://localhost/live-chat", receiver.getEmail(), sender.getUsername());
             }
-
-        
-
         return responseForReceiver;
 
     }
@@ -118,6 +134,7 @@ public class LiveChatService {
                         .text(ch.getText())
                         .timeStamp(ch.getCreatedAt())
                         .ownMessage(ch.getSender().getId().equals(sender))
+                        .product(ProductChatDto.fromEntity(ch.getProduct()))
                         .build())
                 .collect(Collectors.toList());
 

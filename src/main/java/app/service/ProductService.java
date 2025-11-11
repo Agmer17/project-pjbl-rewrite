@@ -169,4 +169,8 @@ public class ProductService {
         return true;
     }
 
+    public List<ProductProjection> getAllProductsPreview() {
+        return productRepository.findAllProductPreview();
+    }
+
 }

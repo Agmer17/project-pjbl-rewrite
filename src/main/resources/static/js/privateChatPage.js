@@ -119,7 +119,7 @@ window.addEventListener("DOMContentLoaded", () => {
         stompClient.subscribe(`/user/${userId}/queue/messages`, (msg) => {
             const data = JSON.parse(msg.body);
             // Gunakan data.timeStamp (epoch/string dari server)
-            appendMessage(data.text, data.ownMessage, data.timeStamp);
+            appendMessage(data.text, data.ownMessage, data.timeStamp, data.product);
         });
 
         // Subscribe untuk status online
@@ -132,55 +132,191 @@ window.addEventListener("DOMContentLoaded", () => {
         checkReceiverOnline();
     });
 
-    // === ✉️ Kirim pesan ===
+    const productPreview = document.getElementById("product-preview");
+    const closePreview = document.getElementById("close-preview");
+
+    const previewName = document.getElementById("preview-name");
+    const previewPrice = document.getElementById("preview-price");
+    const previewImage = document.getElementById("preview-image");
+
+    const productModal = document.getElementById("product-modal");
+    const productList = document.getElementById("product-list");
+    const openProductBtn = document.getElementById("open-product-modal");
+
+    const closeSelectModal = document.getElementById("close_modal_product")
+
+    closeSelectModal.addEventListener("click", (e) => {
+        productModal.close()
+    })
+
+    window.__products_cache = [];
+    let selectedProduct = null;
+
+    // 1️⃣ Buka modal pilih produk
+    openProductBtn.addEventListener("click", () => {
+        productModal.showModal();
+    });
+
+    // 2️⃣ Fetch product dari server
+    async function fetchProducts() {
+        try {
+            const res = await fetch("/products/prew/get-all");
+            if (!res.ok) throw new Error("Failed to fetch");
+            const products = await res.json();
+            window.__products_cache = products;
+            renderProductList(products);
+        } catch (e) {
+            console.error("Fetch products error:", e);
+        }
+    }
+
+    // 3️⃣ Render list produk di modal
+    function renderProductList(products) {
+        productList.innerHTML = "";
+        products.forEach(p => {
+            const item = document.createElement("div");
+            item.className = "flex gap-2 items-center border border-base-300 rounded-lg p-2 hover:bg-base-200 cursor-pointer";
+
+            const img = document.createElement("img");
+            img.src = p.thumbnailUrl ? `/uploads/${p.thumbnailUrl}` : "https://via.placeholder.com/80";
+            img.className = "w-14 h-14 object-cover rounded-md";
+
+            const info = document.createElement("div");
+            info.className = "flex flex-col";
+            const name = document.createElement("div");
+            name.className = "font-semibold text-sm";
+            name.textContent = p.name;
+
+            const price = document.createElement("div");
+            price.className = "text-xs opacity-70";
+            price.textContent = "Rp" + Number(p.price).toLocaleString();
+
+            info.appendChild(name);
+            info.appendChild(price);
+
+            item.appendChild(img);
+            item.appendChild(info);
+
+            // Pilih produk → close modal + tampil preview
+            item.addEventListener("click", () => {
+                selectedProduct = p;
+                updateProductPreview(p);
+                productModal.close();
+            });
+
+            productList.appendChild(item);
+        });
+    }
+
+    // 4️⃣ Update product preview di atas input
+    function updateProductPreview(product) {
+        previewName.textContent = product.name;
+        previewPrice.textContent = "Rp" + Number(product.price).toLocaleString();
+        previewImage.src = product.thumbnailUrl ? `/uploads/${product.thumbnailUrl}` : "https://via.placeholder.com/80";
+        productPreview.classList.remove("hidden");
+    }
+
+    // 5️⃣ Close preview
+    closePreview.addEventListener("click", () => {
+        selectedProduct = null;
+        productPreview.classList.add("hidden");
+    });
+
+    // 6️⃣ Load product list di awal
+    fetchProducts();
+
+    // 7️⃣ Kirim pesan
     form.addEventListener("submit", (e) => {
         e.preventDefault();
+
         const text = input.value.trim();
         if (!text) return;
 
-        const payload = { receiverId, text };
+        const payload = {
+            receiverId,
+            text,
+            productId: selectedProduct ? selectedProduct.id : null
+        };
+
         stompClient.send("/app/chat", {}, JSON.stringify(payload));
+
         input.value = "";
     });
 
     // === 💬 Tambah pesan ke UI (Mendukung Pemisah Hari) ===
-    function appendMessage(text, isSender, timeStamp = new Date()) {
+    function appendMessage(text, isSender, timeStamp = new Date(), product = null) {
         const messageTime = new Date(timeStamp);
         const currentDateYMD = formatDateToYMD(messageTime);
 
-        // 1. Cek tanggal dari penanda hari terakhir yang ada di UI
+        // 1. Tambah penanda tanggal jika beda
         const dateMarkers = messagesContainer.querySelectorAll('.chat-date-separator > .badge');
         const lastMarker = dateMarkers[dateMarkers.length - 1];
         let lastDateYMD = lastMarker ? lastMarker.getAttribute('data-date') : null;
 
-        // 2. Tambahkan penanda hari jika tanggalnya berbeda
         if (currentDateYMD !== lastDateYMD) {
             const dateLabel = getRelativeDateLabel(messageTime);
 
             const dateWrapper = document.createElement("div");
-            dateWrapper.className = "flex justify-center my-2 chat-date-separator"; // Tambah class separator
+            dateWrapper.className = "flex justify-center my-2 chat-date-separator";
 
             const dateBadge = document.createElement("div");
             dateBadge.className = "badge badge-lg bg-base-300 text-base-content/80 shadow-md";
             dateBadge.textContent = dateLabel;
-            dateBadge.setAttribute('data-date', currentDateYMD); // Simpan YMD untuk perbandingan berikutnya
+            dateBadge.setAttribute('data-date', currentDateYMD);
 
             dateWrapper.appendChild(dateBadge);
             messagesContainer.appendChild(dateWrapper);
         }
 
-        // 3. Tambahkan elemen pesan seperti biasa
+        // 2. Wrapper chat
         const wrapper = document.createElement("div");
         wrapper.className = `chat ${isSender ? "chat-end" : "chat-start"}`;
 
         const bubble = document.createElement("div");
         bubble.className = `chat-bubble shadow-lg max-w-xs md:max-w-md ${isSender ? "bg-neutral text-neutral-content" : "bg-base-200 text-base-content"}`;
-        bubble.textContent = text;
 
+        // 3. Render produk jika ada
+        if (product && product.id) {
+            const pWrapper = document.createElement("div");
+            pWrapper.className = "mt-2 rounded-xl border border-base-300 bg-base-200 p-3 shadow-md max-w-xs md:max-w-md";
+
+            const innerFlex = document.createElement("div");
+            innerFlex.className = "flex gap-3 items-center";
+
+            const img = document.createElement("img");
+            img.src = product.thumbnailUrl ? `/uploads/${product.thumbnailUrl}` : "https://via.placeholder.com/80";
+            img.className = "w-20 h-20 object-cover rounded-lg";
+
+            const info = document.createElement("div");
+            info.className = "flex flex-col";
+
+            const name = document.createElement("div");
+            name.className = "font-semibold text-base-content";
+            name.textContent = product.name;
+
+            const price = document.createElement("div");
+            price.className = "text-sm opacity-100 text-success";
+            price.textContent = "Rp" + Number(product.price).toLocaleString('id-ID');
+
+            info.appendChild(name);
+            info.appendChild(price);
+
+            innerFlex.appendChild(img);
+            innerFlex.appendChild(info);
+            pWrapper.appendChild(innerFlex);
+
+            bubble.appendChild(pWrapper);
+        }
+
+        // 4. Text message
+        const textNode = document.createElement("div");
+        textNode.textContent = text;
+        bubble.appendChild(textNode);
+
+        // 5. Footer
         const footer = document.createElement("div");
-        footer.className = "chat-footer mt-1 text-xs opacity-70";
-        // Asumsi timeStamp di sini adalah Date object atau epoch millisecond
-        footer.textContent = new Date(messageTime).toLocaleTimeString("id-ID", {
+        footer.className = "chat-footer mt-1 text-xs opacity-70 text-end";
+        footer.textContent = messageTime.toLocaleTimeString("id-ID", {
             hour: "2-digit",
             minute: "2-digit"
         });
@@ -190,6 +326,7 @@ window.addEventListener("DOMContentLoaded", () => {
         messagesContainer.appendChild(wrapper);
         messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
+
 
     window.addEventListener('beforeunload', () => {
         if (stompClient.connected) stompClient.disconnect();
