@@ -1,31 +1,40 @@
-    const categoryDialog = document.getElementById('categoryDialog');
-    const deleteDialog = document.getElementById('deleteCategoryDialog');
-    const categorySelect = document.getElementById('categorySelect');
-    let selectedCategoryId = null;
+const categoryDialog = document.getElementById('categoryDialog');
+const deleteDialog = document.getElementById('deleteCategoryDialog');
+const categorySelect = document.getElementById('categorySelect');
+let selectedCategoryId = null;
 
-    // 🔹 Ketika kategori dipilih
-    function handleCategorySelect(select) {
-        selectedCategoryId = select.value;
+
+document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('categorySelect');
+    if (select.value && select.value !== 'new') {
+        document.getElementById('editCategoryBtn').disabled = false;
+        document.getElementById('deleteCategoryBtn').disabled = false;
+        selectedCategoryId = select.value; // update selectedCategoryId
+    }
+});
+
+function handleCategorySelect(select) {
+    selectedCategoryId = select.value;
     const editBtn = document.getElementById('editCategoryBtn');
     const delBtn = document.getElementById('deleteCategoryBtn');
 
-    // aktifkan tombol edit/delete hanya jika bukan opsi "new"
     if (selectedCategoryId && selectedCategoryId !== 'new') {
         editBtn.disabled = false;
-    delBtn.disabled = false;
+        delBtn.disabled = false;
     } else {
         editBtn.disabled = true;
-    delBtn.disabled = true;
+        delBtn.disabled = true;
     }
 
-    if (select.value === 'new') {
+    if (selectedCategoryId === 'new') {
         openAddCategoryDialog();
     }
 }
 
-    // 🔹 Modal Add
-    function openAddCategoryDialog() {
-        document.getElementById('categoryDialogTitle').textContent = 'Tambah Kategori';
+
+// 🔹 Modal Add
+function openAddCategoryDialog() {
+    document.getElementById('categoryDialogTitle').textContent = 'Tambah Kategori';
     document.getElementById('categoryForm').dataset.mode = 'add';
     document.getElementById('categoryName').value = '';
     document.getElementById('categoryDesc').value = '';
@@ -33,8 +42,8 @@
     categoryDialog.showModal();
 }
 
-    // 🔹 Modal Edit
-    async function openEditCategoryDialog() {
+// 🔹 Modal Edit
+async function openEditCategoryDialog() {
     if (!selectedCategoryId) return alert('Pilih kategori terlebih dahulu.');
 
     const res = await fetch(`/category/${selectedCategoryId}`);
@@ -50,27 +59,25 @@
     categoryDialog.showModal();
 }
 
-    // 🔹 Modal Delete
-    function openDeleteCategoryDialog() {
+function openDeleteCategoryDialog() {
     if (!selectedCategoryId) return alert('Pilih kategori terlebih dahulu.');
     const selectedText = categorySelect.options[categorySelect.selectedIndex].text;
     document.getElementById('deleteCategoryName').textContent =
-    `Apakah kamu yakin ingin menghapus kategori "${selectedText}"?`;
+        `Apakah kamu yakin ingin menghapus kategori "${selectedText}"?`;
     deleteDialog.showModal();
 }
 
-    // 🔹 Close modal
-    function closeCategoryDialog() {
-        categoryDialog.close();
+function closeCategoryDialog() {
+    categoryDialog.close();
     categorySelect.value = '';
 }
-    function closeDeleteCategoryDialog() {
-        deleteDialog.close();
+function closeDeleteCategoryDialog() {
+    deleteDialog.close();
 }
 
-    // 🔹 Submit Add/Edit
-    async function submitCategory(e) {
-        e.preventDefault();
+// 🔹 Submit Add/Edit
+async function submitCategory(e) {
+    e.preventDefault();
     const mode = e.target.dataset.mode;
     const id = document.getElementById('categoryId').value;
     const name = document.getElementById('categoryName').value.trim();
@@ -81,33 +88,32 @@
     const url = mode === 'edit' ? `/admin/category/edit/${id}` : '/admin/category/add';
     const method = 'POST';
     const body = mode === 'edit'
-    ? new FormData(e.target)
-    : JSON.stringify({name, description});
+        ? new FormData(e.target)
+        : JSON.stringify({ name, description });
 
-    const headers = mode === 'edit' ? { } : {'Content-Type': 'application/json' };
+    const headers = mode === 'edit' ? {} : { 'Content-Type': 'application/json' };
 
-    const res = await fetch(url, {method, headers, body});
+    const res = await fetch(url, { method, headers, body });
     if (res.ok) {
         closeCategoryDialog();
-    await refreshCategoryOptions();
+        await refreshCategoryOptions();
     } else {
         alert(mode === 'edit' ? 'Gagal mengedit kategori.' : 'Gagal menambah kategori.');
     }
 }
 
-    // 🔹 Delete confirm
-    async function confirmDeleteCategory() {
-    const res = await fetch(`/admin/category/delete/${selectedCategoryId}`, {method: 'DELETE' });
+async function confirmDeleteCategory() {
+    const res = await fetch(`/admin/category/delete/${selectedCategoryId}`, { method: 'DELETE' });
     if (res.ok) {
         closeDeleteCategoryDialog();
-    await refreshCategoryOptions();
+        await refreshCategoryOptions();
     } else {
         alert('Gagal menghapus kategori.');
     }
 }
 
-    // 🔹 Refresh select
-    async function refreshCategoryOptions() {
+// 🔹 Refresh select
+async function refreshCategoryOptions() {
     const res = await fetch('/category/get-all');
     if (!res.ok) return alert('Gagal mengambil data kategori.');
     const categories = await res.json();
@@ -117,9 +123,9 @@
 
     categories.forEach(cat => {
         const opt = document.createElement('option');
-    opt.value = cat.id;
-    opt.textContent = cat.name;
-    select.appendChild(opt);
+        opt.value = cat.id;
+        opt.textContent = cat.name;
+        select.appendChild(opt);
     });
 
     const addOpt = document.createElement('option');

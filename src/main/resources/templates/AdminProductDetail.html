@@ -9,6 +9,7 @@
 </head>
 
 <body class="font-sans bg-white min-h-screen text-neutral">
+    <input type="hidden" id="productId" th:value="${product.id}">
 
 
     <!-- Navbar -->
@@ -131,15 +132,18 @@
                     </div>
 
                     <div class="pt-4" th:if="${!admin}">
-                        <a href="#"
-                            class="btn btn-lg w-full bg-neutral text-base-100 hover:bg-neutral/90 rounded-2xl transition-all duration-300 shadow-md hover:shadow-xl flex items-center gap-2 justify-center">
+                        <button id="btnOpenAdminModal" class="btn btn-lg w-full bg-neutral text-base-100 hover:bg-neutral/90 rounded-2xl 
+           transition-all duration-300 shadow-md hover:shadow-xl flex items-center gap-2 justify-center">
+
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 4v-4z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 
+                   2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 4v-4z" />
                             </svg>
+
                             Konsultasikan Paket Ini
-                        </a>
+                        </button>
+
                         <p class="text-center text-xs text-neutral/60 mt-2">
                             Hubungi admin untuk detail dan penawaran.
                         </p>
@@ -156,12 +160,6 @@
                         class="relative rounded-2xl overflow-hidden shadow-md group cursor-pointer">
                         <img th:src="@{'/uploads/' + ${img.imageFileName}}" alt="Gallery Image"
                             class="object-cover w-full h-48 md:h-64 aspect-square transition-transform duration-500 ease-in-out group-hover:scale-105" />
-                        <div
-                            class="absolute inset-0 bg-base-100/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                            <span
-                                class="text-base-100 text-sm font-medium bg-primary/80 rounded-full px-4 py-2 backdrop-blur-sm">Lihat
-                                Detail</span>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -317,10 +315,32 @@
             </div>
         </main>
 
+        <dialog id="adminModal" class="modal">
+            <div class="modal-box max-w-xl">
+
+                <h3 class="font-bold text-lg mb-3">Pilih Admin</h3>
+                <p class="text-sm text-neutral/70 mb-4">Tentukan admin yang ingin dihubungi:</p>
+
+                <!-- LIST ADMIN -->
+                <div id="adminList" class="flex flex-col gap-3">
+                    <!-- generated dynamic -->
+                </div>
+
+                <div class="modal-action">
+                    <button class="btn" id="closeAdminModal">Close</button>
+                </div>
+            </div>
+        </dialog>
+
     </div>
     <div th:replace="fragment/navbar :: bottombar(${activePage == 'admin'} ? 'admin' : 'products')"></div>
 
     <script th:src="@{/js/reviewBase.js}"></script>
+
+    <th:block th:if="${!admin}">
+        <script th:src="@{/js/productDetail.js}"></script>
+
+    </th:block>
 </body>
 
 </html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - INTERNAL SERVER ERROR</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+</head>
+
+<body class="bg-base-100 min-h-screen font-sans antialiased">
+    <div th:replace="fragment/navbar :: navbar"></div>
+
+    <main class="pt-20 px-4 max-w-4xl mx-auto pb-22">
+        <div class="bg-white rounded-2xl shadow-lg p-10 text-center text-neutral">
+            <h1 class="text-5xl font-bold mb-4">500</h1>
+            <p class="text-lg mb-6">Terjadi kesalahan pada server. Silakan coba beberapa saat lagi.</p>
+
+            <a href="/" class="btn btn-neutral">Kembali ke Beranda</a>
+        </div>
+    </main>
+  <div th:replace="fragment/navbar :: bottombar('')"></div>
+
+</body>
+
+</html>

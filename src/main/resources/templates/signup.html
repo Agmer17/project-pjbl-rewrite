@@ -8,12 +8,28 @@
     <link rel="stylesheet" th:href="@{/css/output.css}">
 </head>
 
-<body class="font-sans text-neutral bg-white w-screen h-screen flex items-center flex-col py-[60px] gap-8 px-4">
+<body
+    class="font-sans text-neutral bg-white w-screen min-h-screen flex flex-col items-center py-16 px-4 md:px-8 lg:px-16 gap-8">
 
-    <img th:src="@{/img/boysanLogo.png}" class="h-[69px] w-auto">
-    <h1 class="text-[32px] font-bold">Buat Akun</h1>
-    <div th:if="${errorMessage != null}" class="w-full">
-        <div role="alert" class="alert alert-error w-full text-lg">
+    <div class="flex flex-col items-center w-full max-w-md md:max-w-lg lg:max-w-xl">
+        <div class="text-neutral w-full flex flex-start mb-4">
+            <a th:href="@{/}"
+                class="inline-flex items-center gap-2 mb-4 text-sm font-medium text-neutral hover:text-primary transition-colors group">
+                <div
+                    class="w-9 h-9 rounded-full border border-neutral group-hover:border-primary flex items-center justify-center transition-all group-hover:scale-110">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                </div>
+                <span class="text-base sm:text-lg" th:text="@{'kembali ke home'}"></span>
+            </a>
+        </div>
+        <img th:src="@{/img/boysanLogo.png}" class="h-[69px] w-auto mb-4 md:mb-6">
+        <h1 class="text-3xl md:text-4xl font-bold mb-6">Buat Akun</h1>
+
+        <!-- Error Alert -->
+        <div th:if="${errorMessage != null}" role="alert"
+            class="alert alert-error w-full text-lg flex items-center gap-2 p-4 rounded-lg mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
                 viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -21,132 +37,64 @@
             </svg>
             <span th:text="${errorMessage}"></span>
         </div>
+
+        <!-- Form -->
+        <form th:action="@{/api/auth/sign-up}" th:object="${formRequest}" method="post"
+            class="w-full flex flex-col items-center gap-6">
+
+            <!-- username -->
+            <div class="w-full">
+                <label
+                    class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full flex items-center gap-2">
+                    <!-- SVG icon tetap sama -->
+                    <input type="text" th:field="*{username}" class="grow" placeholder="masukan username">
+                </label>
+                <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'username')}"
+                    th:text="${validationErrors.username}" class="text-error text-sm mt-1 block"></span>
+            </div>
+
+            <!-- email -->
+            <div class="w-full">
+                <label
+                    class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full flex items-center gap-2">
+                    <!-- SVG icon tetap sama -->
+                    <input type="email" th:field="*{email}" class="grow" placeholder="email">
+                </label>
+                <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'email')}"
+                    th:text="${validationErrors.email}" class="text-error text-sm mt-1 block"></span>
+            </div>
+
+            <!-- fullName -->
+            <div class="w-full">
+                <label
+                    class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full flex items-center gap-2">
+                    <!-- SVG icon tetap sama -->
+                    <input type="text" th:field="*{fullName}" class="grow" placeholder="fullName">
+                </label>
+                <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'fullName')}"
+                    th:text="${validationErrors.fullName}" class="text-error text-sm mt-1 block"></span>
+            </div>
+
+            <!-- password -->
+            <div class="w-full">
+                <label
+                    class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full flex items-center gap-2">
+                    <!-- SVG icon tetap sama -->
+                    <input type="password" th:field="*{password}" class="grow" placeholder="password"
+                        th:value="*{password}">
+                </label>
+                <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'password')}"
+                    th:text="${validationErrors.password}" class="text-error text-sm mt-1 block"></span>
+            </div>
+
+            <button type="submit" class="btn btn-neutral w-full py-2 md:py-3 text-base md:text-lg">Daftar</button>
+        </form>
+
+        <p class="text-sm md:text-base mt-4 text-center">sudah punya akun?
+            <a th:href="@{/login}" class="font-bold hover:underline ml-1">Masuk</a>
+        </p>
     </div>
-
-    <form th:action="@{/api/auth/sign-up}" th:object="${formRequest}" method="post"
-        class="w-full flex flex-col items-center gap-8">
-
-        <!-- username -->
-        <div class="w-full flex flex-col items-start">
-            <label
-                class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full">
-
-                <svg width="32" height="33" viewBox="0 0 32 33" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" clip-rule="evenodd"
-                        d="M16 3.7C8.93075 3.7 3.2 9.43075 3.2 16.5C3.2 23.5693 8.93075 29.3 16 29.3C17.9237 29.3 19.744 28.8766 21.3768 28.1197C22.1786 27.748 23.1298 28.0966 23.5014 28.8984C23.8731 29.7 23.5245 30.6512 22.7227 31.0229C20.6768 31.9714 18.3979 32.5 16 32.5C7.16344 32.5 0 25.3365 0 16.5C0 7.66344 7.16344 0.5 16 0.5C24.8365 0.5 32 7.66344 32 16.5L31.9997 16.5304C31.933 20.0342 30.8171 22.3942 29.172 23.8589C27.5658 25.2891 25.6634 25.6789 24.3368 25.6789C22.4288 25.6789 20.7538 24.6882 19.796 23.1931C16.4734 26.1291 11.6841 26.7744 8.72669 23.4883C5.64534 20.0646 6.50435 14.3482 9.79192 10.6953C12.9726 7.16112 18.7563 5.79653 22.077 9.88518C22.3624 9.10542 23.2061 8.66688 24.0174 8.89811C24.8674 9.1403 25.3598 10.0255 25.1178 10.8754C24.1702 14.1976 23.052 17.4886 22.2165 20.8392C22.4598 21.7821 23.3182 22.4789 24.3368 22.4789C25.1032 22.4789 26.1722 22.2453 27.0442 21.469C27.8758 20.7285 28.7434 19.3027 28.8 16.4848C28.7918 9.42256 23.0642 3.7 16 3.7ZM19.765 17.9624C19.8763 17.5782 20.1699 16.5522 20.5114 15.3574C20.8854 14.047 20.4013 12.7883 19.379 11.6524C17.9083 10.0183 14.7523 9.9673 12.1704 12.836C9.57491 15.72 9.48008 19.5419 11.1052 21.3477C12.576 22.9818 15.732 23.0326 18.3138 20.164C18.9106 19.5008 19.4726 18.8134 19.765 17.9624Z"
-                        fill="#061651" />
-                </svg>
-
-                <input type="text" th:field="*{username}" class="grow" placeholder="masukan username">
-            </label>
-            <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'username')}"
-                th:text="${validationErrors.username}" class="text-error text-[14px]">
-            </span>
-        </div>
-
-        <!-- email -->
-        <div class="w-full flex flex-col items-start">
-            <label
-                class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full">
-
-                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M27.5 7.5C27.5 6.125 26.375 5 25 5H5C3.625 5 2.5 6.125 2.5 7.5V22.5C2.5 23.875 3.625 25 5 25H25C26.375 25 27.5 23.875 27.5 22.5V7.5ZM25 7.5L15 13.75L5 7.5H25ZM25 22.5H5V10L15 16.25L25 10V22.5Z"
-                        fill="#051650" />
-                </svg>
-
-
-                <input type="email" th:field="*{email}" class="grow" placeholder="email">
-            </label>
-            <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'email')}"
-                th:text="${validationErrors.email}" class="text-error text-[14px]">
-            </span>
-        </div>
-
-        <!-- fullName -->
-        <div class="w-full flex flex-col items-start">
-            <label
-                class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full">
-
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M15.9999 18.3077C19.1862 18.3077 21.7692 15.7248 21.7692 12.5385C21.7692 9.35226 19.1862 6.76929 15.9999 6.76929C12.8137 6.76929 10.2307 9.35226 10.2307 12.5385C10.2307 15.7248 12.8137 18.3077 15.9999 18.3077Z"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M15.9999 18.3077C19.1862 18.3077 21.7692 15.7248 21.7692 12.5385C21.7692 9.35226 19.1862 6.76929 15.9999 6.76929C12.8137 6.76929 10.2307 9.35226 10.2307 12.5385C10.2307 15.7248 12.8137 18.3077 15.9999 18.3077Z"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path
-                        d="M4.69238 30.9999C5.22203 28.3915 6.63714 26.0465 8.69794 24.3621C10.7587 22.6777 13.3385 21.7576 16.0001 21.7576C18.6617 21.7576 21.2414 22.6777 23.3022 24.3621C25.363 26.0465 26.7781 28.3915 27.3078 30.9999"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M4.69238 30.9999C5.22203 28.3915 6.63714 26.0465 8.69794 24.3621C10.7587 22.6777 13.3385 21.7576 16.0001 21.7576C18.6617 21.7576 21.2414 22.6777 23.3022 24.3621C25.363 26.0465 26.7781 28.3915 27.3078 30.9999"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path
-                        d="M28.6923 1H3.30769C2.03319 1 1 2.03319 1 3.30769V28.6923C1 29.9668 2.03319 31 3.30769 31H28.6923C29.9668 31 31 29.9668 31 28.6923V3.30769C31 2.03319 29.9668 1 28.6923 1Z"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M28.6923 1H3.30769C2.03319 1 1 2.03319 1 3.30769V28.6923C1 29.9668 2.03319 31 3.30769 31H28.6923C29.9668 31 31 29.9668 31 28.6923V3.30769C31 2.03319 29.9668 1 28.6923 1Z"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-
-
-                <input type="text" th:field="*{fullName}" class="grow" placeholder="fullName">
-            </label>
-            <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'fullName')}"
-                th:text="${validationErrors.fullName}" class="text-error text-[14px]">
-            </span>
-        </div>
-
-        <!-- password -->
-        <div class="w-full flex flex-col items-start">
-            <label
-                class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full">
-
-                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M23.2857 11.7142H6.14286C4.95939 11.7142 4 12.6736 4 13.8571V26.7142C4 27.8977 4.95939 28.8571 6.14286 28.8571H23.2857C24.4692 28.8571 25.4286 27.8977 25.4286 26.7142V13.8571C25.4286 12.6736 24.4692 11.7142 23.2857 11.7142Z"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M23.2857 11.7142H6.14286C4.95939 11.7142 4 12.6736 4 13.8571V26.7142C4 27.8977 4.95939 28.8571 6.14286 28.8571H23.2857C24.4692 28.8571 25.4286 27.8977 25.4286 26.7142V13.8571C25.4286 12.6736 24.4692 11.7142 23.2857 11.7142Z"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path
-                        d="M22.2144 11.7143V8.5C22.2144 6.51088 21.4242 4.60322 20.0177 3.1967C18.6111 1.79018 16.7035 1 14.7144 1C12.7252 1 10.8176 1.79018 9.41105 3.1967C8.00453 4.60322 7.21436 6.51088 7.21436 8.5V11.7143"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M22.2144 11.7143V8.5C22.2144 6.51088 21.4242 4.60322 20.0177 3.1967C18.6111 1.79018 16.7035 1 14.7144 1C12.7252 1 10.8176 1.79018 9.41105 3.1967C8.00453 4.60322 7.21436 6.51088 7.21436 8.5V11.7143"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path
-                        d="M14.7143 21.3571C15.306 21.3571 15.7857 20.8774 15.7857 20.2857C15.7857 19.6939 15.306 19.2142 14.7143 19.2142C14.1225 19.2142 13.6428 19.6939 13.6428 20.2857C13.6428 20.8774 14.1225 21.3571 14.7143 21.3571Z"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M14.7143 21.3571C15.306 21.3571 15.7857 20.8774 15.7857 20.2857C15.7857 19.6939 15.306 19.2142 14.7143 19.2142C14.1225 19.2142 13.6428 19.6939 13.6428 20.2857C13.6428 20.8774 14.1225 21.3571 14.7143 21.3571Z"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
-
-
-                <input type="password" th:field="*{password}" class="grow" placeholder="password"
-                    th:value="*{password}">
-            </label>
-
-            <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'password')}"
-                th:text="${validationErrors.password}" class="text-error text-left text-[14px]">
-            </span>
-
-        </div>
-
-
-        <button type="submit" class="btn btn-neutral w-full py-2">Daftar</button>
-    </form>
-
-    <h1 class="text-lg">sudah punya akun? <span class="font-bold hover:cursor-pointer"><a
-                th:href="@{/login}">Masuk</a></span></h1>
-
 </body>
+
 
 </html>

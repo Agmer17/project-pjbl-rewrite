@@ -93,4 +93,49 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             """)
     List<ProductProjection> findAllProductPreview();
 
+    @Query(value = """
+            SELECT
+                p.id AS id,
+                p.name AS name,
+                p.description AS desc,
+                p.harga AS price,
+                c.name AS categoryName,
+                p.created_at AS createdAt,
+
+                (SELECT pi.url FROM product_image pi
+                 WHERE pi.product_id = p.id
+                 ORDER BY pi.image_order ASC
+                 LIMIT 1) AS thumbnailUrl,
+
+                (SELECT count(pi.id) FROM product_image pi
+                 WHERE pi.product_id = p.id) AS imageCount
+            FROM
+                product p
+            LEFT JOIN
+                product_category c ON p.category_id = c.id
+            ORDER BY
+                RANDOM()
+            LIMIT
+                :limit
+            """, nativeQuery = true)
+    List<ProductProjection> findRandomProductsWithLimit(int limit);
+
+    @Query("""
+                SELECT
+                    p.id AS id,
+                    p.name AS name,
+                    p.desc AS desc,
+                    p.price AS price,
+                    c.name AS categoryName,
+                    p.createdAt AS createdAt,
+                    MIN(CASE WHEN pi.imageOrder = 1 THEN pi.imageFileName END) AS thumbnailUrl,
+                    COUNT(pi.id) AS imageCount
+                FROM Product p
+                LEFT JOIN p.category c
+                LEFT JOIN p.images pi
+                WHERE p.id = :productId
+                GROUP BY p.id, p.name, p.desc, p.price, c.name, p.createdAt
+            """)
+    ProductProjection findPreviewById(@Param("productId") UUID productId);
+
 }

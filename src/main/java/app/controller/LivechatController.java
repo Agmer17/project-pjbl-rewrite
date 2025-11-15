@@ -18,13 +18,19 @@ import app.model.dto.ChatHistoryDto;
 import app.model.dto.ChatListDto;
 import app.model.dto.ChatMessage;
 import app.model.dto.LiveChatResponseDto;
+import app.model.entity.Product;
+import app.model.entity.ProductProjection;
 import app.service.LiveChatService;
+import app.service.ProductService;
 import io.jsonwebtoken.Claims;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 @Controller
 /**
  * Class: LivechatController
@@ -51,6 +57,9 @@ import org.springframework.web.bind.annotation.SessionAttribute;
  * - Tidak ada inheritance yang digunakan di class ini.
  */
 public class LivechatController {
+
+        @Autowired
+        private ProductService productService;
 
         @Autowired
         private SimpMessagingTemplate messagingTemplate;
@@ -80,7 +89,11 @@ public class LivechatController {
         }
 
         @GetMapping("/live-chat/with/{receiverId}")
-        public String personalLiveChat(@SessionAttribute Claims creds, @PathVariable UUID receiverId, Model model) {
+        public String personalLiveChat(
+                @SessionAttribute Claims creds,
+                 @PathVariable UUID receiverId, 
+                 Model model,
+                 @ModelAttribute(name = "initialProduct") ProductProjection product) {
 
                 UUID userId = UUID.fromString(creds.get("id", String.class));
 
@@ -90,6 +103,10 @@ public class LivechatController {
                 model.addAttribute("data", data);
                 model.addAttribute("userId", userId);
                 model.addAttribute("receiverId", receiverId);
+                model.addAttribute("initialProduct", product);
+
+                System.out.println("\n\n\n\n\n\n\n"+product.getName());
+                
 
                 return "privateChatPage";
         }
@@ -113,5 +130,15 @@ public class LivechatController {
         public Set<UUID> getOnlineUsers() {
                 return onlineUsersListener.getOnlineUserIds();
         }
+
+        @GetMapping("/livechat/redirect/p/{productId}/u/{userId}")
+        public String getMethodName(@PathVariable UUID productId, 
+        @PathVariable UUID userId,
+        RedirectAttributes redAtrs) {
+            System.out.println("\n\n\n\n\n" + productId + " admin : " + " "+ userId);
+            redAtrs.addFlashAttribute("initialProduct", productService.findProductPreviewId(productId));
+            return "redirect:/live-chat/with/" + userId;
+        }
+        
 
 }

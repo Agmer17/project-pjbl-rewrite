@@ -91,7 +91,7 @@ public class ProductService {
     public Product getProductDetails(UUID id, String reds) {
 
         return productRepository.findDetailById(id)
-                .orElseThrow(() -> new DataNotFoundEx("barang mungkin telah terhapus", reds));
+                .orElseThrow(() -> new DataNotFoundEx("barang tidak ditemukan", reds));
     }
 
     public Product getProductDetails(UUID id) {
@@ -112,6 +112,11 @@ public class ProductService {
         // request.getNewImagesFiles().get(0).getOriginalFilename());
 
         if (request.getImageToDelete() != null && !request.getImageToDelete().isEmpty()) {
+
+            if (request.getImageToDelete().size() == product.getImages().size()) {
+                throw new ImageNotValidException("/admin/products/edit/"+product.getId(), "Kamu tidak bisa menghapus semua gambar!");
+                
+            }
 
             productImageService.deleteImageById(request.getImageToDelete(), product);
         }
@@ -171,6 +176,14 @@ public class ProductService {
 
     public List<ProductProjection> getAllProductsPreview() {
         return productRepository.findAllProductPreview();
+    }
+
+    public List<ProductProjection> getRandomProduct(Integer n) {
+        return productRepository.findRandomProductsWithLimit(n);
+    }
+
+    public ProductProjection findProductPreviewId(UUID id){
+        return productRepository.findPreviewById(id);
     }
 
 }

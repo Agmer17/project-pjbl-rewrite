@@ -29,4 +29,9 @@ public interface ProductImageRepository extends JpaRepository<ProductImage, UUID
     List<ProductImage> findAllByGalleryImageTrue();
 
     List<ProductImage> findAllByGalleryImageFalse();
+
+    @Query(value = "select * from product_image ORDER BY RANDOM() LIMIT :n", nativeQuery = true)
+    List<ProductImage> findRandomImages(@Param("n") Integer n);
 }
+
+

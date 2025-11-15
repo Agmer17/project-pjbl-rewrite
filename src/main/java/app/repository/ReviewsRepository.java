@@ -3,8 +3,10 @@ package app.repository;
 import java.util.List;
 import java.util.UUID;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import app.model.custom.ReviewStatus;
@@ -40,5 +42,16 @@ public interface ReviewsRepository extends JpaRepository<Reviews, UUID> {
                 WHERE r.status = 'ACCEPTED'
             """)
     List<ReviewData> findAllReviewData();
+
+    @Query("""
+                SELECT r
+                FROM Reviews r
+                JOIN FETCH r.user u
+                JOIN FETCH r.product p
+                LEFT JOIN FETCH p.images
+                WHERE r.status = 'ACCEPTED'
+                ORDER BY RANDOM()
+            """)
+    List<ReviewData> findRandomReview(Pageable pageable);
 
 }

@@ -105,15 +105,16 @@ public class AdminUsersController {
     @PostMapping("/update/{id}")
     public String postMethodName(@Valid @ModelAttribute("formRequest") AdminUpdateUserDto updateUser,
     BindingResult bindingResult,
-    UUID id) {
+    UUID id, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
             throw new FieldValidationException("Harap Isi data yang baru dengan benar", bindingResult, "/admin/users/update/" + id);
             
         }
 
-        service.updateUserProfile(id, updateUser);
 
+        service.updateUserProfile(id, updateUser);
+        redirectAttributes.addFlashAttribute("successMsg", "Berhasil memperbaharui user");
         return "redirect:/admin/users/update/"+id;
         
         

@@ -42,9 +42,9 @@
                     <img th:src="@{'/uploads/' + ${image.imageFileName}}" alt="Gallery Image"
                         class="w-full object-cover rounded-xl transition-transform duration-300 group-hover:scale-105"
                         style="min-height: 150px; max-height: 400px;" />
-                    <!-- Tombol delete -->
+                    <!-- Tombol delete selalu terlihat -->
                     <button
-                        class="absolute top-2 right-2 bg-red-600/90 hover:bg-red-700 text-white rounded-full p-2 shadow-lg transition opacity-0 group-hover:opacity-100"
+                        class="absolute top-2 right-2 bg-red-600/90 hover:bg-red-700 text-white rounded-full p-2 shadow-lg transition"
                         th:attr="data-id=${image.id}" title="Delete image">
                         <!-- SVG trash icon -->
                         <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
@@ -64,6 +64,7 @@
                     </button>
                 </div>
             </div>
+
 
         </main>
     </div>

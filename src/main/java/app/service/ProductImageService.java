@@ -209,4 +209,8 @@ public class ProductImageService {
                 images.forEach(img -> img.setGalleryImage(false));
         }
 
+        public List<ProductImage> getRandom(Integer limit) {
+                return repo.findRandomImages(limit);
+        }
+
 }

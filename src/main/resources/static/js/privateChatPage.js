@@ -170,7 +170,6 @@ window.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 3️⃣ Render list produk di modal
     function renderProductList(products) {
         productList.innerHTML = "";
         products.forEach(p => {
@@ -197,7 +196,6 @@ window.addEventListener("DOMContentLoaded", () => {
             item.appendChild(img);
             item.appendChild(info);
 
-            // Pilih produk → close modal + tampil preview
             item.addEventListener("click", () => {
                 selectedProduct = p;
                 updateProductPreview(p);
@@ -208,21 +206,23 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 4️⃣ Update product preview di atas input
     function updateProductPreview(product) {
         previewName.textContent = product.name;
         previewPrice.textContent = "Rp" + Number(product.price).toLocaleString();
         previewImage.src = product.thumbnailUrl ? `/uploads/${product.thumbnailUrl}` : "https://via.placeholder.com/80";
         productPreview.classList.remove("hidden");
     }
-
     // 5️⃣ Close preview
     closePreview.addEventListener("click", () => {
         selectedProduct = null;
         productPreview.classList.add("hidden");
     });
 
-    // 6️⃣ Load product list di awal
+    if (window.__initial_product) {
+        console.log("Menginisialisasi produk awal:", window.__initial_product);
+        selectedProduct = window.__initial_product;
+        updateProductPreview(selectedProduct);
+    }  
     fetchProducts();
 
     // 7️⃣ Kirim pesan
@@ -243,7 +243,6 @@ window.addEventListener("DOMContentLoaded", () => {
         input.value = "";
     });
 
-    // === 💬 Tambah pesan ke UI (Mendukung Pemisah Hari) ===
     function appendMessage(text, isSender, timeStamp = new Date(), product = null) {
         const messageTime = new Date(timeStamp);
         const currentDateYMD = formatDateToYMD(messageTime);

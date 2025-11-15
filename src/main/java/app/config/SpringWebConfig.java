@@ -32,7 +32,7 @@ public class SpringWebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationInterceptor).addPathPatterns("/user/**", "/live-chat/**", "/live-chat",
-                "/admin", "/admin/**", "/reviews/post-review/");
+                "/admin", "/admin/**", "/reviews/post-review/").excludePathPatterns("/user/get-all-admins");
 
         registry.addInterceptor(adminInterceptor).addPathPatterns("/admin", "/admin/**");
 

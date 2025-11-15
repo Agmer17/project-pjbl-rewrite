@@ -16,6 +16,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,12 +30,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Builder
+@Table(name = "users")
 @DynamicInsert
 public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(updatable = false, nullable = false)
+    @Column(name = "id",updatable = false, nullable = false)
     private UUID id;
 
     @Column(nullable = false, unique = true)

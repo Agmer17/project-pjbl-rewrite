@@ -1,6 +1,5 @@
 "use strict";
 
-// ✅ Ubah struktur data sesuai DTO baru
 let updatedImageIds = [];      // List<UUID>
 let updatedImageFiles = [];    // List<MultipartFile>
 let imageToDelete = new Set(); // Set<UUID>
@@ -18,22 +17,17 @@ document.addEventListener("DOMContentLoaded", () => {
             const container = e.target.closest(".relative");
             const imagePreview = container.querySelector("img");
 
-            // Preview image baru
             imagePreview.src = URL.createObjectURL(newImage);
 
-            // ✅ Cek apakah ID ini sudah ada di updatedImageIds
             const existingIndex = updatedImageIds.indexOf(imageId);
 
             if (existingIndex !== -1) {
-                // Sudah ada, replace file-nya aja
                 updatedImageFiles[existingIndex] = newImage;
             } else {
-                // Belum ada, tambah baru
                 updatedImageIds.push(imageId);
                 updatedImageFiles.push(newImage);
             }
 
-            // Hapus dari delete list (kalau ada)
             imageToDelete.delete(imageId);
 
             console.log("📝 Updated IDs:", updatedImageIds);
@@ -200,16 +194,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // ===== FORM SUBMIT LOGIC (Tetap sama) =====
     const form = document.querySelector("#updateProductForm");
 
     form.addEventListener("submit", (e) => {
-        // jangan preventDefault, biar SSR redirect + flash attribute jalan
 
-        // --- Bersihkan hidden/input file dinamis lama ---
         form.querySelectorAll("input[data-dynamic]").forEach(el => el.remove());
 
-        // --- Price hidden (bersih tanpa titik ribuan) ---
         let rawPrice = priceInput.value.replace(/\./g, "");
         let priceHidden = document.createElement("input");
         priceHidden.type = "hidden";
@@ -218,7 +208,6 @@ document.addEventListener("DOMContentLoaded", () => {
         priceHidden.dataset.dynamic = "true";
         form.appendChild(priceHidden);
 
-        // --- File baru ---
         newImagesFilesTemp.forEach(file => {
             const dt = new DataTransfer();
             dt.items.add(file);
@@ -230,7 +219,6 @@ document.addEventListener("DOMContentLoaded", () => {
             form.appendChild(input);
         });
 
-        // --- File yang diupdate ---
         updatedImageFiles.forEach(file => {
             const dt = new DataTransfer();
             dt.items.add(file);
@@ -242,7 +230,6 @@ document.addEventListener("DOMContentLoaded", () => {
             form.appendChild(input);
         });
 
-        // --- ID gambar yang diupdate ---
         updatedImageIds.forEach(id => {
             const input = document.createElement("input");
             input.type = "hidden";
@@ -252,7 +239,6 @@ document.addEventListener("DOMContentLoaded", () => {
             form.appendChild(input);
         });
 
-        // --- ID gambar yang dihapus ---
         imageToDelete.forEach(id => {
             const input = document.createElement("input");
             input.type = "hidden";
@@ -269,16 +255,12 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Updated Files:", [...updatedImageFiles.values()].map(f => f.name));
         console.log("Updated IDs:", [...updatedImageIds]);
         console.log("Deleted IDs:", [...imageToDelete]);
-
-        // --- Submit form ---
-        // form.submit();
     });
 
 
 
 })
 
-// ===== RESET IMAGE SLOT FUNCTION (Hanya Perbaikan Class) =====
 function resetImageSlot(wrapper) {
     const imgEl = wrapper.querySelector(".new-img-uploads");
 
@@ -292,7 +274,6 @@ function resetImageSlot(wrapper) {
         imgEl.classList.add("hidden");
         imgEl.removeAttribute("src");
         delete imgEl.dataset.index;
-        // 💡 REVISI: Menghapus class h-full w-full object-cover
         imgEl.classList.remove("w-full", "h-full", "object-cover", "transition-transform", "duration-300", "group-hover:scale-105");
     }
 
@@ -302,7 +283,6 @@ function resetImageSlot(wrapper) {
     if (overlay) overlay.classList.add("hidden");
     if (actions) actions.classList.add("hidden");
 
-    // 💡 REVISI: Mengembalikan class wrapper ke kondisi awal yang memiliki aspect-square
     wrapper.className =
         "relative w-full aspect-square flex items-center justify-center border-2 border-dashed border-primary/50 rounded-lg cursor-pointer hover:bg-base-300 transition-colors duration-300 group shadow-md shadow-base-300/70";
 }

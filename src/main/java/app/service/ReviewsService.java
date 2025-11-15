@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -153,6 +154,10 @@ public class ReviewsService {
 
     public List<ReviewData> getAllReviews() {
         return reviewRepo.findAllReviewData();
+    }
+
+    public List<ReviewData> getRandom(Integer limit) {
+        return reviewRepo.findRandomReview(PageRequest.of(0, limit));
     }
 
 }

@@ -39,7 +39,11 @@ public class ReviewController {
             @SessionAttribute(required = false) Claims creds) {
 
         if (creds == null) {
-            List<Reviews> reviews = service.getFromProduct(id, "/products/detail/" + id);
+            List<Reviews> rawReviews = service.getFromProduct(id, "/error/404");
+
+            List<Reviews> reviews = rawReviews.stream()
+                    .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED)
+                    .collect(Collectors.toList());
             Double averageReviews = service.averageReviews(reviews);
             Map<Integer, Long> reviewsratingCount = service.countRatings(reviews);
 
@@ -64,7 +68,7 @@ public class ReviewController {
         List<Reviews> rawReviews = service.getFromProduct(id, fallback);
 
         List<Reviews> reviews = rawReviews.stream()
-                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED) // Filter berdasarkan status ACCEPTED
+                .filter(review -> review.getStatus() == ReviewStatus.ACCEPTED)
                 .collect(Collectors.toList());
 
         Double averageReviews = service.averageReviews(reviews);

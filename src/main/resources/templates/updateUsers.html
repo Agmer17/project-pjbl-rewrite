@@ -35,6 +35,28 @@
                 </div>
             </div>
 
+            <div class="w-full flex mb-4" th:if="${successMsg}">
+                <div
+                    class="alert alert-success shadow-lg rounded-xl flex w-full justify-between items-center transition-opacity duration-500 ease-in opacity-100">
+                    <div class="flex gap-4 items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span th:text="${successMsg}"></span>
+                    </div>
+                    <div class="flex-none">
+                        <button class="btn btn-sm btn-ghost btn-circle" onclick="this.closest('.alert').remove()">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-current" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- Main Card -->
             <main class="w-full min-h-screen px-0 sm:px-4 md:px-6 lg:px-8 md:py-8">
                 <div

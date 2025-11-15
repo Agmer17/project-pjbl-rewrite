@@ -60,9 +60,15 @@ public class ProductController {
         }
 
         UserRole currentUserRole = UserRole.valueOf(creds.get("role", String.class));
+        String fallback ="error/404";
 
-        Product productDetails = service.getProductDetails(id, "/error/404.html");
-        List<Reviews> rawReviews = reviewsService.getFromProduct(id, "/error/404.html");
+        if (currentUserRole == UserRole.ADMIN) {
+            fallback = "/admin/products/";
+            
+        }
+
+        Product productDetails = service.getProductDetails(id, fallback);
+        List<Reviews> rawReviews = reviewsService.getFromProduct(id, fallback);
 
         List<Reviews> reviews = rawReviews.stream().filter(r -> r.getStatus() == ReviewStatus.ACCEPTED).toList();
         Double averageReviews = reviews.stream().mapToInt(Reviews::getRating)

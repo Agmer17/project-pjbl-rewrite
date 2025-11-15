@@ -12,28 +12,472 @@
 
   <div th:replace="fragment/navbar :: navbar"></div>
 
-  <!-- Konten untuk ngetes scroll -->
-  <main class="pt-15">
+  <main class="mt-16 pb-22 flex flex-col gap-4 md:gap-8">
 
-    <section class="relative text-white">
-      <!-- Gambar -->
-      <img th:src="@{/img/home_image_1.png}" alt="Background" class="w-full h-auto">
+    <section class="relative text-white" data-aos="fade-down">
+      <img th:src="@{/img/home_image_1.png}" alt="Background" class="w-full h-auto max-h-[400px] object-cover">
 
-      <!-- Overlay -->
       <div class="absolute inset-0 bg-black/15"></div>
 
-      <!-- Konten di atas gambar -->
       <div class="absolute inset-0 flex flex-col w-[90%] items-start justify-center text-white text-center px-4">
-        <h1 class="text-3xl font-bold text-left">KAMI TEMAN EVENT TERBAIKMU</h1>
-        <p class="text-sm text-left font-semibold">Boysan Multimedia hadir sebagai partner andal untuk setiap acara Anda</p> 
-        <p class="text-sm font-semibold">Kami melayani Event Organizer.</p>
+        <h1 class="text-3xl md:text-4xl font-bold text-left" data-aos="fade-right" data-aos-duration="1000">KAMI TEMAN
+          EVENT TERBAIKMU</h1>
+        <p class="text-sm md:text-xl text-left font-semibold" data-aos="fade-right" data-aos-duration="1200">Boysan
+          Multimedia hadir sebagai partner andal untuk setiap
+          acara Anda
+        </p>
+        <p class="text-sm font-semibold" data-aos="fade-right" data-aos-duration="1400">Kami melayani Event Organizer.
+        </p>
       </div>
+    </section>
+
+    <section class="p-6 min-h-screen text-white flex flex-col gap-4 md:gap-8" data-aos="fade-up">
+      <h1 class="text-3xl font-bold mb-6 text-center" data-aos="zoom-in">Our Products</h1>
+      <h1 class="md:text-xl text-center text-sm font-medium" data-aos="zoom-in" data-aos-delay="200">
+        Kami memiliki banyak pelayanan yang siap membantu seluruh kebutuhan event anda
+      </h1>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:hidden">
+        <div th:each="product, stat : ${products}" th:if="${stat.index < 3}"
+          class="relative group rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition-transform duration-300"
+          data-aos="fade-up" th:attr="data-aos-delay=${stat.index * 150 + 400}">
+
+          <a th:href="@{/products/detail/{id}(id=${product.id})}"
+            class="relative group block rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition-transform duration-300">
+
+            <img th:src="'/uploads/' + ${product.thumbnailUrl}" th:alt="${product.name}"
+              class="w-full h-64 object-cover brightness-90 group-hover:brightness-75 transition-all duration-300" />
+
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none">
+            </div>
+
+            <div class="absolute bottom-0 left-0 right-0 p-4 text-white pointer-events-none">
+              <h2 class="text-lg font-semibold mb-1" th:text="${product.name}">Nama Produk</h2>
+              <p class="text-sm line-clamp-2 opacity-90" th:text="${product.desc}">Deskripsi produk singkat...</p>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <div class="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div th:each="product, stat : ${products}"
+          class="relative group rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition-transform duration-300"
+          data-aos="fade-up" th:attr="data-aos-delay=${stat.index * 150 + 400}">
+
+          <a th:href="@{/products/detail/{id}(id=${product.id})}"
+            class="relative group block rounded-2xl overflow-hidden shadow-lg hover:scale-[1.02] transition-transform duration-300">
+
+            <img th:src="'/uploads/' + ${product.thumbnailUrl}" th:alt="${product.name}"
+              class="w-full h-64 object-cover brightness-90 group-hover:brightness-75 transition-all duration-300" />
+
+            <div
+              class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent pointer-events-none">
+            </div>
+
+            <div class="absolute bottom-0 left-0 right-0 p-4 text-white pointer-events-none">
+              <h2 class="text-lg font-semibold mb-1" th:text="${product.name}">Nama Produk</h2>
+              <p class="text-sm line-clamp-2 opacity-90" th:text="${product.desc}">Deskripsi produk singkat...</p>
+            </div>
+          </a>
+
+        </div>
+      </div>
+
+      <a th:href="@{/products/}" class="mx-auto btn btn-circle text-neutral mt-4" data-aos="zoom-in"
+        data-aos-delay="800">
+        <svg class="w-6 h-auto" viewBox="0 0 23 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M0.488656 0.518771C0.801637 0.186591 1.22607 -1.71661e-05 1.66863 -1.71661e-05C2.11118 -1.71661e-05 2.53562 0.186591 2.8486 0.518771L11.1101 9.28967L19.3716 0.518771C19.6863 0.196006 20.1079 0.0174084 20.5455 0.0214453C20.9831 0.0254822 21.4017 0.211831 21.7112 0.540355C22.0206 0.868879 22.1961 1.31329 22.1999 1.77788C22.2037 2.24247 22.0355 2.69005 21.7315 3.02423L12.29 13.0479C11.9771 13.38 11.5526 13.5667 11.1101 13.5667C10.6675 13.5667 10.2431 13.38 9.93011 13.0479L0.488656 3.02423C0.17577 2.69195 0 2.24135 0 1.7715C0 1.30166 0.17577 0.851051 0.488656 0.518771Z"
+            fill="currentColor" />
+        </svg>
+      </a>
+    </section>
+
+
+
+
+    <section class="p-6 min-h-screen w-full text-white flex flex-col gap-4 md:gap-8" data-aos="fade-left">
+      <h1 class="text-2xl md:text-3xl font-bold text-center" data-aos="zoom-in">Kami Adalah Pilihan</h1>
+      <p class="text-sm md:text-xl font-medium text-center" data-aos="zoom-in" data-aos-delay="200">Dari konsep hingga
+        eksekusi, Boysan Multimedia selalu
+        menghadirkan
+        standar tinggi yang membuat acara Anda berbeda dan berkelas.</p>
+
+      <section class="text-white">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div th:each="image, stat : ${images}" class="relative overflow-hidden rounded-xl group" data-aos="flip-left"
+            th:attr="data-aos-delay=${stat.index * 100}">
+            <img th:src="'/uploads/' + ${image.imageFileName}" alt="Gallery"
+              class="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-500" />
+
+            <div
+              class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+            </div>
+          </div>
+        </div>
+      </section>
+      <a th:href="${admin} ? @{/admin/gallery} : @{/gallery}" class="mx-auto btn btn-circle text-neutral mt-4"
+        data-aos="zoom-in" data-aos-delay="500">
+        <svg class="w-6 h-auto" viewBox="0 0 23 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M0.488656 0.518771C0.801637 0.186591 1.22607 -1.71661e-05 1.66863 -1.71661e-05C2.11118 -1.71661e-05 2.53562 0.186591 2.8486 0.518771L11.1101 9.28967L19.3716 0.518771C19.6863 0.196006 20.1079 0.0174084 20.5455 0.0214453C20.9831 0.0254822 21.4017 0.211831 21.7112 0.540355C22.0206 0.868879 22.1961 1.31329 22.1999 1.77788C22.2037 2.24247 22.0355 2.69005 21.7315 3.02423L12.29 13.0479C11.9771 13.38 11.5526 13.5667 11.1101 13.5667C10.6675 13.5667 10.2431 13.38 9.93011 13.0479L0.488656 3.02423C0.17577 2.69195 0 2.24135 0 1.7715C0 1.30166 0.17577 0.851051 0.488656 0.518771Z"
+            fill="currentColor" />
+        </svg>
+      </a>
+    </section>
+
+    <section class="p-6 flex flex-col items-center gap-4 md:gap-8 text-white" data-aos="fade-in">
+
+      <h1 class="text-2xl md:text-3xl font-bold text-center" data-aos="zoom-in">Keunggulan Kami</h1>
+      <h1 class="text-sm md:text-xl font-medium text-center" data-aos="zoom-in" data-aos-delay="200"> Kami adalah
+        pilihan tepat untuk setiap acara Anda. Dengan
+        tim profesional, ide kreatif, dan pelayanan yang tulus.</h1>
+
+      <div class="w-full max-w-6xl mx-auto" th:if="${not #lists.isEmpty(images)}" data-aos="fade-up"
+        data-aos-delay="400">
+        <div class="relative px-4 md:px-8">
+          <div class="overflow-x-hidden py-8">
+            <div id="carouselTrack" class="flex gap-6 transition-transform duration-500 ease-out">
+              <div th:each="image, iterStat : ${images}" th:attr="data-index=${iterStat.index}"
+                th:classappend="${iterStat.first} ? 'opacity-100 scale-100' : 'opacity-40 scale-90'"
+                class="flex-shrink-0 w-80 md:w-96 h-80 md:h-96 transition-all duration-500 rounded-2xl overflow-hidden shadow-2xl">
+                <a th:href="@{/products/detail/{id}(id=${image.product.id})}" class="block w-full h-full relative">
+                  <img th:src="@{'/uploads/' + ${image.imageFileName}}" th:alt="'Product ' + ${iterStat.count}"
+                    class="w-full h-full object-cover" />
+                  <div
+                    class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 md:p-6">
+                    <h3 class="text-white text-lg md:text-2xl font-bold" th:text="${image.product.name}">Product Name
+                    </h3>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <button id="prevBtn"
+            class="btn btn-circle absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white backdrop-blur-md border-none hover:bg-white/60 hover:scale-110 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <button id="nextBtn"
+            class="btn btn-circle absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white backdrop-blur-md border-none hover:bg-white/60 hover:scale-110 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="flex justify-center gap-2 mt-6">
+          <button th:each="image, iterStat : ${images}" th:attr="data-slide=${iterStat.index}"
+            th:classappend="${iterStat.first} ? 'w-8 bg-white' : 'bg-white/40'"
+            class="dot h-2 rounded-full transition-all duration-300 hover:bg-white/70"></button>
+        </div>
+
+        <script th:inline="javascript">
+          /*<![CDATA[*/
+          const track = document.getElementById('carouselTrack');
+          const slides = track.querySelectorAll('[data-index]');
+          const dots = document.querySelectorAll('.dot');
+          const prevBtn = document.getElementById('prevBtn');
+          const nextBtn = document.getElementById('nextBtn');
+          const totalSlides = /*[[${#lists.size(images)}]]*/ 0;
+          let currentIndex = 0;
+
+          function updateCarousel() {
+            const slideWidth = slides[0].offsetWidth;
+            const gap = 24; // 1.5rem = 24px
+            const containerWidth = track.parentElement.offsetWidth;
+
+            // Hitung offset untuk menempatkan slide aktif di tengah
+            const centerOffset = (containerWidth - slideWidth) / 2;
+            const slideOffset = currentIndex * (slideWidth + gap);
+            const offset = centerOffset - slideOffset;
+
+            track.style.transform = `translateX(${offset}px)`;
+
+            slides.forEach((slide, index) => {
+              if (index === currentIndex) {
+                slide.classList.remove('opacity-40', 'scale-90');
+                slide.classList.add('opacity-100', 'scale-100');
+              } else {
+                slide.classList.remove('opacity-100', 'scale-100');
+                slide.classList.add('opacity-40', 'scale-90');
+              }
+            });
+
+            dots.forEach((dot, index) => {
+              if (index === currentIndex) {
+                dot.classList.remove('bg-white/40');
+                dot.classList.add('w-8', 'bg-white');
+              } else {
+                dot.classList.remove('w-8', 'bg-white');
+                dot.classList.add('bg-white/40');
+              }
+            });
+          }
+
+          nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % totalSlides;
+            updateCarousel();
+          });
+
+          prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides;
+            updateCarousel();
+          });
+
+          dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+              currentIndex = parseInt(dot.getAttribute('data-slide'));
+              updateCarousel();
+            });
+          });
+
+          window.addEventListener('resize', updateCarousel);
+
+          // Initial positioning
+          updateCarousel();
+          /*]]>*/
+        </script>
+      </div>
+      <div th:unless="${not #lists.isEmpty(images)}"
+        class="text-center p-8 border border-gray-700 rounded-lg w-full max-w-5xl" data-aos="fade-up">
+        <p class="text-xl text-gray-400">Belum ada gambar produk yang tersedia.</p>
+      </div>
+    </section>
+
+    <section class="w-full flex flex-col gap-4 md:gap-6 text-white items-center">
+
+      <h1 class="text-2xl md:text-3xl font-bold"> 3 Langkah Kami!</h1>
+      <div class="flex flex-col items-start gap-4">
+        <div class="flex gap-4 justify-center items-center">
+          <span class="px-4 py-2 rounded-xl border border-white">1</span>
+          <h2 class="text-sm md:text-xl font-semibold">Konsultasi kebutuhan event Anda.</h2>
+        </div>
+        <div class="flex gap-4 justify-center items-center">
+          <span class="px-4 py-2 rounded-xl border border-white">2</span>
+          <h2 class="text-sm md:text-xl font-semibold">Penyusunan konsep & timeline acara.</h2>
+        </div>
+        <div class="flex gap-4 justify-center items-center">
+          <span class="px-4 py-2 rounded-xl border border-white">3</span>
+          <h2 class="text-sm md:text-xl font-semibold">Eksekusi event dengan profesional.</h2>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="w-full text-white flex flex-col p-6 items-center">
+
+      <h1 class="font-bold text-2xl md:text-3xl">Apa kata mereka?</h1>
+
+      <div class="w-full max-w-6xl mx-auto" th:if="${not #lists.isEmpty(randomReview)}" data-aos="fade-up"
+        data-aos-delay="400">
+        <div class="relative px-4 md:px-8">
+          <div class="overflow-x-hidden py-8">
+            <div id="reviewCarouselTrack" class="flex gap-6 transition-transform duration-500 ease-out">
+              <div th:each="review, iterStat : ${randomReview}" th:attr="data-index=${iterStat.index}"
+                th:classappend="${iterStat.first} ? 'opacity-100 scale-100' : 'opacity-40 scale-90'"
+                class="flex-shrink-0 w-80 md:w-96 bg-base-100 border border-neutral/20 h-auto rounded-2xl p-5 shadow-2xl transition-all duration-500">
+
+                <!-- USER INFO -->
+                <div class="flex items-center gap-3 mb-4">
+                  <div class="avatar">
+                    <div class="w-10 h-10 rounded-full ring-2 ring-neutral ring-offset-2">
+                      <img th:src="@{/uploads/{pic}(pic=${review.user.profilePicture})}"
+                        th:alt="${review.user.fullName}" onerror="this.onerror=null;this.src='/img/default.jpg';" />
+                    </div>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral text-sm" th:text="${review.user.fullName}">User Name</p>
+                    <p class="text-xs text-neutral/70" th:text="'@' + ${review.user.username}">@username</p>
+                  </div>
+                </div>
+
+                <!-- RATING -->
+                <div class="flex items-center gap-1 mb-3">
+                  <th:block th:each="i : ${#numbers.sequence(1, 5)}">
+                    <svg th:if="${review.rating >= i}" xmlns="http://www.w3.org/2000/svg"
+                      class="h-4 w-4 text-warning fill-warning" viewBox="0 0 24 24" fill="currentColor">
+                      <path
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                    <svg th:if="${review.rating < i}" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-neutral/30"
+                      viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  </th:block>
+                </div>
+
+                <!-- REVIEW TEXT -->
+                <p class="text-sm text-neutral/90 italic mb-3 line-clamp-4" th:text="${review.textReview}">
+                  This product was amazing! Loved it so much.
+                </p>
+
+                <!-- PRODUCT INFO -->
+                <div class="flex items-center gap-3 border-t border-neutral/10 pt-3">
+                  <div class="w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
+                    <img th:if="${!#lists.isEmpty(review.product.images)}"
+                      th:src="@{/uploads/{img}(img=${review.product.images[0].imageFileName})}"
+                      class="w-full h-full object-cover" alt="Product" />
+                    <img th:if="${#lists.isEmpty(review.product.images)}" src="/img/default-product.jpg"
+                      class="w-full h-full object-cover" alt="Default" />
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-sm text-neutral truncate" th:text="${review.product.name}">Product
+                      Name</h4>
+                    <p class="text-xs text-neutral/70"
+                      th:text="'Rp ' + ${#numbers.formatDecimal(review.product.price, 0, 'COMMA', 0, 'POINT')}">Rp 0</p>
+                  </div>
+                </div>
+
+                <!-- TIMESTAMP -->
+                <div class="flex items-center gap-1 text-xs text-neutral/50 mt-3">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span th:text="${#temporals.format(review.createdAt, 'dd MMM yyyy, HH:mm')}">01 Jan 2024, 12:00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PREV/NEXT BUTTONS -->
+          <button id="reviewPrevBtn"
+            class="btn btn-circle absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white backdrop-blur-md border-none hover:bg-white/60 hover:scale-110 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+
+          <button id="reviewNextBtn"
+            class="btn btn-circle absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white backdrop-blur-md border-none hover:bg-white/60 hover:scale-110 transition-all">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+              stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- DOTS -->
+        <div class="flex justify-center gap-2 mt-6">
+          <button th:each="review, iterStat : ${randomReview}" th:attr="data-slide=${iterStat.index}"
+            th:classappend="${iterStat.first} ? 'w-8 bg-white' : 'bg-white/40'"
+            class="review-dot h-2 rounded-full transition-all duration-300 hover:bg-white/70"></button>
+        </div>
+
+        <!-- SCRIPT -->
+        <script th:inline="javascript">
+          /*<![CDATA[*/
+          const reviewTrack = document.getElementById('reviewCarouselTrack');
+          const reviewSlides = reviewTrack.querySelectorAll('[data-index]');
+          const reviewDots = document.querySelectorAll('.review-dot');
+          const reviewPrevBtn = document.getElementById('reviewPrevBtn');
+          const reviewNextBtn = document.getElementById('reviewNextBtn');
+          const totalReviewSlides = /*[[${#lists.size(randomReview)}]]*/ 0;
+          let reviewCurrentIndex = 0;
+
+          function updateReviewCarousel() {
+            const slideWidth = reviewSlides[0].offsetWidth;
+            const gap = 24; // px
+            const containerWidth = reviewTrack.parentElement.offsetWidth;
+
+            const centerOffset = (containerWidth - slideWidth) / 2;
+            const slideOffset = reviewCurrentIndex * (slideWidth + gap);
+            const offset = centerOffset - slideOffset;
+
+            reviewTrack.style.transform = `translateX(${offset}px)`;
+
+            reviewSlides.forEach((slide, index) => {
+              if (index === reviewCurrentIndex) {
+                slide.classList.remove('opacity-40', 'scale-90');
+                slide.classList.add('opacity-100', 'scale-100');
+              } else {
+                slide.classList.remove('opacity-100', 'scale-100');
+                slide.classList.add('opacity-40', 'scale-90');
+              }
+            });
+
+            reviewDots.forEach((dot, index) => {
+              if (index === reviewCurrentIndex) {
+                dot.classList.remove('bg-white/40');
+                dot.classList.add('w-8', 'bg-white');
+              } else {
+                dot.classList.remove('w-8', 'bg-white');
+                dot.classList.add('bg-white/40');
+              }
+            });
+          }
+
+          reviewNextBtn.addEventListener('click', () => {
+            reviewCurrentIndex = (reviewCurrentIndex + 1) % totalReviewSlides;
+            updateReviewCarousel();
+          });
+
+          reviewPrevBtn.addEventListener('click', () => {
+            reviewCurrentIndex = (reviewCurrentIndex - 1 + totalReviewSlides) % totalReviewSlides;
+            updateReviewCarousel();
+          });
+
+          reviewDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+              reviewCurrentIndex = parseInt(dot.getAttribute('data-slide'));
+              updateReviewCarousel();
+            });
+          });
+
+          window.addEventListener('resize', updateReviewCarousel);
+
+          // Init
+          updateReviewCarousel();
+          /*]]>*/
+        </script>
+      </div>
+
+      <!-- Empty State -->
+      <div th:unless="${not #lists.isEmpty(randomReview)}"
+        class="text-center p-8 border border-gray-700 rounded-lg w-full max-w-5xl" data-aos="fade-up">
+        <p class="text-xl text-gray-400">Belum ada review yang disetujui.</p>
+      </div>
+
+
+    </section>
+
+    <section class="w-full text-white flex flex-col items-center justify-center gap-4 md:gap-6">
+
+      <h1 class="text-2xl md:text-3xl font-bold">Informasi Lebih Lanjut</h1>
+
+      <div class="flex w-full gap-4 md:gap-6 justify-center">
+        <a href="https://www.instagram.com/boysan.multimedia/">
+          <svg width="34" height="32" viewBox="0 0 34 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M25.5417 7.75H25.5571M8.91667 1H24.75C29.1223 1 32.6667 4.35786 32.6667 8.5V23.5C32.6667 27.6421 29.1223 31 24.75 31H8.91667C4.54441 31 1 27.6421 1 23.5V8.5C1 4.35786 4.54441 1 8.91667 1ZM23.1667 15.055C23.3621 16.3034 23.137 17.5783 22.5235 18.6985C21.9099 19.8187 20.9391 20.7271 19.7492 21.2945C18.5593 21.8619 17.2109 22.0594 15.8957 21.8589C14.5804 21.6584 13.3655 21.0701 12.4235 20.1777C11.4815 19.2854 10.8606 18.1343 10.6489 16.8883C10.4373 15.6423 10.6458 14.3648 11.2447 13.2376C11.8436 12.1103 12.8025 11.1906 13.9849 10.6094C15.1673 10.0281 16.5131 9.81488 17.8308 10C19.175 10.1888 20.4193 10.7822 21.3802 11.6925C22.341 12.6027 22.9673 13.7816 23.1667 15.055Z"
+              stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </a>
+
+        <svg width="33" height="32" viewBox="0 0 33 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M11.75 12.6667C11.75 12.8877 11.8422 13.0996 12.0063 13.2559C12.1704 13.4122 12.3929 13.5 12.625 13.5C12.8571 13.5 13.0796 13.4122 13.2437 13.2559C13.4078 13.0996 13.5 12.8877 13.5 12.6667V11C13.5 10.779 13.4078 10.567 13.2437 10.4107C13.0796 10.2545 12.8571 10.1667 12.625 10.1667C12.3929 10.1667 12.1704 10.2545 12.0063 10.4107C11.8422 10.567 11.75 10.779 11.75 11V12.6667ZM11.75 12.6667C11.75 14.8768 12.6719 16.9964 14.3128 18.5592C15.9538 20.122 18.1794 21 20.5 21M20.5 21H22.25C22.4821 21 22.7046 20.9122 22.8687 20.7559C23.0328 20.5996 23.125 20.3877 23.125 20.1667C23.125 19.9457 23.0328 19.7337 22.8687 19.5774C22.7046 19.4211 22.4821 19.3333 22.25 19.3333H20.5C20.2679 19.3333 20.0454 19.4211 19.8813 19.5774C19.7172 19.7337 19.625 19.9457 19.625 20.1667C19.625 20.3877 19.7172 20.5996 19.8813 20.7559C20.0454 20.9122 20.2679 21 20.5 21ZM1 30.9719L3.84045 24.6385C1.66736 21.652 0.694724 18.0002 1.10509 14.3687C1.51545 10.7372 3.2806 7.37543 6.06928 4.9144C8.85795 2.45337 12.4784 1.06223 16.2513 1.00204C20.0242 0.941848 23.69 2.21675 26.561 4.58749C29.4319 6.95823 31.3105 10.2618 31.8442 13.8783C32.3779 17.4948 31.5301 21.1755 29.4598 24.2298C27.3895 27.2841 24.2391 29.5019 20.5998 30.467C16.9605 31.4322 13.0825 31.0783 9.69351 29.4719L1 30.9719Z"
+            stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </div>
+
+
     </section>
 
   </main>
 
   <div th:replace="fragment/navbar :: bottombar('home')"></div>
-
 
 </body>
 

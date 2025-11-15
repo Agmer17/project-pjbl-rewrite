@@ -3,6 +3,7 @@ package app.controller;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.messaging.handler.annotation.support.MethodArgumentTypeMismatchException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,8 +23,7 @@ public class ErrorController {
         redAttrs.addFlashAttribute("formRequest", ex.getDetails());
         redAttrs.addFlashAttribute("errorMessage", ex.getMessage());
 
-        return "redirect:"+ex.getRedirectTo();
-
+        return "redirect:" + ex.getRedirectTo();
 
     }
 
@@ -34,17 +34,16 @@ public class ErrorController {
 
         if (ex.getBindResult() != null) {
             errors = ex.getBindResult().getFieldErrors().stream()
-                        .collect(Collectors.toMap(
-                                FieldError::getField,
-                                FieldError::getDefaultMessage,
-                                (msg1, _) -> msg1));
-                redAttrs.addFlashAttribute("validationErrors", errors);
-                redAttrs.addFlashAttribute("errorMessage", ex.getMessage());
-                redAttrs.addFlashAttribute("formRequest", ex.getBindResult().getTarget());
-                
-            }
-            return "redirect:"+ex.getRedirectTo();
-        
+                    .collect(Collectors.toMap(
+                            FieldError::getField,
+                            FieldError::getDefaultMessage,
+                            (msg1, _) -> msg1));
+            redAttrs.addFlashAttribute("validationErrors", errors);
+            redAttrs.addFlashAttribute("errorMessage", ex.getMessage());
+            redAttrs.addFlashAttribute("formRequest", ex.getBindResult().getTarget());
+
+        }
+        return "redirect:" + ex.getRedirectTo();
 
     }
 
@@ -53,7 +52,7 @@ public class ErrorController {
 
         redAttrs.addFlashAttribute("errorMessage", ex.getMessage());
 
-        return "redirect:"+ex.getRedirectTo();
+        return "redirect:" + ex.getRedirectTo();
     }
 
     @ExceptionHandler(DataNotFoundEx.class)
@@ -61,8 +60,7 @@ public class ErrorController {
 
         redirectAttributes.addFlashAttribute("errorMessage", ex.getMessage());
 
-
-        return "redirect:"+ex.getRedirectTo();
+        return "redirect:" + ex.getRedirectTo();
     }
-    
+
 }

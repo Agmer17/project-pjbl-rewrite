@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import app.exception.AuthValidationException;
 import app.exception.DataNotFoundEx;
 import app.model.custom.Gender;
+import app.model.custom.UserRole;
 import app.model.dto.AdminAddUserDto;
 import app.model.dto.AdminUpdateUserDto;
 import app.model.dto.UpdateProfileRequest;
@@ -213,6 +214,10 @@ public class UserService {
 
     public Users getUserById(UUID id) {
         return userRepo.findById(id).orElse(null);
+    }
+
+    public List<Users> findAllByRole(UserRole userRole) {
+        return userRepo.findAllByRole(userRole);
     }
 
 }

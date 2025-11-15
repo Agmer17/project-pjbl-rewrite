@@ -8,129 +8,113 @@
     <link rel="stylesheet" th:href="@{/css/output.css}">
 </head>
 
-<body class="font-sans text-neutral bg-white w-screen h-screen flex items-center flex-col py-[60px] gap-8 px-4">
+<body
+    class="font-sans text-neutral bg-white w-screen min-h-screen flex flex-col items-center py-16 px-4 md:px-8 lg:px-16 gap-8">
 
-    <img th:src="@{/img/boysanLogo.png}" class="h-[69px] w-auto">
-    <h1 class="text-[32px] font-bold">Masuk</h1>
+    <div class="flex flex-col items-center w-full max-w-md md:max-w-lg lg:max-w-xl">
 
-    <div th:if="${errorMessage != null}" class="w-full">
-        <div role="alert" class="alert alert-error w-full text-lg">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            <span th:text="${errorMessage}"></span>
+        <div class="text-neutral w-full flex flex-start mb-4">
+            <a th:href="@{/}"
+                class="inline-flex items-center gap-2 mb-4 text-sm font-medium text-neutral hover:text-primary transition-colors group">
+                <div
+                    class="w-9 h-9 rounded-full border border-neutral group-hover:border-primary flex items-center justify-center transition-all group-hover:scale-110">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                </div>
+                <span class="text-base sm:text-lg" th:text="@{'kembali ke home'}"></span>
+            </a>
         </div>
-    </div>
+        
+        <img th:src="@{/img/boysanLogo.png}" class="h-[69px] w-auto mb-4 md:mb-6">
+        <h1 class="text-3xl md:text-4xl font-bold mb-6">Masuk</h1>
 
-    <div class="w-full" th:if="${warningMessage}">
-        <div role="alert" class="alert alert-warning text-white font-bold">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <span th:text="${warningMessage}"></span>
-        </div>
-    </div>
-
-    <div class="w-full" th:if="${successMsg}">
-        <div role="alert" class="alert alert-success text-white font-bold">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
-                viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-            </svg>
-            <span th:text="${successMsg}"></span>
-        </div>
-    </div>
-
-    <form th:action="@{/api/auth/login}" th:object="${formRequest}" method="post"
-        class="w-full flex flex-col items-center gap-8">
-
-        <div class="w-full flex flex-col items-start">
-            <label
-                class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full">
-
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M15.9999 18.3077C19.1862 18.3077 21.7692 15.7248 21.7692 12.5385C21.7692 9.35226 19.1862 6.76929 15.9999 6.76929C12.8137 6.76929 10.2307 9.35226 10.2307 12.5385C10.2307 15.7248 12.8137 18.3077 15.9999 18.3077Z"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M15.9999 18.3077C19.1862 18.3077 21.7692 15.7248 21.7692 12.5385C21.7692 9.35226 19.1862 6.76929 15.9999 6.76929C12.8137 6.76929 10.2307 9.35226 10.2307 12.5385C10.2307 15.7248 12.8137 18.3077 15.9999 18.3077Z"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path
-                        d="M4.69238 30.9999C5.22203 28.3915 6.63714 26.0465 8.69794 24.3621C10.7587 22.6777 13.3385 21.7576 16.0001 21.7576C18.6617 21.7576 21.2414 22.6777 23.3022 24.3621C25.363 26.0465 26.7781 28.3915 27.3078 30.9999"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M4.69238 30.9999C5.22203 28.3915 6.63714 26.0465 8.69794 24.3621C10.7587 22.6777 13.3385 21.7576 16.0001 21.7576C18.6617 21.7576 21.2414 22.6777 23.3022 24.3621C25.363 26.0465 26.7781 28.3915 27.3078 30.9999"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path
-                        d="M28.6923 1H3.30769C2.03319 1 1 2.03319 1 3.30769V28.6923C1 29.9668 2.03319 31 3.30769 31H28.6923C29.9668 31 31 29.9668 31 28.6923V3.30769C31 2.03319 29.9668 1 28.6923 1Z"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M28.6923 1H3.30769C2.03319 1 1 2.03319 1 3.30769V28.6923C1 29.9668 2.03319 31 3.30769 31H28.6923C29.9668 31 31 29.9668 31 28.6923V3.30769C31 2.03319 29.9668 1 28.6923 1Z"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
+        <!-- Error / Warning / Success Alerts -->
+        <div class="w-full space-y-4">
+            <div th:if="${errorMessage != null}" role="alert"
+                class="alert alert-error w-full text-lg flex items-center gap-2 p-4 rounded-lg">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none"
+                    viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
+                <span th:text="${errorMessage}"></span>
+            </div>
 
-                <input type="text" th:field="*{username}" class="grow" placeholder="masukan username">
-            </label>
-            <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'username')}"
-                th:text="${validationErrors.username}" class="text-error text-[14px]">
-            </span>
+            <div th:if="${warningMessage}"
+                class="alert alert-warning shadow-lg rounded-xl flex w-full justify-between items-center transition-opacity duration-500 ease-in opacity-100 p-4">
+                <div class="flex gap-4 items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span th:text="${warningMessage}"></span>
+                </div>
+                <button class="btn btn-sm btn-ghost btn-circle" onclick="this.closest('.alert').remove()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-current" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div th:if="${successMsg}"
+                class="alert alert-success shadow-lg rounded-xl flex w-full justify-between items-center transition-opacity duration-500 ease-in opacity-100 p-4">
+                <div class="flex gap-4 items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current flex-shrink-0 h-6 w-6" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span th:text="${successMsg}"></span>
+                </div>
+                <button class="btn btn-sm btn-ghost btn-circle" onclick="this.closest('.alert').remove()">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 stroke-current" fill="none"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
         </div>
 
-        <div class="w-full flex flex-col items-start">
-            <label
-                class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full">
+        <!-- Form -->
+        <form th:action="@{/api/auth/login}" th:object="${formRequest}" method="post"
+            class="w-full flex flex-col items-center gap-6 mt-6">
 
-                <svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M23.2857 11.7142H6.14286C4.95939 11.7142 4 12.6736 4 13.8571V26.7142C4 27.8977 4.95939 28.8571 6.14286 28.8571H23.2857C24.4692 28.8571 25.4286 27.8977 25.4286 26.7142V13.8571C25.4286 12.6736 24.4692 11.7142 23.2857 11.7142Z"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M23.2857 11.7142H6.14286C4.95939 11.7142 4 12.6736 4 13.8571V26.7142C4 27.8977 4.95939 28.8571 6.14286 28.8571H23.2857C24.4692 28.8571 25.4286 27.8977 25.4286 26.7142V13.8571C25.4286 12.6736 24.4692 11.7142 23.2857 11.7142Z"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path
-                        d="M22.2144 11.7143V8.5C22.2144 6.51088 21.4242 4.60322 20.0177 3.1967C18.6111 1.79018 16.7035 1 14.7144 1C12.7252 1 10.8176 1.79018 9.41105 3.1967C8.00453 4.60322 7.21436 6.51088 7.21436 8.5V11.7143"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M22.2144 11.7143V8.5C22.2144 6.51088 21.4242 4.60322 20.0177 3.1967C18.6111 1.79018 16.7035 1 14.7144 1C12.7252 1 10.8176 1.79018 9.41105 3.1967C8.00453 4.60322 7.21436 6.51088 7.21436 8.5V11.7143"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path
-                        d="M14.7143 21.3571C15.306 21.3571 15.7857 20.8774 15.7857 20.2857C15.7857 19.6939 15.306 19.2142 14.7143 19.2142C14.1225 19.2142 13.6428 19.6939 13.6428 20.2857C13.6428 20.8774 14.1225 21.3571 14.7143 21.3571Z"
-                        stroke="#051650" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                    <path
-                        d="M14.7143 21.3571C15.306 21.3571 15.7857 20.8774 15.7857 20.2857C15.7857 19.6939 15.306 19.2142 14.7143 19.2142C14.1225 19.2142 13.6428 19.6939 13.6428 20.2857C13.6428 20.8774 14.1225 21.3571 14.7143 21.3571Z"
-                        stroke="black" stroke-opacity="0.2" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                </svg>
+            <div class="w-full">
+                <label
+                    class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full flex items-center gap-2">
+                    <!-- SVG icon tetap sama -->
+                    <input type="text" th:field="*{username}" class="grow" placeholder="masukan username">
+                </label>
+                <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'username')}"
+                    th:text="${validationErrors.username}" class="text-error text-sm mt-1 block"></span>
+            </div>
 
+            <div class="w-full">
+                <label
+                    class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full flex items-center gap-2">
+                    <!-- SVG icon tetap sama -->
+                    <input type="password" th:field="*{password}" class="grow" placeholder="password"
+                        th:value="*{password}">
+                </label>
+                <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'password')}"
+                    th:text="${validationErrors.password}" class="text-error text-sm mt-1 block"></span>
+            </div>
 
-                <input type="password" th:field="*{password}" class="grow" placeholder="password"
-                    th:value="*{password}">
-            </label>
+            <a th:href="@{/forgot-password}" class="self-end text-sm md:text-base font-semibold hover:underline">lupa
+                password?</a>
 
-            <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'password')}"
-                th:text="${validationErrors.password}" class="text-error text-left text-[14px]">
-            </span>
+            <button type="submit" class="btn btn-neutral w-full py-2 md:py-3 text-base md:text-lg">Login</button>
+        </form>
 
-        </div>
-
-        <a th:href="@{/forgot-password}"><h1 class="text-lg font-bold">lupa password?</h1></a>
-
-        <button type="submit" class="btn btn-neutral w-full py-2">Login</button>
-    </form>
-
-    <h1 class="text-lg">belum punya akun? <span class="font-bold hover:cursor-pointer"><a
-                th:href="@{/sign-up}">daftar</a></span></h1>
-
+        <p class="text-sm md:text-base mt-4 text-center">belum punya akun?
+            <a th:href="@{/sign-up}" class="font-bold hover:underline ml-1">daftar</a>
+        </p>
+    </div>
 </body>
+
+
 
 </html>

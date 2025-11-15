@@ -32,9 +32,6 @@
                 </a>
             </button>
 
-            <!-- avatar punya receiver -->
-
-
             <div id="receiverAvatar" class="avatar relative">
                 <div class="w-10 md:w-12 rounded-full ring ring-base-200 ring-offset-base-100 ring-offset-2">
                     <img th:src="@{${#strings.isEmpty(data.receiver.profilePicture) ? '/img/default.jpg' : '/uploads/' + data.receiver.profilePicture}}"
@@ -71,7 +68,7 @@
                     <div class="chat" th:classappend="${chat.ownMessage} ? ' chat-end' : ' chat-start'">
 
                         <div class="chat-bubble shadow-lg max-w-xs md:max-w-md"
-                            th:classappend="${chat.ownMessage} ? ' bg-neutral text-neutral-content' : ' bg-base-200 text-base-content'">
+                            th:classappend="${chat.ownMessage} ? ' bg-neutral text-neutral-content' : ' bg-base-300 text-base-content'">
 
                             <!-- PRODUCT PREVIEW -->
                             <th:block th:if="${chat.product != null}">
@@ -181,7 +178,21 @@
     <input type="hidden" id="userId" th:value="${data.currentUser.id}" />
     <input type="hidden" id="receiverId" th:value="${data.receiver.id}" />
 
-    <script th:src="@{/js/privateChatPage.js}"></script>
+
+    <script th:inline="javascript">
+        /*[+
+        var productData = {
+            id: '[(${initialProduct.id})]',
+            name: '[(${initialProduct.name})]',
+            price: [(${initialProduct.price})],
+            thumbnailUrl: '[(${initialProduct.thumbnailUrl})]'
+        };
+        +]*/
+        window.__initial_product = productData;
+        console.log("model : ", window.__initial_product);
+    </script>
+
+    <script th:src="@{/js/privateChatPage.js}" defer></script>
 </body>
 
 </html>
