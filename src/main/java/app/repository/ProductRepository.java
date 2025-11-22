@@ -118,7 +118,7 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
             LIMIT
                 :limit
             """, nativeQuery = true)
-    List<ProductProjection> findRandomProductsWithLimit(int limit);
+    List<ProductProjection> findRandomProductsWithLimit(@Param("limit") Integer limit);
 
     @Query("""
                 SELECT
@@ -137,5 +137,32 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
                 GROUP BY p.id, p.name, p.desc, p.price, c.name, p.createdAt
             """)
     ProductProjection findPreviewById(@Param("productId") UUID productId);
+
+    @Query(value = """
+                SELECT
+                p.id AS id,
+                p.name AS name,
+                p.description AS description,  -- sebaiknya jangan 'desc' karena keyword SQL
+                p.harga AS price,
+                c.name AS categoryName,
+                p.created_at AS createdAt,
+
+                (SELECT pi.url FROM product_image pi
+                 WHERE pi.product_id = p.id
+                 ORDER BY pi.image_order ASC
+                 LIMIT 1) AS thumbnailUrl,
+
+                (SELECT count(pi.id) FROM product_image pi
+                 WHERE pi.product_id = p.id) AS imageCount
+            FROM
+                product p
+            LEFT JOIN
+                product_category c ON p.category_id = c.id
+            ORDER BY
+                p.created_at DESC  
+            LIMIT
+                :limit
+                """, nativeQuery = true)
+    List<ProductProjection> findRecetProductProjection(@Param("limit") Integer limit);
 
 }

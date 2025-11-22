@@ -123,7 +123,7 @@ public class AuthService {
     public void sendRequetsCode(String urlBase, String usernameOrEmail) {
         Users user = repo.findByUsernameOrEmail(usernameOrEmail, usernameOrEmail)
                 .orElseThrow(
-                        () -> new AuthValidationException("Username atau email tidak ditemukan", "/sign-up", null));
+                        () -> new AuthValidationException("Username atau email tidak ditemukan", "/forgot-password", null));
 
         byte[] randomBytes = new byte[48];
         secureRandom.nextBytes(randomBytes);

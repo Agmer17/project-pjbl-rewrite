@@ -72,7 +72,6 @@
     <dialog id="galleryModal" class="modal">
         <div class="modal-box max-w-5xl p-6 bg-base-100 rounded-3xl shadow-xl">
             <h3 class="font-extrabold text-xl md:text-2xl text-neutral-800 mb-6">Pilih Gambar untuk Gallery</h3>
-
             <!-- Grid gambar -->
             <div id="nonGalleryContainer" class="columns-2 sm:columns-3 md:columns-4 gap-5 space-y-5 min-h-[200px]">
                 <p id="loadingText" class="text-center text-neutral-400">Memuat gambar...</p>
@@ -111,6 +110,9 @@
     </dialog>
 
 
+    <img src="/uploads/${img.imageFileName}" alt="Image"
+        class="w-full h-auto object-cover rounded-2xl transition-transform duration-300 group-hover:scale-105 hidden" />
+    <input type="checkbox" class="checkbox checkbox-error absolute top-2 right-2 scale-110 hidden" value="${img.id}" />
 
     <script th:src="@{/js/adminGallery.js}"></script>
 </body>

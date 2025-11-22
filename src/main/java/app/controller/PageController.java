@@ -14,6 +14,8 @@ import app.service.ProductImageService;
 import app.service.ProductService;
 import app.service.ReviewsService;
 import io.jsonwebtoken.Claims;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -71,6 +73,12 @@ public class PageController {
         }
         return "signup";
     }
+
+    @GetMapping("/faq")
+    public String getFaqPage() {
+        return "Faq";
+    }
+    
     
     
 }

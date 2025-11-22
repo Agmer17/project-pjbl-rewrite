@@ -54,4 +54,6 @@ public interface ReviewsRepository extends JpaRepository<Reviews, UUID> {
             """)
     List<ReviewData> findRandomReview(Pageable pageable);
 
+    ReviewData findTop1ByStatusOrderByCreatedAtDesc(ReviewStatus status);
+
 }

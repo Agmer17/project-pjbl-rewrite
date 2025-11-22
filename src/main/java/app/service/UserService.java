@@ -220,4 +220,8 @@ public class UserService {
         return userRepo.findAllByRole(userRole);
     }
 
+    public Long countUser() {
+        return userRepo.count();
+    }
+
 }

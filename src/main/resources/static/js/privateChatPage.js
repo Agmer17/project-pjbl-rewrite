@@ -37,7 +37,6 @@ window.addEventListener("DOMContentLoaded", () => {
     today.setHours(0, 0, 0, 0); // Atur ke tengah malam hari ini
 
     function formatDateToYMD(date) {
-        // Fungsi untuk mengonversi Date object ke string YYYY-MM-DD
         const d = new Date(date);
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, '0');
@@ -46,13 +45,11 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 
     function getRelativeDateLabel(timestamp) {
-        // Fungsi untuk mendapatkan label relatif (Hari Ini, Kemarin, Nama Hari, atau Tanggal Penuh)
         const messageDate = new Date(timestamp);
         const messageDateOnly = new Date(messageDate);
         messageDateOnly.setHours(0, 0, 0, 0);
 
         const diffTime = today.getTime() - messageDateOnly.getTime();
-        // Hitung selisih hari (menggunakan pembulatan untuk memastikan hari yang tepat)
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
         if (diffDays === 0) return "Hari Ini";
@@ -222,7 +219,7 @@ window.addEventListener("DOMContentLoaded", () => {
         console.log("Menginisialisasi produk awal:", window.__initial_product);
         selectedProduct = window.__initial_product;
         updateProductPreview(selectedProduct);
-    }  
+    }
     fetchProducts();
 
     // 7️⃣ Kirim pesan
@@ -330,5 +327,32 @@ window.addEventListener("DOMContentLoaded", () => {
     window.addEventListener('beforeunload', () => {
         if (stompClient.connected) stompClient.disconnect();
     });
+
+    document.addEventListener("click", async function (e) {
+        const btn = e.target.closest(".delete-btn, [data-id]");
+        if (!btn) return;
+
+        const msgId = btn.getAttribute("data-id");
+
+         await deleteMessage(msgId, btn)
+    });
+
+    async function deleteMessage(msgId, btn) {
+        try {
+            const res = await fetch(`/live-chat/delete/${msgId}`, {
+                method: "POST"
+            });
+
+            if (!res.ok) {
+                throw new Error("Failed deleting message");
+            }
+
+            // hapus bubble
+            btn.closest(".chat").remove();
+
+        } catch (err) {
+            console.error(err);
+        }
+    }
 
 })

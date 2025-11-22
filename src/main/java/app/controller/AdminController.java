@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import app.model.projection.UserProfileProjection;
+import app.service.ProductImageService;
+import app.service.ProductService;
+import app.service.ReviewsService;
 import app.service.UserService;
 import io.jsonwebtoken.Claims;
 
@@ -18,16 +21,32 @@ import io.jsonwebtoken.Claims;
 public class AdminController {
     
     @Autowired
-    private UserService service;
+    private UserService userService;
+
+    @Autowired 
+    private  ProductService productService;
+
+    @Autowired 
+    private ProductImageService productImageService;
+
+    @Autowired 
+    private ReviewsService reviewsService;
 
     @GetMapping("/")
     public String getAdminDashboard(@SessionAttribute Claims creds, Model model) {
 
         UUID adminId = UUID.fromString(creds.get("id", String.class));
 
-        UserProfileProjection currentAdminData = service.getUserProfileById(adminId, "/login");
+        UserProfileProjection currentAdminData = userService.getUserProfileById(adminId, "/login");
 
         model.addAttribute("currentAdmin", currentAdminData);
+        model.addAttribute("totalUsers", userService.countUser());
+        model.addAttribute("totalProducts", productService.countProduct());
+        model.addAttribute("totalReviews", reviewsService.countReview());
+        model.addAttribute("totalGalleryImages", productImageService.countProductImages());
+        model.addAttribute("recentProducts", productService.getLatestProduct());
+        model.addAttribute("recentReviews", reviewsService.getLatesReviewData());
+
 
         return "adminDashboard";
 

@@ -9,6 +9,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import app.event.OnlineUsersListener;
@@ -34,28 +36,36 @@ import jakarta.transaction.Transactional;
  * Hubungan dan konsep OOP yang digunakan:
  *
  * 1. Asosiasi:
- *    - LiveChatService berasosiasi dengan LiveChatRepository dan UserRepository.
- *    - LiveChatService menggunakan kedua repository ini untuk menyimpan dan mengambil data.
- *    - Hubungan ini bersifat "has-a" / dependency injection (DI) melalui @Autowired.
+ * - LiveChatService berasosiasi dengan LiveChatRepository dan UserRepository.
+ * - LiveChatService menggunakan kedua repository ini untuk menyimpan dan
+ * mengambil data.
+ * - Hubungan ini bersifat "has-a" / dependency injection (DI)
+ * melalui @Autowired.
  *
  * 2. Relasi dengan LiveChat:
- *    - Menggunakan class LiveChat untuk membuat, menyimpan, dan mengambil pesan.
- *    - LiveChatService tidak meng-extend LiveChat → bukan inheritance.
- *    - LiveChat yang dibuat berisi reference ke Users (sender & receiver), yang merupakan komposisi.
+ * - Menggunakan class LiveChat untuk membuat, menyimpan, dan mengambil pesan.
+ * - LiveChatService tidak meng-extend LiveChat → bukan inheritance.
+ * - LiveChat yang dibuat berisi reference ke Users (sender & receiver), yang
+ * merupakan komposisi.
  *
  * 3. Relasi dengan Users:
- *    - Mengambil Users dari UserRepository untuk menentukan pengirim dan penerima pesan.
- *    - LiveChatService tidak menyimpan Users sendiri, tapi menggunakan Users untuk membangun LiveChat.
- *    - Hubungan ini tetap mengikuti komposisi dari LiveChat ke Users (cascade delete ada di LiveChat class).
+ * - Mengambil Users dari UserRepository untuk menentukan pengirim dan penerima
+ * pesan.
+ * - LiveChatService tidak menyimpan Users sendiri, tapi menggunakan Users untuk
+ * membangun LiveChat.
+ * - Hubungan ini tetap mengikuti komposisi dari LiveChat ke Users (cascade
+ * delete ada di LiveChat class).
  *
  * 4. DTO dan Projections:
- *    - LiveChatResponseDto, ChatHistoryDto, dan ChatListDto digunakan untuk transfer data.
- *    - Ini tidak mengubah hubungan database, tapi menyederhanakan data yang dikirim ke client.
+ * - LiveChatResponseDto, ChatHistoryDto, dan ChatListDto digunakan untuk
+ * transfer data.
+ * - Ini tidak mengubah hubungan database, tapi menyederhanakan data yang
+ * dikirim ke client.
  *
  * 5. Pola desain:
- *    - Service ini bertanggung jawab atas logika bisnis chat.
- *    - Repository bertindak sebagai abstraksi database (Spring Data JPA).
- *    - Dependency Injection (@Autowired) menunjukan asosiasi
+ * - Service ini bertanggung jawab atas logika bisnis chat.
+ * - Repository bertindak sebagai abstraksi database (Spring Data JPA).
+ * - Dependency Injection (@Autowired) menunjukan asosiasi
  */
 public class LiveChatService {
 
@@ -79,7 +89,7 @@ public class LiveChatService {
 
         Users sender = userRepository.getReferenceById(senderId);
         Users receiver = userRepository.getReferenceById(receiverId);
-        
+
         Product product = null;
         ProductChatDto productChatDto = null;
 
@@ -87,10 +97,8 @@ public class LiveChatService {
             product = productService.getProductDetails(message.getProductId());
 
             productChatDto = ProductChatDto.fromEntity(product);
-            
+
         }
-
-
 
         LiveChat chat = LiveChat.builder()
                 .sender(sender)
@@ -114,9 +122,10 @@ public class LiveChatService {
                 .ownMessage(false)
                 .build();
 
-            if (!isReceiverOnline(receiver)) {
-                emailService.sendNotificationEmails("http://localhost/live-chat", receiver.getEmail(), sender.getUsername());
-            }
+        if (!isReceiverOnline(receiver)) {
+            emailService.sendNotificationEmails("http://localhost/live-chat", receiver.getEmail(),
+                    sender.getUsername());
+        }
         return responseForReceiver;
 
     }
@@ -141,11 +150,10 @@ public class LiveChatService {
         UserProfileProjection senderData = userRepository.findProfileById(sender).orElse(null);
         UserProfileProjection receiverData = userRepository.findProfileById(receiver).orElse(null);
 
-
         if (senderData == null || receiverData == null) {
 
             throw new DataNotFoundEx("Akun kamu mungkin telah terhapus, silahkan login ulang", "/login");
-            
+
         }
 
         return ChatHistoryDto
@@ -201,6 +209,25 @@ public class LiveChatService {
 
     private Boolean isReceiverOnline(Users u) {
         return onlineListener.getOnlineUserIds().contains(u.getId());
+
+    }
+
+    @Transactional
+    public ResponseEntity<?> deleteMessage(UUID chatId, UUID userId) {
+
+        LiveChat deletedChat = chatRepository.findById(chatId).orElse(null);
+
+        if (deletedChat == null) {
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        if (!deletedChat.getSender().getId().equals(userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        chatRepository.delete(deletedChat);
+
+        return ResponseEntity.ok().build();
 
     }
 }

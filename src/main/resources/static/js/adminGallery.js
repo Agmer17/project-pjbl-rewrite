@@ -8,7 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let selectedImages = [];
 
-    // buka modal dan ambil gambar
     addBtn.addEventListener("click", async () => {
         modal.showModal();
         container.innerHTML = "";

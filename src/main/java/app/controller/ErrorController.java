@@ -3,7 +3,6 @@ package app.controller;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.messaging.handler.annotation.support.MethodArgumentTypeMismatchException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

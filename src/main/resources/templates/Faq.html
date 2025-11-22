@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQ</title>
+    <link rel="stylesheet" th:href="@{/css/output.css}">
+</head>
+
+<body class="text-neutral bg-neutral w-screen min-h-screen font-sans">
+
+    <div th:replace="fragment/navbar :: navbar"></div>
+
+    <main class="mt-16 pb-22 md:pb-30 flex flex-col gap-4 md:gap-8 text-white p-4 md:p-6 items-center">
+        <h1 class="text-5xl font-bold">
+            Frequently Asked
+            Questions
+        </h1>
+        <p class="text-xl">
+            Temukan jawaban dari pertanyaan yang sering diajukan seputar layanan Boysan Multimedia.
+        </p>
+
+        <div class="flex flex-col gap-4">
+            <div class="collapse collapse-arrow border border-base-300 rounded-lg">
+                <input type="checkbox" />
+                <div class="collapse-title font-semibold text-xl">
+                    Apa itu Boysan Multimedia?
+                </div>
+                <div class="collapse-content text-sm">
+                    <p>
+                        Boysan Multimedia adalah penyedia layanan Event Organizer , Show Director, dan Wedding Organizer
+                        yang berfokus membantu klien mewujudkan acara yang berkesan, profesional, dan sesuai kebutuhan.
+                    </p>
+                </div>
+            </div>
+
+            <div class="collapse collapse-arrow border border-base-300 rounded-lg">
+                <input type="checkbox" />
+                <div class="collapse-title font-semibold text-xl">
+                    Jenis acara apa saja yang bisa kami tangani?
+                </div>
+                <div class="collapse-content text-sm">
+                    <p>
+                        Boysan Multimedia dapat menangani berbagai jenis acara seperti wedding, konser, launching
+                        produk,
+                        acara perusahaan, ulang tahun, gathering, seminar, hingga acara komunitas. Semua acara dikelola
+                        secara profesional sesuai kebutuhan klien.
+                    </p>
+                </div>
+            </div>
+
+            <div class="collapse collapse-arrow border border-base-300 rounded-lg">
+                <input type="checkbox" />
+                <div class="collapse-title font-semibold text-xl">
+                    Apakah Boysan Multimedia bisa menyesuaikan dengan budget?
+                </div>
+                <div class="collapse-content text-sm">
+                    <p>
+                        Ya, kami bisa menyesuaikan layanan dengan budget yang tersedia. Tim kami akan membantu
+                        memberikan
+                        rekomendasi terbaik agar acara tetap berjalan dengan maksimal tanpa mengurangi kualitas.
+                    </p>
+                </div>
+            </div>
+
+            <div class="collapse collapse-arrow border border-base-300 rounded-lg">
+                <input type="checkbox" />
+                <div class="collapse-title font-semibold text-xl">
+                    Bagaimana cara memesan layanan Boysan Multimedia?
+                </div>
+                <div class="collapse-content text-sm">
+                    <p>
+                        Anda dapat memesan layanan dengan menghubungi kami melalui WhatsApp, Instagram, atau formulir
+                        kontak.
+                        Tim kami akan segera merespons dan membantu proses konsultasi hingga perencanaan acara.
+                    </p>
+                </div>
+            </div>
+
+            <div class="collapse collapse-arrow border border-base-300 rounded-lg">
+                <input type="checkbox" />
+                <div class="collapse-title font-semibold text-xl">
+                    Apakah Boysan Multimedia menyediakan layanan dokumentasi?
+                </div>
+                <div class="collapse-content text-sm">
+                    <p>
+                        Ya, kami menyediakan layanan dokumentasi foto dan video profesional untuk berbagai jenis acara.
+                        Dokumentasi ini dapat disesuaikan dengan konsep event serta kebutuhan klien.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    <div th:replace="fragment/navbar :: bottombar('')"></div>
+</body>
+
+</html>

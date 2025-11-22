@@ -213,4 +213,10 @@ public class ProductImageService {
                 return repo.findRandomImages(limit);
         }
 
+
+        public Long countProductImages() {
+                return repo.count();
+        }
+
+        
 }

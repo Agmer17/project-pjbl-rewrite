@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
@@ -30,6 +31,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
 /**
@@ -90,13 +93,12 @@ public class LivechatController {
 
         @GetMapping("/live-chat/with/{receiverId}")
         public String personalLiveChat(
-                @SessionAttribute Claims creds,
-                 @PathVariable UUID receiverId, 
-                 Model model,
-                 @ModelAttribute(name = "initialProduct") ProductProjection product) {
+                        @SessionAttribute Claims creds,
+                        @PathVariable UUID receiverId,
+                        Model model,
+                        @ModelAttribute(name = "initialProduct") ProductProjection product) {
 
                 UUID userId = UUID.fromString(creds.get("id", String.class));
-
 
                 ChatHistoryDto data = service.getHistoryBeetween(userId, receiverId);
 
@@ -105,8 +107,7 @@ public class LivechatController {
                 model.addAttribute("receiverId", receiverId);
                 model.addAttribute("initialProduct", product);
 
-                System.out.println("\n\n\n\n\n\n\n"+product.getName());
-                
+                System.out.println("\n\n\n\n\n\n\n" + product.getName());
 
                 return "privateChatPage";
         }
@@ -132,13 +133,21 @@ public class LivechatController {
         }
 
         @GetMapping("/livechat/redirect/p/{productId}/u/{userId}")
-        public String getMethodName(@PathVariable UUID productId, 
-        @PathVariable UUID userId,
-        RedirectAttributes redAtrs) {
-            System.out.println("\n\n\n\n\n" + productId + " admin : " + " "+ userId);
-            redAtrs.addFlashAttribute("initialProduct", productService.findProductPreviewId(productId));
-            return "redirect:/live-chat/with/" + userId;
+        public String getMethodName(@PathVariable UUID productId,
+                        @PathVariable UUID userId,
+                        RedirectAttributes redAtrs) {
+                System.out.println("\n\n\n\n\n" + productId + " admin : " + " " + userId);
+                redAtrs.addFlashAttribute("initialProduct", productService.findProductPreviewId(productId));
+                return "redirect:/live-chat/with/" + userId;
         }
-        
+
+        @PostMapping("/live-chat/delete/{chatId}")
+        @ResponseBody
+        public ResponseEntity<?> deleteOwnMessage(@PathVariable UUID chatId, @SessionAttribute Claims creds) {
+                UUID userId = UUID.fromString(creds.get("id", String.class));
+
+                ResponseEntity<?> resp = service.deleteMessage(chatId, userId);
+                return resp;
+        }
 
 }

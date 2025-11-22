@@ -186,4 +186,14 @@ public class ProductService {
         return productRepository.findPreviewById(id);
     }
 
+    public Long countProduct() {
+        return productRepository.count();
+    }
+
+
+    public List<ProductProjection> getLatestProduct() {
+
+        return productRepository.findRecetProductProjection(3);
+
+    }
 }

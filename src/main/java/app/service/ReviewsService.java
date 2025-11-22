@@ -160,4 +160,12 @@ public class ReviewsService {
         return reviewRepo.findRandomReview(PageRequest.of(0, limit));
     }
 
+    public Long countReview() {
+        return reviewRepo.count();
+    }
+
+    public ReviewData getLatesReviewData() {
+        return reviewRepo.findTop1ByStatusOrderByCreatedAtDesc(ReviewStatus.ACCEPTED);
+    }
+
 }
