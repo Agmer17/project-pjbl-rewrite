@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -83,8 +84,8 @@ public class ReviewController {
         model.addAttribute("reviewRatingCount", reviewsratingCount);
         model.addAttribute("eligible", eligible);
         model.addAttribute("isPending", isPending);
+        model.addAttribute("userId", userId);
 
-        System.out.println("\n\n\n\n\n\n" + "eligble : " + eligible + "\n\n\n\n\n\n\n\n\n\n\n\n\n");
         return "productReviews";
     }
 
@@ -103,6 +104,29 @@ public class ReviewController {
         UUID userId = UUID.fromString(creds.get("id", String.class));
 
         return service.saveReviews(request, userId);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<?> deleteReviews(@PathVariable UUID id, @SessionAttribute Claims creds) {
+
+        if (creds == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        Reviews review = service.getById(id);
+
+        UUID currentUserId = UUID.fromString(creds.get("id", String.class));
+
+        if (review == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (!review.getUser().getId().equals(currentUserId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        return service.deleteReviews(id);
+
     }
 
 }

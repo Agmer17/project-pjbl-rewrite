@@ -49,6 +49,7 @@ public class PageController {
         
         model.addAttribute("products",productService.getRandomProduct(6));
         model.addAttribute("images", imageService.getRandom(6));
+        model.addAttribute("keunggulan", imageService.getRandom(3));
         model.addAttribute("admin", role == UserRole.ADMIN);
         model.addAttribute("randomReview", reviewsService.getRandom(3));
 

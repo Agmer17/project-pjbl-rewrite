@@ -60,6 +60,7 @@ public class ProductController {
         }
 
         UserRole currentUserRole = UserRole.valueOf(creds.get("role", String.class));
+        UUID currentUserId = UUID.fromString(creds.get("id", String.class));
         String fallback ="error/404";
 
         if (currentUserRole == UserRole.ADMIN) {
@@ -79,7 +80,7 @@ public class ProductController {
         model.addAttribute("reviews", reviews);
         model.addAttribute("reviewRatingCount", reviewsratingCount);
         model.addAttribute("admin", currentUserRole == UserRole.ADMIN);
-
+        model.addAttribute("userId", currentUserId);
         model.addAttribute("product", productDetails);
         return "AdminProductDetail";
     }

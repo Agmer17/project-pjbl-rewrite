@@ -126,11 +126,12 @@ document.getElementById("confirmDeleteBtn")?.addEventListener("click", async () 
     if (!currentButton) return;
 
     const reviewId = currentButton.getAttribute("data-id");
+    const type = currentButton.getAttribute("data-type"); // <— baca type
+
     const modal = document.getElementById("confirmDeleteModal");
     const confirmBtn = document.getElementById("confirmDeleteBtn");
     const originalBtnText = confirmBtn.innerHTML;
 
-    // Show loading state
     confirmBtn.disabled = true;
     confirmBtn.innerHTML = `
         <span class="loading loading-spinner loading-sm"></span>
@@ -138,9 +139,12 @@ document.getElementById("confirmDeleteBtn")?.addEventListener("click", async () 
     `;
 
     try {
-        const res = await fetch(`/admin/reviews/delete/${reviewId}`, {
-            method: "DELETE"
-        });
+        const endpoint =
+            type === "admin"
+                ? `/admin/reviews/delete/${reviewId}`
+                : `/reviews/delete/${reviewId}`;
+
+        const res = await fetch(endpoint, { method: "DELETE" });
 
         if (res.ok) {
             const reviewCard = currentButton.closest(".card");

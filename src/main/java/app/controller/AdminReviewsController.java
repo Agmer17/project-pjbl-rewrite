@@ -24,34 +24,33 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class AdminReviewsController {
 
     @Autowired
-    private ReviewsService servive;
+    private ReviewsService service;
 
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteReviews(@PathVariable UUID id) {
 
-        Reviews review = servive.getById(id);
+        Reviews review = service.getById(id);
 
         if (review == null) {
             return ResponseEntity.notFound().build();
         }
 
-        return servive.deleteReviews(id);
+        return service.deleteReviews(id);
 
     } 
 
     @PostMapping("/acc/{id}")
     public ResponseEntity<?> updateToAccepted(@RequestBody UUID id) {
-         return servive.acceptReview(id);
+         return service.acceptReview(id);
     }
     
 
     @GetMapping("")
     public String getPage(Model model) {
 
-
-        model.addAttribute("pendingReviews", servive.getPendingReviews());
-        model.addAttribute("approvedReviews", servive.getAllReviews());
+        model.addAttribute("pendingReviews", service.getPendingReviews());
+        model.addAttribute("approvedReviews", service.getAllReviews());
         return "admin/AdminReviews";
     }
 }

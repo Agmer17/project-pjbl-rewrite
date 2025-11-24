@@ -190,7 +190,7 @@ public class UserService {
                 !request.getProfilePicture().isEmpty()) {
 
             ImageFormat imageFormat = imageUtils.isValidImage(request.getProfilePicture(),
-                    "/user/my-profile");
+                    "/admin/users/update/"+user.getId());
 
             String fileExt = imageFormat.getDefaultExtension();
 

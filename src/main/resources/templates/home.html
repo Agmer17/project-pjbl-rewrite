@@ -131,28 +131,34 @@
     <section class="p-6 flex flex-col items-center gap-4 md:gap-8 text-white" data-aos="fade-in">
 
       <h1 class="text-2xl md:text-3xl font-bold text-center" data-aos="zoom-in">Keunggulan Kami</h1>
-      <h1 class="text-sm md:text-xl font-medium text-center" data-aos="zoom-in" data-aos-delay="200"> Kami adalah
-        pilihan tepat untuk setiap acara Anda. Dengan
-        tim profesional, ide kreatif, dan pelayanan yang tulus.</h1>
+      <h1 class="text-sm md:text-xl font-medium text-center" data-aos="zoom-in" data-aos-delay="200">
+        Kami adalah pilihan tepat untuk setiap acara Anda. Dengan tim profesional, ide kreatif, dan pelayanan yang
+        tulus.
+      </h1>
 
-      <div class="w-full max-w-6xl mx-auto" th:if="${not #lists.isEmpty(images)}" data-aos="fade-up"
+      <div class="w-full max-w-6xl mx-auto" th:if="${not #lists.isEmpty(keunggulan)}" data-aos="fade-up"
         data-aos-delay="400">
         <div class="relative px-4 md:px-8">
           <div class="overflow-x-hidden py-8">
             <div id="carouselTrack" class="flex gap-6 transition-transform duration-500 ease-out">
-              <div th:each="image, iterStat : ${images}" th:attr="data-index=${iterStat.index}"
+
+              <div th:each="image, iterStat : ${keunggulan}" th:attr="data-index=${iterStat.index}"
                 th:classappend="${iterStat.first} ? 'opacity-100 scale-100' : 'opacity-40 scale-90'"
                 class="flex-shrink-0 w-80 md:w-96 h-80 md:h-96 transition-all duration-500 rounded-2xl overflow-hidden shadow-2xl">
+
                 <a th:href="@{/products/detail/{id}(id=${image.product.id})}" class="block w-full h-full relative">
                   <img th:src="@{'/uploads/' + ${image.imageFileName}}" th:alt="'Product ' + ${iterStat.count}"
                     class="w-full h-full object-cover" />
+
                   <div
                     class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 md:p-6">
                     <h3 class="text-white text-lg md:text-2xl font-bold" th:text="${image.product.name}">Product Name
                     </h3>
                   </div>
                 </a>
+
               </div>
+
             </div>
           </div>
 
@@ -174,7 +180,7 @@
         </div>
 
         <div class="flex justify-center gap-2 mt-6">
-          <button th:each="image, iterStat : ${images}" th:attr="data-slide=${iterStat.index}"
+          <button th:each="image, iterStat : ${keunggulan}" th:attr="data-slide=${iterStat.index}"
             th:classappend="${iterStat.first} ? 'w-8 bg-white' : 'bg-white/40'"
             class="dot h-2 rounded-full transition-all duration-300 hover:bg-white/70"></button>
         </div>
@@ -186,15 +192,14 @@
           const dots = document.querySelectorAll('.dot');
           const prevBtn = document.getElementById('prevBtn');
           const nextBtn = document.getElementById('nextBtn');
-          const totalSlides = /*[[${#lists.size(images)}]]*/ 0;
+          const totalSlides = /*[[${#lists.size(keunggulan)}]]*/ 0;
           let currentIndex = 0;
 
           function updateCarousel() {
             const slideWidth = slides[0].offsetWidth;
-            const gap = 24; // 1.5rem = 24px
+            const gap = 24;
             const containerWidth = track.parentElement.offsetWidth;
 
-            // Hitung offset untuk menempatkan slide aktif di tengah
             const centerOffset = (containerWidth - slideWidth) / 2;
             const slideOffset = currentIndex * (slideWidth + gap);
             const offset = centerOffset - slideOffset;
@@ -240,17 +245,18 @@
           });
 
           window.addEventListener('resize', updateCarousel);
-
-          // Initial positioning
           updateCarousel();
           /*]]>*/
         </script>
       </div>
-      <div th:unless="${not #lists.isEmpty(images)}"
+
+      <div th:unless="${not #lists.isEmpty(keunggulan)}"
         class="text-center p-8 border border-gray-700 rounded-lg w-full max-w-5xl" data-aos="fade-up">
         <p class="text-xl text-gray-400">Belum ada gambar produk yang tersedia.</p>
       </div>
+
     </section>
+
 
     <section class="w-full flex flex-col gap-4 md:gap-6 text-white items-center">
 
