@@ -27,17 +27,6 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @DynamicInsert
-/**
- * Class: LiveChat
- * ---------------------------------
- * Hubungan dengan Users:
- *
- * - Komposisi (Composition) + Asosiasi Many-to-One:
- * - Field 'sender' dan 'receiver' menunjuk ke Users.
- * - Banyak LiveChat dapat dikaitkan dengan satu Users (Many-to-One).
- * - Cascade delete diatur → jika Users dihapus, LiveChat terkait ikut terhapus.
- * Artinya LiveChat tidak bisa eksis tanpa Users, sehingga ini komposisi.
- */
 public class LiveChat {
 
     @Id

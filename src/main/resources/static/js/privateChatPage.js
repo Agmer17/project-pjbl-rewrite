@@ -209,7 +209,6 @@ window.addEventListener("DOMContentLoaded", () => {
         previewImage.src = product.thumbnailUrl ? `/uploads/${product.thumbnailUrl}` : "https://via.placeholder.com/80";
         productPreview.classList.remove("hidden");
     }
-    // 5️⃣ Close preview
     closePreview.addEventListener("click", () => {
         selectedProduct = null;
         productPreview.classList.add("hidden");
@@ -222,7 +221,6 @@ window.addEventListener("DOMContentLoaded", () => {
     }
     fetchProducts();
 
-    // 7️⃣ Kirim pesan
     form.addEventListener("submit", (e) => {
         e.preventDefault();
 

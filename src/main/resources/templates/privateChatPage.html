@@ -46,7 +46,6 @@
         </div>
     </header>
 
-    <!-- 🗨️ Chat messages -->
     <main id="chat-messages"
         class="flex-1 overflow-y-auto bg-base-100 p-4 md:p-6 flex flex-col gap-3 scroll-smooth mt-18">
         <th:block th:with="lastDate = ''">
@@ -70,7 +69,6 @@
                         <div class="chat-bubble relative shadow-lg max-w-xs md:max-w-md"
                             th:classappend="${chat.ownMessage} ? ' bg-neutral text-neutral-content' : ' bg-base-300 text-base-content'">
 
-                            <!-- DELETE BUTTON (hanya pesan sendiri) -->
                             <!-- DELETE BUTTON (hanya pesan sendiri) -->
                             <button th:if="${chat.ownMessage}" th:attr="data-id=${chat.chatId}"
                                 class="absolute -top-3 -right-3 bg-red-600 text-red-50 p-2 rounded-full shadow-md active:scale-95 transition"

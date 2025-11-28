@@ -86,7 +86,7 @@
                 <label
                     class="input p-2.5 h-auto bg-white border-2 border-neutral focus-within:outline-none text-[16px] w-full flex items-center gap-2">
                     <!-- SVG icon tetap sama -->
-                    <input type="text" th:field="*{username}" class="grow" placeholder="masukan username">
+                    <input type="text" th:field="*{username}" class="grow" placeholder="username">
                 </label>
                 <span th:if="${validationErrors != null and #maps.containsKey(validationErrors, 'username')}"
                     th:text="${validationErrors.username}" class="text-error text-sm mt-1 block"></span>

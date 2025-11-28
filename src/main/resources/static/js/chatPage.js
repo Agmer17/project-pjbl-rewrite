@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentUserId = null;
 
     if (userIdEl) {
-        // 🔥 PAKAI getAttribute supaya gak ribet sama case-nya
         currentUserId = userIdEl.getAttribute('data-userId');
 
         if (!currentUserId) {
@@ -114,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
-            // 🟡 Tambah penanda pesan baru
             let badge = chatItem.querySelector('.new-msg-badge');
             if (!badge) {
                 badge = document.createElement('span');

@@ -13,8 +13,6 @@ import app.model.custom.UserRole;
 import app.model.entity.Users;
 import app.model.projection.UserProfileProjection;
 
-
-
 @Repository
 public interface UserRepository extends JpaRepository<Users, UUID> {
     

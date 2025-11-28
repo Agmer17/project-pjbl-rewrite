@@ -42,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         priceInput.value = priceInput.value.replace(/\./g, "")
 
-        // Validasi gambar
         const allFileInputs = [
             mainInput,
             document.getElementById("extraImage1"),
@@ -66,11 +65,9 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Hapus input file yang kosong agar tidak dikirim
         allFileInputs.forEach(input => {
             if (input && (!input.files.length || input.files[0].size === 0)) {
-                input.removeAttribute('name'); // Hapus name agar tidak dikirim
-                // ATAU input.disabled = true;
+                input.removeAttribute('name'); 
             }
         });
 

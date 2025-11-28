@@ -70,6 +70,4 @@ public class Users {
     @Enumerated(EnumType.STRING)
     @Column(name = "user_gender")
     private Gender gender;
-
-
 }

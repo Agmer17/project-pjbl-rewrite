@@ -30,43 +30,6 @@ import app.repository.UserRepository;
 import jakarta.transaction.Transactional;
 
 @Service
-/**
- * Class: LiveChatService
- * ---------------------------------
- * Hubungan dan konsep OOP yang digunakan:
- *
- * 1. Asosiasi:
- * - LiveChatService berasosiasi dengan LiveChatRepository dan UserRepository.
- * - LiveChatService menggunakan kedua repository ini untuk menyimpan dan
- * mengambil data.
- * - Hubungan ini bersifat "has-a" / dependency injection (DI)
- * melalui @Autowired.
- *
- * 2. Relasi dengan LiveChat:
- * - Menggunakan class LiveChat untuk membuat, menyimpan, dan mengambil pesan.
- * - LiveChatService tidak meng-extend LiveChat → bukan inheritance.
- * - LiveChat yang dibuat berisi reference ke Users (sender & receiver), yang
- * merupakan komposisi.
- *
- * 3. Relasi dengan Users:
- * - Mengambil Users dari UserRepository untuk menentukan pengirim dan penerima
- * pesan.
- * - LiveChatService tidak menyimpan Users sendiri, tapi menggunakan Users untuk
- * membangun LiveChat.
- * - Hubungan ini tetap mengikuti komposisi dari LiveChat ke Users (cascade
- * delete ada di LiveChat class).
- *
- * 4. DTO dan Projections:
- * - LiveChatResponseDto, ChatHistoryDto, dan ChatListDto digunakan untuk
- * transfer data.
- * - Ini tidak mengubah hubungan database, tapi menyederhanakan data yang
- * dikirim ke client.
- *
- * 5. Pola desain:
- * - Service ini bertanggung jawab atas logika bisnis chat.
- * - Repository bertindak sebagai abstraksi database (Spring Data JPA).
- * - Dependency Injection (@Autowired) menunjukan asosiasi
- */
 public class LiveChatService {
 
     @Autowired

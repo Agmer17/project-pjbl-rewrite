@@ -150,7 +150,6 @@ public class ProductService {
         List<UUID> ids = request.getUpdatedImageIds();
         List<MultipartFile> files = request.getUpdatedImageFiles();
 
-        // Both null or both empty = valid
         boolean idsEmpty = ids == null || ids.isEmpty();
         boolean filesEmpty = files == null || files.isEmpty();
 
@@ -162,7 +161,6 @@ public class ProductService {
             return false;
         }
 
-        // Cek validity dalam 1 loop
         for (int i = 0; i < ids.size(); i++) {
             if (ids.get(i) == null)
                 return false;

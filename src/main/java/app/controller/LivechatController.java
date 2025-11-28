@@ -19,7 +19,6 @@ import app.model.dto.ChatHistoryDto;
 import app.model.dto.ChatListDto;
 import app.model.dto.ChatMessage;
 import app.model.dto.LiveChatResponseDto;
-import app.model.entity.Product;
 import app.model.entity.ProductProjection;
 import app.service.LiveChatService;
 import app.service.ProductService;
@@ -32,33 +31,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Controller
-/**
- * Class: LivechatController
- * ---------------------------------
- * Hubungan dan konsep OOP yang digunakan:
- *
- * 1. Asosiasi :
- * - LivechatController berasosiasi dengan LiveChatService melalui @Autowired.
- * Controller menggunakan service untuk menyimpan dan mengambil data chat.
- * - Juga berasosiasi dengan SimpMessagingTemplate untuk mengirim pesan
- * real-time.
- *
- * 2. Relasi dengan LiveChat & Users:
- * - Melalui LiveChatService, controller berinteraksi dengan LiveChat dan Users.
- * - LiveChatService sudah menangani komposisi LiveChat → Users (cascade delete,
- * Many-to-One).
- * - Controller tidak mengubah hubungan database secara langsung, hanya
- * memanggil service.
- *
- * 3. Pola desain:
- * - Controller bertanggung jawab untuk request mapping dan response (MVC
- * pattern).
- * - Hubungan ke service menunjukkan dependency injection → asosiasi lemah.
- * - Tidak ada inheritance yang digunakan di class ini.
- */
 public class LivechatController {
 
         @Autowired

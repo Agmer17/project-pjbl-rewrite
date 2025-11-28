@@ -32,7 +32,6 @@ function handleCategorySelect(select) {
 }
 
 
-// 🔹 Modal Add
 function openAddCategoryDialog() {
     document.getElementById('categoryDialogTitle').textContent = 'Tambah Kategori';
     document.getElementById('categoryForm').dataset.mode = 'add';
@@ -42,7 +41,6 @@ function openAddCategoryDialog() {
     categoryDialog.showModal();
 }
 
-// 🔹 Modal Edit
 async function openEditCategoryDialog() {
     if (!selectedCategoryId) return alert('Pilih kategori terlebih dahulu.');
 

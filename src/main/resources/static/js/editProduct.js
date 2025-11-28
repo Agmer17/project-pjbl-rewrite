@@ -1,8 +1,8 @@
 "use strict";
 
-let updatedImageIds = [];      // List<UUID>
-let updatedImageFiles = [];    // List<MultipartFile>
-let imageToDelete = new Set(); // Set<UUID>
+let updatedImageIds = [];      
+let updatedImageFiles = [];    
+let imageToDelete = new Set();
 let newImagesFilesTemp = new Map();
 
 document.addEventListener("DOMContentLoaded", () => {
