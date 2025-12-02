@@ -116,7 +116,7 @@ window.addEventListener("DOMContentLoaded", () => {
         stompClient.subscribe(`/user/${userId}/queue/messages`, (msg) => {
             const data = JSON.parse(msg.body);
             // Gunakan data.timeStamp (epoch/string dari server)
-            appendMessage(data.text, data.ownMessage, data.timeStamp, data.product);
+            appendMessage(data.text, data.ownMessage, data.timeStamp, data.product, data.chatId);
         });
 
         // Subscribe untuk status online
@@ -149,12 +149,10 @@ window.addEventListener("DOMContentLoaded", () => {
     window.__products_cache = [];
     let selectedProduct = null;
 
-    // 1️⃣ Buka modal pilih produk
     openProductBtn.addEventListener("click", () => {
         productModal.showModal();
     });
 
-    // 2️⃣ Fetch product dari server
     async function fetchProducts() {
         try {
             const res = await fetch("/products/prew/get-all");
@@ -238,11 +236,10 @@ window.addEventListener("DOMContentLoaded", () => {
         input.value = "";
     });
 
-    function appendMessage(text, isSender, timeStamp = new Date(), product = null) {
+    function appendMessage(text, isSender, timeStamp = new Date(), product = null, chatId) {
         const messageTime = new Date(timeStamp);
         const currentDateYMD = formatDateToYMD(messageTime);
 
-        // 1. Tambah penanda tanggal jika beda
         const dateMarkers = messagesContainer.querySelectorAll('.chat-date-separator > .badge');
         const lastMarker = dateMarkers[dateMarkers.length - 1];
         let lastDateYMD = lastMarker ? lastMarker.getAttribute('data-date') : null;
@@ -262,14 +259,12 @@ window.addEventListener("DOMContentLoaded", () => {
             messagesContainer.appendChild(dateWrapper);
         }
 
-        // 2. Wrapper chat
         const wrapper = document.createElement("div");
         wrapper.className = `chat ${isSender ? "chat-end" : "chat-start"}`;
 
         const bubble = document.createElement("div");
         bubble.className = `chat-bubble shadow-lg max-w-xs md:max-w-md ${isSender ? "bg-neutral text-neutral-content" : "bg-base-200 text-base-content"}`;
 
-        // 3. Render produk jika ada
         if (product && product.id) {
             const pWrapper = document.createElement("div");
             pWrapper.className = "mt-2 rounded-xl border border-base-300 bg-base-200 p-3 shadow-md max-w-xs md:max-w-md";
@@ -302,12 +297,62 @@ window.addEventListener("DOMContentLoaded", () => {
             bubble.appendChild(pWrapper);
         }
 
-        // 4. Text message
+
+        if (isSender) {
+
+            const deleteButton = document.createElement("button");
+
+
+
+            deleteButton.classList.add(
+                "absolute",
+                "-top-3",
+                "-right-3",
+                "bg-red-600",
+                "text-red-50",
+                "p-2",
+                "rounded-full",
+                "shadow-md",
+                "active:scale-95",
+                "transition"
+            );
+
+            deleteButton.innerHTML = `
+            <svg viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                class="pointer-events-none">
+                <rect fill="none" height="256" width="256" />
+                <line fill="none" stroke="currentColor" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="16" x1="216" x2="40" y1="56" y2="56" />
+                <line fill="none" stroke="currentColor" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="16" x1="104" x2="104" y1="104" y2="168" />
+                <line fill="none" stroke="currentColor" stroke-linecap="round"
+                    stroke-linejoin="round" stroke-width="16" x1="152" x2="152" y1="104" y2="168" />
+                <path d="M200,56V208a8,8,0,0,1-8,8H64a8,8,0,0,1-8-8V56" fill="none"
+                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="16" />
+                <path d="M168,56V40a16,16,0,0,0-16-16H104A16,16,0,0,0,88,40V56" fill="none"
+                    stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="16" />
+            </svg>
+            `;
+
+            deleteButton.setAttribute("data-id", chatId)
+
+            bubble.appendChild(deleteButton)
+
+            console.warn("ini id " + deleteButton.getAttribute("data-id"))
+
+            deleteButton.addEventListener("click", async (e) => {
+                await deleteMessage(chatId, deleteButton)
+            })
+
+        }
+
+
         const textNode = document.createElement("div");
         textNode.textContent = text;
         bubble.appendChild(textNode);
 
-        // 5. Footer
         const footer = document.createElement("div");
         footer.className = "chat-footer mt-1 text-xs opacity-70 text-end";
         footer.textContent = messageTime.toLocaleTimeString("id-ID", {
@@ -332,7 +377,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
         const msgId = btn.getAttribute("data-id");
 
-         await deleteMessage(msgId, btn)
+        await deleteMessage(msgId, btn)
     });
 
     async function deleteMessage(msgId, btn) {
